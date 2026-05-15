@@ -71,6 +71,13 @@ function labelWithCode(code, language = currentLabelLanguage()) {
   return label && label !== value ? `${value} · ${label}` : value;
 }
 
+function grammarExplanation(code, language = currentLabelLanguage()) {
+  const value = String(code || "").trim();
+  if (!value) return "";
+  const grammar = state.references.grammar_abbreviations?.[value] || {};
+  return grammar[`explanation_${language}`] || grammar.explanation_en || "";
+}
+
 function labelOnly(labelOrCode) {
   const value = String(labelOrCode || "");
   return value.includes("·") ? value.split("·").slice(1).join("·").trim() : value;
@@ -189,6 +196,23 @@ function rowLabel(row) {
   return parts.map((part) => referenceLabel(part)).join(" · ");
 }
 
+function rowExplanation(row) {
+  const parts = [
+    row.aspect,
+    row.tense,
+    row.case_group,
+    row.case,
+    row.number,
+    row.person_number,
+    row.gender,
+    row.polarity,
+  ].filter(Boolean);
+  return parts
+    .map((part) => grammarExplanation(part))
+    .filter(Boolean)
+    .join(" ");
+}
+
 function generateForms(entry) {
   const morphology = entry.morphology || {};
   if (!morphology.available) return null;
@@ -237,6 +261,7 @@ function generateForms(entry) {
         row.polarity,
       ].filter(Boolean).join(" · "),
       ending: row.ending || "",
+      explanation: rowExplanation(row),
       form: kind === "verb_exist"
         ? row[`form_${spelling}`] || row.form_int
         : combineStemAndEnding(stem, row.ending || ""),
@@ -268,12 +293,14 @@ function renderForms(entry) {
     <section class="entry-section">
       <h3>${escapeHtml(title)}</h3>
       <p class="form-note">Generated from paradigm ${escapeHtml(generated.paradigm)} using the ${state.spelling.toUpperCase()} spelling.</p>
+      ${renderGenerationExplanation(entry, generated)}
       <div class="form-table-wrap">
         <table class="form-table">
           <thead>
             <tr>
               <th>Form</th>
               <th>Grammar</th>
+              <th>Explanation</th>
               <th>Code</th>
               <th>Ending</th>
             </tr>
@@ -283,6 +310,7 @@ function renderForms(entry) {
               <tr>
                 <td>${escapeHtml(row.form)}</td>
                 <td>${escapeHtml(row.label || row.code)}</td>
+                <td>${escapeHtml(row.explanation)}</td>
                 <td>${escapeHtml(row.code)}</td>
                 <td>${escapeHtml(row.ending)}</td>
               </tr>
@@ -291,6 +319,34 @@ function renderForms(entry) {
         </table>
       </div>
     </section>
+  `;
+}
+
+function renderGenerationExplanation(entry, generated) {
+  const lemma = entry.lemma || {};
+  const raw = lemma[state.spelling] || lemma.int || lemma.deu || "";
+  const stem = stemFromLemma(raw);
+  const hasHyphen = raw.includes("-");
+  const sourceParadigm = entry.morphology?.source_paradigm;
+  const aliasNote = sourceParadigm
+    ? `<li>The workbook uses paradigm <strong>${escapeHtml(sourceParadigm)}</strong>; the pipeline resolves it to <strong>${escapeHtml(generated.paradigm)}</strong> so it can match the paradigm table.</li>`
+    : "";
+  const irregularNote = generated.paradigm.includes("IRR")
+    ? "<li>This is marked as an irregular paradigm. The table supplies forms directly; the viewer does not treat those cells as ordinary endings.</li>"
+    : "";
+
+  return `
+    <details class="generation-note">
+      <summary>How these forms were generated</summary>
+      <ul>
+        <li>The source lemma is <strong>${escapeHtml(raw || "unknown")}</strong>.</li>
+        ${hasHyphen ? `<li>The internal hyphen marks the stem boundary. The displayed stem is <strong>${escapeHtml(stem)}</strong>.</li>` : `<li>No internal hyphen is present, so the displayed lemma is used as the stem.</li>`}
+        <li>The paradigm table supplies the forms or endings for <strong>${escapeHtml(generated.paradigm)}</strong>.</li>
+        <li>The generated form column combines the stem with the table value when the table value is an ending.</li>
+        ${aliasNote}
+        ${irregularNote}
+      </ul>
+    </details>
   `;
 }
 

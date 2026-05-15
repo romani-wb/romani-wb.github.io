@@ -375,7 +375,7 @@ details.entry-section .definition-grid {
 .form-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 680px;
+  min-width: 920px;
 }
 
 .form-table th,
@@ -405,9 +405,14 @@ details.entry-section .definition-grid {
 }
 
 .form-table td:nth-child(3),
-.form-table td:nth-child(4) {
+.form-table td:nth-child(4),
+.form-table td:nth-child(5) {
   color: var(--muted);
   font-size: 13px;
+}
+
+.form-table td:nth-child(4),
+.form-table td:nth-child(5) {
   white-space: nowrap;
 }
 
@@ -451,6 +456,33 @@ details.entry-section .definition-grid {
   padding: 2px 5px;
   font-size: 11px;
   font-weight: 800;
+}
+
+.generation-note {
+  margin: 0 0 14px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+}
+
+.generation-note summary {
+  cursor: pointer;
+  color: var(--accent-strong);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.generation-note ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.generation-note li + li {
+  margin-top: 5px;
 }
 
 .error-state {

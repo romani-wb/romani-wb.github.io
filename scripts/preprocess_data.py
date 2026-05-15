@@ -139,6 +139,64 @@ SOURCE_MARKER_LABELS = {
     },
 }
 
+GRAMMAR_EXPLANATIONS = {
+    "RECT": {
+        "en": "A case group from the stakeholder tables. In the forms table it marks the direct/basic case row.",
+        "de": "Fallgruppe aus den Tabellen des Stakeholders. In der Formentabelle markiert sie den direkten/Grund-Fall.",
+    },
+    "OBL": {
+        "en": "A case group from the stakeholder tables for oblique forms, i.e. forms used with specific cases such as accusative, dative, locative, and others.",
+        "de": "Fallgruppe aus den Tabellen des Stakeholders für oblique Formen, also Formen mit bestimmten Fällen wie Akkusativ, Dativ, Lokativ usw.",
+    },
+    "NOM": {
+        "en": "Nominative. The abbreviation table glosses this as the 'who-case'.",
+        "de": "Nominativ. Die Abkürzungstabelle erklärt ihn als Wer-Fall.",
+    },
+    "ACC": {
+        "en": "Accusative. The abbreviation table glosses this as the 'whom-case'.",
+        "de": "Akkusativ. Die Abkürzungstabelle erklärt ihn als Wen-Fall.",
+    },
+    "DAT": {
+        "en": "Dative. The abbreviation table glosses this as the 'to/for whom-case'.",
+        "de": "Dativ. Die Abkürzungstabelle erklärt ihn als Wem-Fall.",
+    },
+    "ABL": {
+        "en": "Ablative. The abbreviation table glosses this as the 'from where-case'.",
+        "de": "Ablativ. Die Abkürzungstabelle erklärt ihn als Woher-Fall.",
+    },
+    "LOC": {
+        "en": "Locative. In the case tables this is the 'where/where-to-case'.",
+        "de": "Lokativ. In den Kasustabellen ist das der Wo-/Wohin-Fall.",
+    },
+    "INS/SOC": {
+        "en": "Instrumental/social case row from the stakeholder tables.",
+        "de": "Instrumental-/Soziativ-Zeile aus den Tabellen des Stakeholders.",
+    },
+    "GEN": {
+        "en": "Genitive. The abbreviation table glosses this as the 'whose-case'.",
+        "de": "Genitiv. Die Abkürzungstabelle erklärt ihn als Wes(sen)-Fall.",
+    },
+    "SG": {"en": "Singular: one.", "de": "Singular: Einzahl."},
+    "PL": {"en": "Plural: more than one.", "de": "Plural: Mehrzahl."},
+    "M": {"en": "Masculine gender/class.", "de": "Maskuline Klasse."},
+    "F": {"en": "Feminine gender/class.", "de": "Feminine Klasse."},
+    "M/F": {"en": "Masculine/feminine class; the table contains both sets of forms.", "de": "Maskulin/feminine Klasse; die Tabelle enthält beide Formreihen."},
+    "NPFV": {
+        "en": "Non-perfective marker/category from the verb table.",
+        "de": "Nichtperfektive Markierung/Kategorie aus der Verbtabelle.",
+    },
+    "PRS": {"en": "Present tense.", "de": "Präsens/Gegenwart."},
+    "FUT": {"en": "Future tense.", "de": "Futur/Zukunft."},
+    "PST": {"en": "Past tense.", "de": "Vergangenheit."},
+    "NEG": {"en": "Negative form.", "de": "Negative/verneinte Form."},
+    "1SG": {"en": "1st person singular.", "de": "1. Person Singular."},
+    "2SG": {"en": "2nd person singular.", "de": "2. Person Singular."},
+    "3SG": {"en": "3rd person singular.", "de": "3. Person Singular."},
+    "1PL": {"en": "1st person plural.", "de": "1. Person Plural."},
+    "2PL": {"en": "2nd person plural.", "de": "2. Person Plural."},
+    "3PL": {"en": "3rd person plural.", "de": "3. Person Plural."},
+}
+
 
 def clean_value(value: Any) -> str:
     if value is None:
@@ -513,10 +571,22 @@ def add_form_labels(row: dict[str, str], references: dict[str, Any]) -> dict[str
     ]
     label_parts_en = [reference_label(references, part, "en") for part in parts if part]
     label_parts_de = [reference_label(references, part, "de") for part in parts if part]
+    explanation_parts_en = [
+        references.get("grammar_abbreviations", {}).get(part, {}).get("explanation_en", "")
+        for part in parts
+        if part
+    ]
+    explanation_parts_de = [
+        references.get("grammar_abbreviations", {}).get(part, {}).get("explanation_de", "")
+        for part in parts
+        if part
+    ]
     return {
         **row,
         "label_en": " · ".join(label_parts_en),
         "label_de": " · ".join(label_parts_de),
+        "explanation_en": " ".join(part for part in explanation_parts_en if part),
+        "explanation_de": " ".join(part for part in explanation_parts_de if part),
     }
 
 
@@ -783,6 +853,8 @@ def build_references(workbook: Path) -> dict[str, Any]:
                 "en": clean_value(row[1] if len(row) > 1 else ""),
                 "de": clean_value(row[2] if len(row) > 2 else ""),
                 "de_plain": clean_value(row[3] if len(row) > 3 else ""),
+                "explanation_en": GRAMMAR_EXPLANATIONS.get(code, {}).get("en", ""),
+                "explanation_de": GRAMMAR_EXPLANATIONS.get(code, {}).get("de", ""),
                 "roman_int": first_present(
                     row[4] if len(row) > 4 else "",
                     row[5] if len(row) > 5 else "",
