@@ -1,0 +1,974 @@
+{
+  "counts_by_code": {
+    "missing_english_meaning": 7964,
+    "missing_inflection_paradigm": 45,
+    "paired_int_deu_asymmetry": 6,
+    "paradigm_alias_applied": 180,
+    "structure_word_class_unused": 1,
+    "unexpected_adjective_paradigm": 2,
+    "unexpected_noun_flexion": 1,
+    "unexpected_word_class": 1,
+    "word_class_missing_from_structure_sheet": 3
+  },
+  "counts_by_severity": {
+    "error": 1,
+    "info": 8148,
+    "warning": 54
+  },
+  "issue_count": 8203,
+  "issue_samples": {
+    "missing_english_meaning": [
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04487_763223e8",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "hé",
+        "message": "Entry has no English meaning yet.",
+        "row": 4487,
+        "severity": "info"
+      },
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04488_31e569d5",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "hé phénav",
+        "message": "Entry has no English meaning yet.",
+        "row": 4488,
+        "severity": "info"
+      },
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04489_a12be8ac",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "hebečágo",
+        "message": "Entry has no English meaning yet.",
+        "row": 4489,
+        "severity": "info"
+      },
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04490_1f3fa464",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "hebégo/kíja",
+        "message": "Entry has no English meaning yet.",
+        "row": 4490,
+        "severity": "info"
+      },
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04491_2bc4813a",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "hebegínav",
+        "message": "Entry has no English meaning yet.",
+        "row": 4491,
+        "severity": "info"
+      },
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04492_4d5bc3e7",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "héf",
+        "message": "Entry has no English meaning yet.",
+        "row": 4492,
+        "severity": "info"
+      },
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04493_29b7b3ea",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "hefčálo/i",
+        "message": "Entry has no English meaning yet.",
+        "row": 4493,
+        "severity": "info"
+      },
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04494_ff6163e3",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "hefčárav",
+        "message": "Entry has no English meaning yet.",
+        "row": 4494,
+        "severity": "info"
+      },
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04495_71fe7d02",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "hefčári/kíja",
+        "message": "Entry has no English meaning yet.",
+        "row": 4495,
+        "severity": "info"
+      },
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04496_aa55e7bd",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "hefčarípe",
+        "message": "Entry has no English meaning yet.",
+        "row": 4496,
+        "severity": "info"
+      },
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04497_5cc3ad1a",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "héftl",
+        "message": "Entry has no English meaning yet.",
+        "row": 4497,
+        "severity": "info"
+      },
+      {
+        "code": "missing_english_meaning",
+        "entry_id": "g04498_70c79d01",
+        "fields": [
+          "ENGLISH 01",
+          "ENGLISH 02",
+          "ENGLISH 03",
+          "ENGLISH 04",
+          "ENGLISH 05",
+          "ENGLISH 06",
+          "ENGLISH 07",
+          "ENGLISH 08",
+          "ENGLISH 09",
+          "ENGLISH 10"
+        ],
+        "lemma": "heftlúno/i",
+        "message": "Entry has no English meaning yet.",
+        "row": 4498,
+        "severity": "info"
+      }
+    ],
+    "missing_inflection_paradigm": [
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g00005_a49c537b",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "áča",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 5,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      },
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g00139_038c5361",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "aláti",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 139,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      },
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g00450_00a7feaf",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "anglúne",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 450,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      },
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g00619_b75015b1",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "ardípča",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 619,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      },
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g00775_81f9fefc",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "ašánti",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 775,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      },
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g01008_5f89a416",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "bangóre",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 1008,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      },
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g01039_df2a12c3",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "barčíle",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 1039,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      },
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g01286_3dd90993",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "bílki",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 1286,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      },
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g01360_cb5e8938",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "blicáne",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 1360,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      },
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g01433_fede2ee4",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "bokréti",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 1433,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      },
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g01641_024b4795",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "bút",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 1641,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      },
+      {
+        "code": "missing_inflection_paradigm",
+        "entry_id": "g01727_97c99231",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "čačípča",
+        "message": "Noun has no paradigm, so forms cannot be generated automatically.",
+        "row": 1727,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "",
+          "Word class 1": "N"
+        }
+      }
+    ],
+    "paired_int_deu_asymmetry": [
+      {
+        "code": "paired_int_deu_asymmetry",
+        "entry_id": "g05195_3199c8f9",
+        "fields": [
+          "Composition INT",
+          "Composition DEU"
+        ],
+        "lemma": "karčidári/kíja",
+        "message": "Paired INT/DEU fields should usually both be filled or both be empty.",
+        "row": 5195,
+        "severity": "warning",
+        "values": {
+          "Composition DEU": "kartschi+dáv",
+          "Composition INT": ""
+        }
+      },
+      {
+        "code": "paired_int_deu_asymmetry",
+        "entry_id": "g07339_c753106f",
+        "fields": [
+          "Variation INT",
+          "Variation DEU"
+        ],
+        "lemma": "múrmlina",
+        "message": "Paired INT/DEU fields should usually both be filled or both be empty.",
+        "row": 7339,
+        "severity": "warning",
+        "values": {
+          "Variation DEU": "muséjum",
+          "Variation INT": ""
+        }
+      },
+      {
+        "code": "paired_int_deu_asymmetry",
+        "entry_id": "g07352_248f5c6c",
+        "fields": [
+          "Variation INT",
+          "Variation DEU"
+        ],
+        "lemma": "muséjumo",
+        "message": "Paired INT/DEU fields should usually both be filled or both be empty.",
+        "row": 7352,
+        "severity": "warning",
+        "values": {
+          "Variation DEU": "",
+          "Variation INT": "muséjum"
+        }
+      },
+      {
+        "code": "paired_int_deu_asymmetry",
+        "entry_id": "g08168_3c5af443",
+        "fields": [
+          "Variation INT",
+          "Variation DEU"
+        ],
+        "lemma": "palalnašári/kíja",
+        "message": "Paired INT/DEU fields should usually both be filled or both be empty.",
+        "row": 8168,
+        "severity": "warning",
+        "values": {
+          "Variation DEU": "palalnascháschi",
+          "Variation INT": ""
+        }
+      },
+      {
+        "code": "paired_int_deu_asymmetry",
+        "entry_id": "g08189_fff676e3",
+        "fields": [
+          "Flexion 3 INT",
+          "Flexion 3 DEU"
+        ],
+        "lemma": "palkinípe",
+        "message": "Paired INT/DEU fields should usually both be filled or both be empty.",
+        "row": 8189,
+        "severity": "warning",
+        "values": {
+          "Flexion 3 DEU": "-tscha",
+          "Flexion 3 INT": ""
+        }
+      },
+      {
+        "code": "paired_int_deu_asymmetry",
+        "entry_id": "g12388_130763be",
+        "fields": [
+          "Flexion 3 INT",
+          "Flexion 3 DEU"
+        ],
+        "lemma": "vočoskéro čaro",
+        "message": "Paired INT/DEU fields should usually both be filled or both be empty.",
+        "row": 12388,
+        "severity": "warning",
+        "values": {
+          "Flexion 3 DEU": "–+T10062",
+          "Flexion 3 INT": ""
+        }
+      }
+    ],
+    "paradigm_alias_applied": [
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g00845_f8508b67",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "aunhéngeri",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 845,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      },
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g00854_7ade969d",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "autéri",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 854,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      },
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g00904_46160d24",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "báči",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 904,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      },
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g00915_e7e558c5",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "bagéri",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 915,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      },
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g01074_95d93714",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "barometéri",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 1074,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      },
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g01094_0b1f2338",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "basári",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 1094,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      },
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g01123_58bce731",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "Béči",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 1123,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      },
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g01156_6f372773",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "bejxéri",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 1156,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      },
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g01166_d7966ce9",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "Bémen",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 1166,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      },
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g01241_5c954043",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "bibéri",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 1241,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      },
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g01277_f212600f",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "bikíni",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 1277,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      },
+      {
+        "code": "paradigm_alias_applied",
+        "entry_id": "g01322_62d26bdc",
+        "fields": [
+          "Paradigm"
+        ],
+        "lemma": "bišjári",
+        "message": "Glossary paradigm is resolved through an explicit alias before form generation.",
+        "row": 1322,
+        "severity": "info",
+        "values": {
+          "Paradigm": "NME-i",
+          "Resolved paradigm": "M-E-i"
+        }
+      }
+    ],
+    "structure_word_class_unused": [
+      {
+        "code": "structure_word_class_unused",
+        "fields": [
+          "structure.Wordclass-1",
+          "GLOSSARY.Word class 1"
+        ],
+        "message": "Stakeholder structure sheet lists a Wordclass-1 value not currently used in GLOSSARY.",
+        "severity": "info",
+        "values": {
+          "Wordclass-1": "NV"
+        }
+      }
+    ],
+    "unexpected_adjective_paradigm": [
+      {
+        "code": "unexpected_adjective_paradigm",
+        "entry_id": "g00629_0a75da32",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "Argentinéri/kíja",
+        "message": "Adjective has a paradigm other than ADJ-DECL.",
+        "row": 629,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "NMF-02",
+          "Word class 1": "ADJ"
+        }
+      },
+      {
+        "code": "unexpected_adjective_paradigm",
+        "entry_id": "g01553_f48c3558",
+        "fields": [
+          "Word class 1",
+          "Paradigm"
+        ],
+        "lemma": "Britanéri/kíja",
+        "message": "Adjective has a paradigm other than ADJ-DECL.",
+        "row": 1553,
+        "severity": "warning",
+        "values": {
+          "Paradigm": "NMF-02",
+          "Word class 1": "ADJ"
+        }
+      }
+    ],
+    "unexpected_noun_flexion": [
+      {
+        "code": "unexpected_noun_flexion",
+        "entry_id": "g08189_fff676e3",
+        "fields": [
+          "Word class 1",
+          "Flexion 1"
+        ],
+        "lemma": "palkinípe",
+        "message": "Noun has an unexpected Flexion 1 value.",
+        "row": 8189,
+        "severity": "warning",
+        "values": {
+          "Flexion 1": "-és-",
+          "Word class 1": "N"
+        }
+      }
+    ],
+    "unexpected_word_class": [
+      {
+        "code": "unexpected_word_class",
+        "entry_id": "g01532_b838c537",
+        "fields": [
+          "Word class 1"
+        ],
+        "lemma": "briateri/kíja",
+        "message": "Word class is not part of the currently expected dictionary classes.",
+        "row": 1532,
+        "severity": "error",
+        "values": {
+          "Word class 1": "N+V1536N1536:U1536"
+        }
+      }
+    ],
+    "word_class_missing_from_structure_sheet": [
+      {
+        "code": "word_class_missing_from_structure_sheet",
+        "fields": [
+          "structure.Wordclass-1",
+          "GLOSSARY.Word class 1"
+        ],
+        "message": "Observed Word class 1 value is not listed in the stakeholder structure sheet.",
+        "severity": "info",
+        "values": {
+          "Word class 1": "INTERJ"
+        }
+      },
+      {
+        "code": "word_class_missing_from_structure_sheet",
+        "fields": [
+          "structure.Wordclass-1",
+          "GLOSSARY.Word class 1"
+        ],
+        "message": "Observed Word class 1 value is not listed in the stakeholder structure sheet.",
+        "severity": "info",
+        "values": {
+          "Word class 1": "N+V1536N1536:U1536"
+        }
+      },
+      {
+        "code": "word_class_missing_from_structure_sheet",
+        "fields": [
+          "structure.Wordclass-1",
+          "GLOSSARY.Word class 1"
+        ],
+        "message": "Observed Word class 1 value is not listed in the stakeholder structure sheet.",
+        "severity": "info",
+        "values": {
+          "Word class 1": "NP"
+        }
+      }
+    ]
+  },
+  "observed_word_classes": [
+    "ADJ",
+    "ADV",
+    "ART",
+    "CONJ",
+    "INTERJ",
+    "N",
+    "N+V1536N1536:U1536",
+    "NP",
+    "NUM",
+    "PREF",
+    "PREFV",
+    "PREP",
+    "PRON",
+    "PTCL",
+    "PTCLV",
+    "V",
+    "VP"
+  ],
+  "paradigm_aliases": {
+    "NFPE-∅-01": "NFPE-∅-1",
+    "NME-IRR-01": "NM-IRR-01",
+    "NME-IRR-02": "NM-IRR-02",
+    "NME-IRR-03": "NM-IRR-03",
+    "NME-IRR-04": "NM-IRR-04",
+    "NME-IRR-05": "NM-IRR-05",
+    "NME-i": "M-E-i"
+  },
+  "parsed_paradigm_keys": {
+    "ADJ-DECL": [
+      "ADJ-DECL"
+    ],
+    "F-DECL": [
+      "NF-IRR-01",
+      "NFE-a",
+      "NFE-∅",
+      "NFPE-a",
+      "NFPE-i-1",
+      "NFPE-i-2",
+      "NFPE-∅-1",
+      "NFPE-∅-2",
+      "NNF-IRR-01"
+    ],
+    "M-DECL": [
+      "M-E-i",
+      "NM-IRR-01",
+      "NM-IRR-02",
+      "NM-IRR-03",
+      "NM-IRR-04",
+      "NM-IRR-05",
+      "NME-A",
+      "NME-o-1",
+      "NME-o-2",
+      "NME-u",
+      "NME-∅-1",
+      "NME-∅-2",
+      "NME-∅-3",
+      "NMPE-A",
+      "NMPE-i",
+      "NMPE-o",
+      "NMPE-u",
+      "NMPE-∅"
+    ],
+    "MF-DECL": [
+      "NMF-01",
+      "NMF-02",
+      "NMF-03",
+      "NMF-04",
+      "NMF-05"
+    ],
+    "V-CONJG": [
+      "V-01",
+      "V-02",
+      "V-03",
+      "V-04",
+      "V-05",
+      "V-06",
+      "V-07",
+      "V-08",
+      "V-IRR-01",
+      "V-IRR-02",
+      "V-IRR-03",
+      "V-IRR-04",
+      "V-IRR-05",
+      "V-IRR-06",
+      "V-IRR-07",
+      "V-IRR-08",
+      "V-IRR-09",
+      "V-IRR-10",
+      "V-IRR-11",
+      "V-IRR-12",
+      "V-IRR-13",
+      "V-IRR-14",
+      "V-IRR-15"
+    ],
+    "V-EXIST": [
+      "EXIST"
+    ]
+  },
+  "source_workbook": "data/2026-05-07_roman-wb-2.xlsx",
+  "structure_sheet_word_classes": [
+    "ADJ",
+    "ADV",
+    "ART",
+    "CONJ",
+    "N",
+    "NUM",
+    "NV",
+    "PREF",
+    "PREFV",
+    "PREP",
+    "PRON",
+    "PTCL",
+    "PTCLV",
+    "V",
+    "VP"
+  ]
+}

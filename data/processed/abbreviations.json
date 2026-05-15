@@ -1,0 +1,876 @@
+{
+  "abbrs-gram": [
+    {
+      "DEUTSCH": "1. Person Plural",
+      "ENGLiSH": "1st person plural",
+      "Roman DEU": "1. dschéni buteripe",
+      "RomanINT": "1. džéni buteripe",
+      "Unnamed: 3": "1. Person Mehrzahl",
+      "Unnamed: 5": "1. džéni plúral",
+      "Unnamed: 7": "1. dschéni plúral",
+      "abbr.": "1PL"
+    },
+    {
+      "DEUTSCH": "1. Person Singular",
+      "ENGLiSH": "1st person singular",
+      "Roman DEU": "1. dschéni jekipe",
+      "RomanINT": "1. džéni jekipe",
+      "Unnamed: 3": "1. Person Einzahl",
+      "Unnamed: 5": "1. džéni síngular",
+      "Unnamed: 7": "1. dschéni síngular",
+      "abbr.": "1SG"
+    },
+    {
+      "DEUTSCH": "2. Person Plural",
+      "ENGLiSH": "2nd person plural",
+      "Roman DEU": "2. dschéni buteripe",
+      "RomanINT": "2. džéni buteripe",
+      "Unnamed: 3": "2. Person Mehrzahl",
+      "Unnamed: 5": "2. džéni plúral",
+      "Unnamed: 7": "2. dschéni plúral",
+      "abbr.": "2PL"
+    },
+    {
+      "DEUTSCH": "2. Person Singular",
+      "ENGLiSH": "2nd person singular",
+      "Roman DEU": "2. dschéni jekipe",
+      "RomanINT": "2. džéni jekipe",
+      "Unnamed: 3": "2. Person Einzahl",
+      "Unnamed: 5": "2. džéni síngular",
+      "Unnamed: 7": "2. dschéni síngular",
+      "abbr.": "2SG"
+    },
+    {
+      "DEUTSCH": "3. Person Plural",
+      "ENGLiSH": "3rd person plural",
+      "Roman DEU": "3. dschéni buteripe",
+      "RomanINT": "3. džéni buteripe",
+      "Unnamed: 3": "3. Person Mehrzahl",
+      "Unnamed: 5": "3. džéni plúral",
+      "Unnamed: 7": "3. dschéni plúral",
+      "abbr.": "3PL"
+    },
+    {
+      "DEUTSCH": "3. Person Singular",
+      "ENGLiSH": "3rd person singular",
+      "Roman DEU": "3. dschéni jekipe",
+      "RomanINT": "3. džéni jekipe",
+      "Unnamed: 3": "3. Person Einzahl",
+      "Unnamed: 5": "3. džéni síngular",
+      "Unnamed: 7": "3. dschéni síngular",
+      "abbr.": "3SG"
+    },
+    {
+      "DEUTSCH": "Ablativ",
+      "ENGLiSH": "Ablativ",
+      "Roman DEU": "katarperipe",
+      "RomanINT": "katarperipe",
+      "Unnamed: 3": "Woher-Fall",
+      "Unnamed: 5": "áblativ",
+      "Unnamed: 7": "áblativ",
+      "abbr.": "ABL"
+    },
+    {
+      "DEUTSCH": "Akkusativ",
+      "ENGLiSH": "Accusative",
+      "Roman DEU": "kasperípe",
+      "RomanINT": "kasperípe",
+      "Unnamed: 3": "Wen-Fall",
+      "Unnamed: 5": "ákusativ",
+      "Unnamed: 7": "ákusativ",
+      "abbr.": "ACC"
+    },
+    {
+      "DEUTSCH": "Adjektiv",
+      "ENGLiSH": "Adjectiv",
+      "Roman DEU": "ajgenschoftískero álav",
+      "RomanINT": "ajgenšoftískero álav",
+      "Unnamed: 3": "Eigenschaftswort",
+      "Unnamed: 5": "ádjektiv",
+      "Unnamed: 7": "ádjektiv",
+      "abbr.": "ADJ"
+    },
+    {
+      "DEUTSCH": "Adverb",
+      "ENGLiSH": "Adverb",
+      "Roman DEU": "kerilmóskero álav",
+      "RomanINT": "kerilmóskero álav",
+      "Unnamed: 3": "Umstandswort",
+      "Unnamed: 5": "advérb",
+      "Unnamed: 7": "advérb",
+      "abbr.": "ADV"
+    },
+    {
+      "DEUTSCH": "affirmativ (PTCL)",
+      "ENGLiSH": "affrimative (PTCL)",
+      "Roman DEU": "hephendíni (tschésca)",
+      "RomanINT": "hephendíni (čésca)",
+      "Unnamed: 3": "bejahend (Beiwort)",
+      "Unnamed: 5": "afirmatávi (partíkl)",
+      "Unnamed: 7": "afirmatávi (partíkl)",
+      "abbr.": "AFF"
+    },
+    {
+      "DEUTSCH": "Artikel",
+      "ENGLiSH": "Article",
+      "Roman DEU": "rodoskéro álav",
+      "RomanINT": "rodoskéro álav",
+      "Unnamed: 3": "Geschlechtswort",
+      "Unnamed: 5": "artíkl",
+      "Unnamed: 7": "artíkl",
+      "abbr.": "ART"
+    },
+    {
+      "DEUTSCH": "Aspekt",
+      "ENGLiSH": "Aspect",
+      "Roman DEU": "fanaschípe",
+      "RomanINT": "fanašípe",
+      "Unnamed: 3": "Verlaufsart",
+      "Unnamed: 5": "aspékt",
+      "Unnamed: 7": "aspékt",
+      "abbr.": "ASP"
+    },
+    {
+      "DEUTSCH": "Kardinalzahl",
+      "ENGLiSH": "cardinal (number)",
+      "Roman DEU": "basisákeri géndi",
+      "RomanINT": "basisákeri géndi",
+      "Unnamed: 3": "Grundzahl",
+      "Unnamed: 5": "kardináli géndi",
+      "Unnamed: 7": "kardináli géndi",
+      "abbr.": "CARD"
+    },
+    {
+      "DEUTSCH": "kausal (ADV)",
+      "ENGLiSH": "causal (ADV)",
+      "Roman DEU": "indoklíndo (kerilmóskero álav)",
+      "RomanINT": "indoklíndo (kerilmóskero álav)",
+      "Unnamed: 3": "begründend (Umstandswort)",
+      "Unnamed: 5": "kausáli (advérb)",
+      "Unnamed: 7": "kausáli (advérb)",
+      "abbr.": "CAUS"
+    },
+    {
+      "DEUTSCH": "Konjunktion",
+      "ENGLiSH": "Conjunction",
+      "Roman DEU": "phandipéskero álav",
+      "RomanINT": "phandipéskero álav",
+      "Unnamed: 3": "Bindewort",
+      "Unnamed: 5": "konjúnkcija",
+      "Unnamed: 7": "konjúnkcija",
+      "abbr.": "CONJ"
+    },
+    {
+      "DEUTSCH": "Konjugation",
+      "ENGLiSH": "Conjugation",
+      "Roman DEU": "bangjarípe lé cajtískere alavéske",
+      "RomanINT": "banǧarípe lé cajtískere alavéske",
+      "Unnamed: 3": "Beugung des Zeitworts",
+      "Unnamed: 5": "konjugácija",
+      "Unnamed: 7": "konjugácija",
+      "abbr.": "CONJG"
+    },
+    {
+      "DEUTSCH": "koordierend (CONJ)",
+      "ENGLiSH": "coordinating (CONJ)",
+      "Roman DEU": "merordníndo (phandipéskero álav)",
+      "RomanINT": "merordníndo (phandipéskero álav)",
+      "Unnamed: 3": "nebenordnend (Bindewort)",
+      "Unnamed: 5": "kojordinírendi (konjunktijóna)",
+      "Unnamed: 7": "kojordinírendi (konjunktijóna)",
+      "abbr.": "COORD"
+    },
+    {
+      "DEUTSCH": "Dativ",
+      "ENGLiSH": "Dative",
+      "Roman DEU": "kaskeperípe",
+      "RomanINT": "kaskeperípe",
+      "Unnamed: 3": "Wem-Fall",
+      "Unnamed: 5": "dátiv",
+      "Unnamed: 7": "dátiv",
+      "abbr.": "DAT"
+    },
+    {
+      "DEUTSCH": "Deklination",
+      "ENGLiSH": "Declination",
+      "Roman DEU": "bangjarípe lé scheréskere alaveske",
+      "RomanINT": "banǧarípe lé šeréskere alaveske",
+      "Unnamed: 3": "Beugung des Hauptworts",
+      "Unnamed: 5": "deklinácija",
+      "Unnamed: 7": "deklinácija",
+      "abbr.": "DECL"
+    },
+    {
+      "DEUTSCH": "grad(uell) (PTCL)",
+      "ENGLiSH": "Degree (PTCL)",
+      "Roman DEU": "gradúni (tschésca)",
+      "RomanINT": "gradúni (čésca)",
+      "Unnamed: 3": "Maß/Steigerungswort",
+      "Unnamed: 5": "gradujéli (partíkl)",
+      "Unnamed: 7": "gradujéli (partíkl)",
+      "abbr.": "DEG"
+    },
+    {
+      "DEUTSCH": "demonstrativ (PRN)",
+      "ENGLiSH": "demonstrative (PRON)",
+      "Roman DEU": "sikajíndo/i",
+      "RomanINT": "sikajíndo/i",
+      "Unnamed: 3": "hinweisend",
+      "Unnamed: 5": "demonstratívi",
+      "Unnamed: 7": "demonstratívi",
+      "abbr.": "DEM"
+    },
+    {
+      "DEUTSCH": "europäisch",
+      "ENGLiSH": "european",
+      "Roman DEU": "europítiko/i",
+      "RomanINT": "europítiko/i",
+      "abbr.": "E"
+    },
+    {
+      "DEUTSCH": "feminin",
+      "ENGLiSH": "feminine",
+      "Roman DEU": "dschuvláno/i",
+      "RomanINT": "džuvláno/i",
+      "Unnamed: 3": "weiblich",
+      "Unnamed: 5": "feminíni",
+      "Unnamed: 7": "feminíni",
+      "abbr.": "F"
+    },
+    {
+      "DEUTSCH": "Fraktalzahl",
+      "ENGLiSH": "fractal (number)",
+      "Roman DEU": "uladíndi géndi",
+      "RomanINT": "uladíndi géndi",
+      "Unnamed: 3": "Teilungszahl",
+      "Unnamed: 5": "fraktáli",
+      "Unnamed: 7": "fraktáli",
+      "abbr.": "FRAC"
+    },
+    {
+      "DEUTSCH": "Futur",
+      "ENGLiSH": "Futur",
+      "Roman DEU": "jéva",
+      "RomanINT": "jéva",
+      "Unnamed: 3": "Zukunft",
+      "Unnamed: 5": "futúr",
+      "Unnamed: 7": "futúr",
+      "abbr.": "FUT"
+    },
+    {
+      "DEUTSCH": "Genitiv",
+      "ENGLiSH": "Genitiv",
+      "Roman DEU": "kaskerepherípe",
+      "RomanINT": "kaskerepherípe",
+      "Unnamed: 3": "Wes(sen)-Fall",
+      "Unnamed: 5": "genitiv",
+      "Unnamed: 7": "genitiv",
+      "abbr.": "GEN"
+    },
+    {
+      "DEUTSCH": "undeklinierbar",
+      "ENGLiSH": "indeclinable",
+      "Roman DEU": "nabangjárdo/i",
+      "RomanINT": "nabanǧárdo/i",
+      "Unnamed: 3": "nicht beugbar",
+      "Unnamed: 5": "nadeklímo/i",
+      "Unnamed: 7": "nadeklímo/i",
+      "abbr.": "INDECL"
+    },
+    {
+      "DEUTSCH": "undeklinierbar-alt",
+      "ENGLiSH": "indeclinable-old",
+      "Roman DEU": "nabangjárdo/i phuráno/i",
+      "RomanINT": "nabanǧárdo/i phuráno/i",
+      "Unnamed: 3": "alt = voreuropäisch",
+      "Unnamed: 5": "nadeklímo/i phuráno/i",
+      "Unnamed: 7": "nadeklímo/i phuráno/i",
+      "abbr.": "INDECL-old"
+    },
+    {
+      "DEUTSCH": "indefinit (PRON)",
+      "ENGLiSH": "indefinite (PRON)",
+      "Roman DEU": "nahotárdo (vaschipéskero álav)",
+      "RomanINT": "nahotárdo (vašipéskero álav)",
+      "Unnamed: 3": "unbestimmt (Fürwort)",
+      "Unnamed: 5": "indefiníti (pronómen)",
+      "Unnamed: 7": "indefiníti (pronómen)",
+      "abbr.": "INDF"
+    },
+    {
+      "DEUTSCH": "Flexion",
+      "ENGLiSH": "Inflection",
+      "Roman DEU": "bangjarípe",
+      "RomanINT": "banǧarípe",
+      "Unnamed: 3": "Beugung",
+      "Unnamed: 5": "fleksijóna",
+      "Unnamed: 7": "fleksijóna",
+      "abbr.": "INFL"
+    },
+    {
+      "DEUTSCH": "Instrumental",
+      "ENGLiSH": "Instrumental",
+      "Roman DEU": "sohaperípe",
+      "RomanINT": "sohaperípe",
+      "Unnamed: 3": "Womit-Fall (Werkzeug)",
+      "Unnamed: 5": "instrumentál",
+      "Unnamed: 7": "instrumentál",
+      "abbr.": "INST"
+    },
+    {
+      "DEUTSCH": "interrogativ (ADV/PRON)",
+      "ENGLiSH": "interrogative (ADV/PRON)",
+      "Roman DEU": "phutschlíndo (kerilmóskero álav/ vaschipéskero álav)",
+      "RomanINT": "phučlíndo (kerilmóskero álav/ vašipéskero álav)",
+      "Unnamed: 3": "fragend (Umstandswort / Fürwort)",
+      "Unnamed: 5": "interrogatívi",
+      "Unnamed: 7": "interrogatívi",
+      "abbr.": "INT"
+    },
+    {
+      "DEUTSCH": "Interjektion",
+      "ENGLiSH": "Interjection",
+      "Roman DEU": "arakarípe",
+      "RomanINT": "arakarípe",
+      "Unnamed: 3": "Ausruf",
+      "Unnamed: 5": "interjektijóna (advérb / pronómen)",
+      "Unnamed: 7": "interjektijóna (advérb / pronómen)",
+      "abbr.": "INTERJ"
+    },
+    {
+      "DEUTSCH": "Irrealis",
+      "ENGLiSH": "Irrealis",
+      "Roman DEU": "naschtípe",
+      "RomanINT": "naštípe",
+      "Unnamed: 3": "Unmöglichkeit",
+      "Unnamed: 5": "irrejális",
+      "Unnamed: 7": "irrejális",
+      "abbr.": "IRR"
+    },
+    {
+      "DEUTSCH": "irregulär (Form)",
+      "ENGLiSH": "irrgular (formation)",
+      "Roman DEU": "nareglími (fórma)",
+      "RomanINT": "nareglími (fórma)",
+      "Unnamed: 3": "unregelmäßig (Form)",
+      "Unnamed: 5": "irreguléri (fórma)",
+      "Unnamed: 7": "irreguléri (fórma)",
+      "abbr.": "irr"
+    },
+    {
+      "DEUTSCH": "lokal (ADV)",
+      "ENGLiSH": "local (ADV)",
+      "Roman DEU": "thanútno (kerilmóskero álav)",
+      "RomanINT": "thanútno (kerilmóskero álav)",
+      "Unnamed: 3": "örtlich (Umstandswort)",
+      "Unnamed: 5": "lokáli (adverb)",
+      "Unnamed: 7": "lokáli (adverb)",
+      "abbr.": "LOC"
+    },
+    {
+      "DEUTSCH": "Lokativ",
+      "ENGLiSH": "Locative",
+      "Roman DEU": "kajperípe",
+      "RomanINT": "kajperípe",
+      "Unnamed: 3": "Wo(hin)-Fall",
+      "Unnamed: 5": "lókativ",
+      "Unnamed: 7": "lókativ",
+      "abbr.": "LOC"
+    },
+    {
+      "DEUTSCH": "maskulin",
+      "ENGLiSH": "masculine",
+      "Roman DEU": "murschálo/i",
+      "RomanINT": "muršálo/i",
+      "Unnamed: 3": "männlich",
+      "Unnamed: 5": "maskulíni",
+      "Unnamed: 7": "maskulíni",
+      "abbr.": "M"
+    },
+    {
+      "DEUTSCH": "Modus",
+      "ENGLiSH": "Mood",
+      "Roman DEU": "módo lé arphenipéske",
+      "RomanINT": "módo lé arphenipéske",
+      "Unnamed: 3": "Aussageweise",
+      "Unnamed: 5": "módo",
+      "Unnamed: 7": "módo",
+      "abbr.": "MOD"
+    },
+    {
+      "DEUTSCH": "modal (ADV)",
+      "ENGLiSH": "modal (ADV)",
+      "Roman DEU": "modóskero (kerilmóskero álav)",
+      "RomanINT": "modóskero (kerilmóskero álav)",
+      "Unnamed: 3": "Art und Weise (Umstandswort)",
+      "Unnamed: 5": "modáli (advérb)",
+      "Unnamed: 7": "modáli (advérb)",
+      "abbr.": "MOD"
+    },
+    {
+      "DEUTSCH": "Multiplikativzahl",
+      "ENGLiSH": "mulitplicative (number)",
+      "Roman DEU": "butaripéskeri géndi",
+      "RomanINT": "butaripéskeri géndi",
+      "Unnamed: 3": "Vervielfältigungszahl",
+      "Unnamed: 5": "multiplicími géndi",
+      "Unnamed: 7": "multiplicími géndi",
+      "abbr.": "MULT"
+    },
+    {
+      "DEUTSCH": "Nomen = Substantiv",
+      "ENGLiSH": "Noun",
+      "Roman DEU": "scheréskero álav",
+      "RomanINT": "šeréskero álav",
+      "Unnamed: 3": "Hauptwort",
+      "Unnamed: 5": "súbstantiv",
+      "Unnamed: 7": "súbstantiv",
+      "abbr.": "N"
+    },
+    {
+      "DEUTSCH": "narrativ (PTCL)",
+      "ENGLiSH": "narrative (PTCL)",
+      "Roman DEU": "phukajínidi (tschésca)",
+      "RomanINT": "phukajínidi (čésca)",
+      "Unnamed: 3": "erzähl(end) (Beiwort)",
+      "Unnamed: 5": "narativi (partikl)",
+      "Unnamed: 7": "narativi (partikl)",
+      "abbr.": "NARR"
+    },
+    {
+      "DEUTSCH": "Negation, negativ",
+      "ENGLiSH": "Negation, negative",
+      "Roman DEU": "naphenípe, naphéndo/i",
+      "RomanINT": "naphenípe, naphéndo/i",
+      "Unnamed: 3": "Verneinung",
+      "Unnamed: 5": "negatijóna, negatívi",
+      "Unnamed: 7": "negatijóna, negatívi",
+      "abbr.": "NEG"
+    },
+    {
+      "DEUTSCH": "Numerus",
+      "ENGLiSH": "Number",
+      "Roman DEU": "géndi",
+      "RomanINT": "géndi",
+      "Unnamed: 3": "Zahl",
+      "Unnamed: 5": "numéri",
+      "Unnamed: 7": "numéri",
+      "abbr.": "NMR"
+    },
+    {
+      "DEUTSCH": "Nominativ",
+      "ENGLiSH": "Nominative",
+      "Roman DEU": "kopherípe",
+      "RomanINT": "kopherípe",
+      "Unnamed: 3": "Wer-Fall",
+      "Unnamed: 5": "nóminativ",
+      "Unnamed: 7": "nóminativ",
+      "abbr.": "NOM"
+    },
+    {
+      "DEUTSCH": "Nominalphrase",
+      "ENGLiSH": "Nounphrase",
+      "Roman DEU": "grupa lé scheréskere alavéha",
+      "RomanINT": "grupa lé šeréskere alavéha",
+      "Unnamed: 3": "Hauptwortgruppe",
+      "Unnamed: 5": "grúpa lé nomeníha",
+      "Unnamed: 7": "grúpa lé nomeníha",
+      "abbr.": "NP"
+    },
+    {
+      "DEUTSCH": "Nichtperfektiv",
+      "ENGLiSH": "Nonperfective",
+      "Roman DEU": "nakerdípe",
+      "RomanINT": "nakerdípe",
+      "Unnamed: 3": "unvollendet",
+      "Unnamed: 5": "náperfektiv",
+      "Unnamed: 7": "náperfektiv",
+      "abbr.": "NPFV"
+    },
+    {
+      "DEUTSCH": "Numeral",
+      "ENGLiSH": "Numeral (number)",
+      "Roman DEU": "gendískero álav",
+      "RomanINT": "gendískero álav",
+      "Unnamed: 3": "Zahlwort",
+      "Unnamed: 5": "numerál",
+      "Unnamed: 7": "numerál",
+      "abbr.": "NUM"
+    },
+    {
+      "DEUTSCH": "Obliquus (CASE)",
+      "ENGLiSH": "Oblique (CASE)",
+      "Roman DEU": "bángo perípe",
+      "RomanINT": "bángo perípe",
+      "Unnamed: 3": "gebogener Fall",
+      "Unnamed: 5": "oblík",
+      "Unnamed: 7": "oblík",
+      "abbr.": "OBL"
+    },
+    {
+      "DEUTSCH": "Ordinalzahl",
+      "ENGLiSH": "ordinal (number)",
+      "Roman DEU": "ordnipéskeri géndi",
+      "RomanINT": "ordnipéskeri géndi",
+      "Unnamed: 3": "Ordnungszahl",
+      "Unnamed: 5": "ordináli géndi",
+      "Unnamed: 7": "ordináli géndi",
+      "abbr.": "ORD"
+    },
+    {
+      "DEUTSCH": "voreuropäisch",
+      "ENGLiSH": "pre-european",
+      "Roman DEU": "angleuropítiko",
+      "RomanINT": "angleuropítiko/i",
+      "abbr.": "PE"
+    },
+    {
+      "DEUTSCH": "personal (PRON)",
+      "ENGLiSH": "personal (PRON)",
+      "Roman DEU": "dschenáno (vaschipéskero álav)",
+      "RomanINT": "dženáno (vašipéskero álav)",
+      "Unnamed: 3": "persönlich (Fürwort)",
+      "Unnamed: 5": "personáli (pronómen)",
+      "Unnamed: 7": "personáli (pronómen)",
+      "abbr.": "PERS"
+    },
+    {
+      "DEUTSCH": "perfektiv",
+      "ENGLiSH": "perfective",
+      "Roman DEU": "kerdípe",
+      "RomanINT": "kerdípe",
+      "Unnamed: 3": "abgeschlossen",
+      "Unnamed: 5": "pérfektiv",
+      "Unnamed: 7": "pérfektiv",
+      "abbr.": "PFV"
+    },
+    {
+      "DEUTSCH": "Plural",
+      "ENGLiSH": "Plural",
+      "Roman DEU": "butípe",
+      "RomanINT": "butípe",
+      "Unnamed: 3": "Mehrzahl",
+      "Unnamed: 5": "plúral",
+      "Unnamed: 7": "plúral",
+      "abbr.": "PL"
+    },
+    {
+      "DEUTSCH": "possessiv (PRN)",
+      "ENGLiSH": "possessive (PRON)",
+      "Roman DEU": "imíndo (vaschipéskero álav)",
+      "RomanINT": "imíndo (vašipéskero álav)",
+      "Unnamed: 3": "besitzanzeigend (Fürwort)",
+      "Unnamed: 5": "posesívi (pronómen)",
+      "Unnamed: 7": "posesívi (pronómen)",
+      "abbr.": "POSS"
+    },
+    {
+      "DEUTSCH": "Personalpronomen",
+      "ENGLiSH": "Personal pronoun",
+      "Roman DEU": "dschenáno vaschipéskero álav",
+      "RomanINT": "dženáno vašipéskero álav",
+      "Unnamed: 3": "persönliches Fürwort",
+      "Unnamed: 5": "dženáno pronómen",
+      "Unnamed: 7": "dschenáno pronómen",
+      "abbr.": "PPRON"
+    },
+    {
+      "DEUTSCH": "Präfix",
+      "ENGLiSH": "Prefix",
+      "Roman DEU": "andesóta",
+      "RomanINT": "andesóta",
+      "Unnamed: 3": "Vorsilbe",
+      "Unnamed: 5": "préfiks",
+      "Unnamed: 7": "préfiks",
+      "abbr.": "PREF"
+    },
+    {
+      "DEUTSCH": "Präfixverb",
+      "ENGLiSH": "Prefix verb",
+      "Roman DEU": "cajtískero álav lá andesotáha",
+      "RomanINT": "cajtískero álav lá andesotáha",
+      "Unnamed: 3": "Zeitwort mit Vorsilbe",
+      "Unnamed: 5": "vérb lé prefixíha",
+      "Unnamed: 7": "vérb lé prefixíha",
+      "abbr.": "PREFV"
+    },
+    {
+      "DEUTSCH": "Präposition",
+      "ENGLiSH": "Preposition",
+      "Roman DEU": "anglodálav",
+      "RomanINT": "anglodálav",
+      "Unnamed: 3": "(Da)Vorwort",
+      "Unnamed: 5": "preposicijóna",
+      "Unnamed: 7": "preposicijóna",
+      "abbr.": "PREP"
+    },
+    {
+      "DEUTSCH": "Pronomen",
+      "ENGLiSH": "Pronoun",
+      "Roman DEU": "vaschipéskero álav",
+      "RomanINT": "vašipéskero álav",
+      "Unnamed: 3": "Fürwort",
+      "Unnamed: 5": "pronómen",
+      "Unnamed: 7": "pronómen",
+      "abbr.": "PRON"
+    },
+    {
+      "DEUTSCH": "Präsens",
+      "ENGLiSH": "Present",
+      "Roman DEU": "akanípe",
+      "RomanINT": "akanípe",
+      "Unnamed: 3": "Gegenwart",
+      "Unnamed: 5": "présens",
+      "Unnamed: 7": "présens",
+      "abbr.": "PRS"
+    },
+    {
+      "ENGLiSH": "Past",
+      "Roman DEU": "fagelípe",
+      "RomanINT": "fagelípe",
+      "Unnamed: 3": "Vergangenheit",
+      "Unnamed: 5": "pretéritum",
+      "Unnamed: 7": "pretéritum",
+      "abbr.": "PST"
+    },
+    {
+      "DEUTSCH": "Partikel",
+      "ENGLiSH": "Particle",
+      "Roman DEU": "tschésca",
+      "RomanINT": "čésca",
+      "Unnamed: 3": "Beiwort",
+      "Unnamed: 5": "partíkl",
+      "Unnamed: 7": "partíkl",
+      "abbr.": "PTCL"
+    },
+    {
+      "DEUTSCH": "Partikelverb",
+      "ENGLiSH": "Particle verb",
+      "Roman DEU": "cajtískero álav lé usetschipéha",
+      "RomanINT": "cajtískero álav lé usečipéha",
+      "Unnamed: 3": "Verb mit Zusatz",
+      "Unnamed: 5": "pariklúno vérb",
+      "Unnamed: 7": "pariklúno vérb",
+      "abbr.": "PTCLV"
+    },
+    {
+      "DEUTSCH": "REKTUS",
+      "ENGLiSH": "Rectus (CASE)",
+      "Roman DEU": "térdo perípe",
+      "RomanINT": "térdo perípe",
+      "Unnamed: 3": "gerader Fall",
+      "Unnamed: 5": "réktus",
+      "Unnamed: 7": "réktus",
+      "abbr.": "RECT"
+    },
+    {
+      "DEUTSCH": "reflexiv (PRON)",
+      "ENGLiSH": "reflexive (PRON)",
+      "Roman DEU": "palodnosúno (vaschipéskero álav)",
+      "RomanINT": "palodnosúno (vašipéskero álav)",
+      "Unnamed: 3": "rückbezüglich (Fürwort)",
+      "Unnamed: 5": "refleksívi (pronómen)",
+      "Unnamed: 7": "refleksívi (pronómen)",
+      "abbr.": "REFL"
+    },
+    {
+      "DEUTSCH": "relativ (PRON)",
+      "ENGLiSH": "relative (PRON)",
+      "Roman DEU": "odnosúno (vaschipéskero álav)",
+      "RomanINT": "odnosúno (vašipéskero álav)",
+      "Unnamed: 3": "bezüglich (Fürwort)",
+      "Unnamed: 5": "relatívi (pronómen)",
+      "Unnamed: 7": "relatívi (pronómen)",
+      "abbr.": "REL"
+    },
+    {
+      "DEUTSCH": "Konjunktiv",
+      "ENGLiSH": "subjunctive",
+      "Roman DEU": "schajipe",
+      "RomanINT": "šajipe",
+      "Unnamed: 3": "Möglichkeitsform",
+      "Unnamed: 5": "konjunktiv",
+      "Unnamed: 7": "kojunktiv",
+      "abbr.": "SBJV"
+    },
+    {
+      "DEUTSCH": "Singular",
+      "ENGLiSH": "Singular",
+      "Roman DEU": "jekípe",
+      "RomanINT": "jekípe",
+      "Unnamed: 3": "Einzahl",
+      "Unnamed: 5": "síngular",
+      "Unnamed: 7": "síngular",
+      "abbr.": "SG"
+    },
+    {
+      "DEUTSCH": "Soziativ",
+      "ENGLiSH": "Sociative",
+      "Roman DEU": "kahaperípe",
+      "RomanINT": "kahaperípe",
+      "Unnamed: 3": "Mit-Wem-Fall (Begleiter)",
+      "Unnamed: 5": "sóciativ",
+      "Unnamed: 7": "sóciativ",
+      "abbr.": "SOC"
+    },
+    {
+      "DEUTSCH": "subordierend (CONJ)",
+      "ENGLiSH": "subordinating (CONJ)",
+      "Roman DEU": "telordníndo (phandipéskero álav)",
+      "RomanINT": "telordníndo (phandipéskero álav)",
+      "Unnamed: 3": "unterordnend (Bindewort)",
+      "Unnamed: 5": "subordinírendi (konjunktijóna)",
+      "Unnamed: 7": "subordinírendi (konjunktijóna)",
+      "abbr.": "SUB"
+    },
+    {
+      "DEUTSCH": "superlativ (PTCL)",
+      "ENGLiSH": "superlative (PTCL)",
+      "Roman DEU": "lék féder álav",
+      "RomanINT": "lék féder álav",
+      "Unnamed: 3": "Höchststufenbeiwort",
+      "Unnamed: 5": "súperlativ",
+      "Unnamed: 7": "súperlativ",
+      "abbr.": "SUP"
+    },
+    {
+      "DEUTSCH": "temporal (ADV)",
+      "ENGLiSH": "temporal (ADV)",
+      "Roman DEU": "cajtútno (kerilmóskero álav)",
+      "RomanINT": "cajtútno (kerilmóskero álav)",
+      "Unnamed: 3": "zeitlich (Umstandswort)",
+      "Unnamed: 5": "temporáli (advérb)",
+      "Unnamed: 7": "temporáli (advérb)",
+      "abbr.": "TEMP"
+    },
+    {
+      "DEUTSCH": "Zeit-Modus-Aspekt",
+      "ENGLiSH": "Tense-Mood-Aspect",
+      "Roman DEU": "cájt-módo-fanaschípe",
+      "RomanINT": "cájt-módo-fanašípe",
+      "Unnamed: 3": "Zeit-Art-Verlauf",
+      "Unnamed: 5": "cájt-módo-aspékt",
+      "Unnamed: 7": "cájt-módo-aspékt",
+      "abbr.": "TMA"
+    },
+    {
+      "DEUTSCH": "Tempus",
+      "ENGLiSH": "Tense",
+      "Roman DEU": "cájt",
+      "RomanINT": "cájt",
+      "Unnamed: 3": "Zeit",
+      "Unnamed: 5": "témpus",
+      "Unnamed: 7": "témpus",
+      "abbr.": "TNS"
+    },
+    {
+      "DEUTSCH": "Verb",
+      "ENGLiSH": "Verb",
+      "Roman DEU": "cájtískero alav",
+      "RomanINT": "cájtískero alav",
+      "Unnamed: 3": "Zeitwort",
+      "Unnamed: 5": "vérb",
+      "Unnamed: 7": "vérb",
+      "abbr.": "V"
+    },
+    {
+      "DEUTSCH": "verbal (PTCL)",
+      "ENGLiSH": "verbal (PTCL)",
+      "Roman DEU": "cajtískeri alavikáni  (tschésca)",
+      "RomanINT": "cajtískeri alavikáni  (čésca)",
+      "Unnamed: 3": "zeitwörtlich (Beiwort)",
+      "Unnamed: 5": "verbáli (partíkl)",
+      "Unnamed: 7": "verbáli (partíkl)",
+      "abbr.": "VB"
+    },
+    {
+      "DEUTSCH": "Verbalphrase",
+      "ENGLiSH": "verb phrase",
+      "Roman DEU": "grúpa lé cajtískere alavéha",
+      "RomanINT": "grúpa lé cajtískere alavéha",
+      "Unnamed: 3": "Zeitwortgruppe",
+      "Unnamed: 5": "grúpa lé verbíha",
+      "Unnamed: 7": "grúpa lé verbíha",
+      "abbr.": "VP"
+    }
+  ],
+  "abbrs-lang": [
+    {
+      "DEUTSCH": "Armenisch",
+      "ENGLISH": "Armenian",
+      "ISO": "ISO 639-3",
+      "Roman DEU": "armenítiko",
+      "Roman INT": "armenítiko",
+      "code": "ARM"
+    },
+    {
+      "DEUTSCH": "Deutsch",
+      "ENGLISH": "German",
+      "ISO": "ISO 639-3",
+      "Roman DEU": "gadschikán (nímtschko)",
+      "Roman INT": "gadžikán (nímčko)",
+      "code": "DEU"
+    },
+    {
+      "DEUTSCH": "dialektal",
+      "ENGLISH": "dialectal",
+      "Roman DEU": "dialektálo",
+      "Roman INT": "dialektálo",
+      "code": "dial"
+    },
+    {
+      "DEUTSCH": "Englisch",
+      "ENGLISH": "English",
+      "ISO": "ISO 639-3",
+      "Roman DEU": "englítiko",
+      "Roman INT": "englítiko",
+      "code": "ENG"
+    },
+    {
+      "DEUTSCH": "keine Etymologie",
+      "ENGLISH": "no etymology",
+      "Roman DEU": "nisávi etymologíja",
+      "Roman INT": "nisávi etymologíja",
+      "code": "etym?"
+    },
+    {
+      "DEUTSCH": "Byzantinisch Griechisch (bis 1453)",
+      "ENGLISH": "Byzantine Greek (until 1453)",
+      "ISO": "ISO 639-3",
+      "Roman DEU": "grichitíko bicantinítiko (dschi 1453)",
+      "Roman INT": "grixitíko bicantinítiko (dži 1453)",
+      "code": "GRC"
+    },
+    {
+      "DEUTSCH": "Ungarisch",
+      "ENGLISH": "Hungarian",
+      "ISO": "ISO 639-3",
+      "Roman DEU": "ungríko",
+      "Roman INT": "ungríko",
+      "code": "HUN"
+    },
+    {
+      "DEUTSCH": "Indo-Arisch (global)",
+      "ENGLISH": "Indo-Aryan (global)",
+      "ISO": "ISO 639-5",
+      "Roman DEU": "inditíko",
+      "Roman INT": "inditíko",
+      "code": "INC"
+    },
+    {
+      "DEUTSCH": "Iranisch (global)",
+      "ENGLISH": "Iranian (global)",
+      "ISO": "ISO 639-5",
+      "Roman DEU": "iranítiko",
+      "Roman INT": "iranítiko",
+      "code": "IRA"
+    },
+    {
+      "DEUTSCH": "Südslawisch (global)",
+      "ENGLISH": "South Slavic (global)",
+      "Roman DEU": "südútno slavitíko",
+      "Roman INT": "südútno slavitíko",
+      "code": "SLA"
+    }
+  ]
+}

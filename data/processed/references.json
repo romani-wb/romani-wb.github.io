@@ -1,0 +1,630 @@
+{
+  "grammar_abbreviations": {
+    "1PL": {
+      "de": "1. Person Plural",
+      "de_plain": "1. Person Mehrzahl",
+      "en": "1st person plural",
+      "roman_deu": "1. dschéni buteripe",
+      "roman_int": "1. džéni buteripe"
+    },
+    "1SG": {
+      "de": "1. Person Singular",
+      "de_plain": "1. Person Einzahl",
+      "en": "1st person singular",
+      "roman_deu": "1. dschéni jekipe",
+      "roman_int": "1. džéni jekipe"
+    },
+    "2PL": {
+      "de": "2. Person Plural",
+      "de_plain": "2. Person Mehrzahl",
+      "en": "2nd person plural",
+      "roman_deu": "2. dschéni buteripe",
+      "roman_int": "2. džéni buteripe"
+    },
+    "2SG": {
+      "de": "2. Person Singular",
+      "de_plain": "2. Person Einzahl",
+      "en": "2nd person singular",
+      "roman_deu": "2. dschéni jekipe",
+      "roman_int": "2. džéni jekipe"
+    },
+    "3PL": {
+      "de": "3. Person Plural",
+      "de_plain": "3. Person Mehrzahl",
+      "en": "3rd person plural",
+      "roman_deu": "3. dschéni buteripe",
+      "roman_int": "3. džéni buteripe"
+    },
+    "3SG": {
+      "de": "3. Person Singular",
+      "de_plain": "3. Person Einzahl",
+      "en": "3rd person singular",
+      "roman_deu": "3. dschéni jekipe",
+      "roman_int": "3. džéni jekipe"
+    },
+    "ABL": {
+      "de": "Ablativ",
+      "de_plain": "Woher-Fall",
+      "en": "Ablativ",
+      "roman_deu": "katarperipe",
+      "roman_int": "katarperipe"
+    },
+    "ACC": {
+      "de": "Akkusativ",
+      "de_plain": "Wen-Fall",
+      "en": "Accusative",
+      "roman_deu": "kasperípe",
+      "roman_int": "kasperípe"
+    },
+    "ADJ": {
+      "de": "Adjektiv",
+      "de_plain": "Eigenschaftswort",
+      "en": "Adjectiv",
+      "roman_deu": "ajgenschoftískero álav",
+      "roman_int": "ajgenšoftískero álav"
+    },
+    "ADV": {
+      "de": "Adverb",
+      "de_plain": "Umstandswort",
+      "en": "Adverb",
+      "roman_deu": "kerilmóskero álav",
+      "roman_int": "kerilmóskero álav"
+    },
+    "AFF": {
+      "de": "affirmativ (PTCL)",
+      "de_plain": "bejahend (Beiwort)",
+      "en": "affrimative (PTCL)",
+      "roman_deu": "hephendíni (tschésca)",
+      "roman_int": "hephendíni (čésca)"
+    },
+    "ART": {
+      "de": "Artikel",
+      "de_plain": "Geschlechtswort",
+      "en": "Article",
+      "roman_deu": "rodoskéro álav",
+      "roman_int": "rodoskéro álav"
+    },
+    "ASP": {
+      "de": "Aspekt",
+      "de_plain": "Verlaufsart",
+      "en": "Aspect",
+      "roman_deu": "fanaschípe",
+      "roman_int": "fanašípe"
+    },
+    "CARD": {
+      "de": "Kardinalzahl",
+      "de_plain": "Grundzahl",
+      "en": "cardinal (number)",
+      "roman_deu": "basisákeri géndi",
+      "roman_int": "basisákeri géndi"
+    },
+    "CAUS": {
+      "de": "kausal (ADV)",
+      "de_plain": "begründend (Umstandswort)",
+      "en": "causal (ADV)",
+      "roman_deu": "indoklíndo (kerilmóskero álav)",
+      "roman_int": "indoklíndo (kerilmóskero álav)"
+    },
+    "CONJ": {
+      "de": "Konjunktion",
+      "de_plain": "Bindewort",
+      "en": "Conjunction",
+      "roman_deu": "phandipéskero álav",
+      "roman_int": "phandipéskero álav"
+    },
+    "CONJG": {
+      "de": "Konjugation",
+      "de_plain": "Beugung des Zeitworts",
+      "en": "Conjugation",
+      "roman_deu": "bangjarípe lé cajtískere alavéske",
+      "roman_int": "banǧarípe lé cajtískere alavéske"
+    },
+    "COORD": {
+      "de": "koordierend (CONJ)",
+      "de_plain": "nebenordnend (Bindewort)",
+      "en": "coordinating (CONJ)",
+      "roman_deu": "merordníndo (phandipéskero álav)",
+      "roman_int": "merordníndo (phandipéskero álav)"
+    },
+    "DAT": {
+      "de": "Dativ",
+      "de_plain": "Wem-Fall",
+      "en": "Dative",
+      "roman_deu": "kaskeperípe",
+      "roman_int": "kaskeperípe"
+    },
+    "DECL": {
+      "de": "Deklination",
+      "de_plain": "Beugung des Hauptworts",
+      "en": "Declination",
+      "roman_deu": "bangjarípe lé scheréskere alaveske",
+      "roman_int": "banǧarípe lé šeréskere alaveske"
+    },
+    "DEG": {
+      "de": "grad(uell) (PTCL)",
+      "de_plain": "Maß/Steigerungswort",
+      "en": "Degree (PTCL)",
+      "roman_deu": "gradúni (tschésca)",
+      "roman_int": "gradúni (čésca)"
+    },
+    "DEM": {
+      "de": "demonstrativ (PRN)",
+      "de_plain": "hinweisend",
+      "en": "demonstrative (PRON)",
+      "roman_deu": "sikajíndo/i",
+      "roman_int": "sikajíndo/i"
+    },
+    "E": {
+      "de": "europäisch",
+      "en": "european",
+      "roman_deu": "europítiko/i",
+      "roman_int": "europítiko/i"
+    },
+    "F": {
+      "de": "feminin",
+      "de_plain": "weiblich",
+      "en": "feminine",
+      "roman_deu": "dschuvláno/i",
+      "roman_int": "džuvláno/i"
+    },
+    "FRAC": {
+      "de": "Fraktalzahl",
+      "de_plain": "Teilungszahl",
+      "en": "fractal (number)",
+      "roman_deu": "uladíndi géndi",
+      "roman_int": "uladíndi géndi"
+    },
+    "FUT": {
+      "de": "Futur",
+      "de_plain": "Zukunft",
+      "en": "Futur",
+      "roman_deu": "jéva",
+      "roman_int": "jéva"
+    },
+    "GEN": {
+      "de": "Genitiv",
+      "de_plain": "Wes(sen)-Fall",
+      "en": "Genitiv",
+      "roman_deu": "kaskerepherípe",
+      "roman_int": "kaskerepherípe"
+    },
+    "INDECL": {
+      "de": "undeklinierbar",
+      "de_plain": "nicht beugbar",
+      "en": "indeclinable",
+      "roman_deu": "nabangjárdo/i",
+      "roman_int": "nabanǧárdo/i"
+    },
+    "INDECL-old": {
+      "de": "undeklinierbar-alt",
+      "de_plain": "alt = voreuropäisch",
+      "en": "indeclinable-old",
+      "roman_deu": "nabangjárdo/i phuráno/i",
+      "roman_int": "nabanǧárdo/i phuráno/i"
+    },
+    "INDF": {
+      "de": "indefinit (PRON)",
+      "de_plain": "unbestimmt (Fürwort)",
+      "en": "indefinite (PRON)",
+      "roman_deu": "nahotárdo (vaschipéskero álav)",
+      "roman_int": "nahotárdo (vašipéskero álav)"
+    },
+    "INFL": {
+      "de": "Flexion",
+      "de_plain": "Beugung",
+      "en": "Inflection",
+      "roman_deu": "bangjarípe",
+      "roman_int": "banǧarípe"
+    },
+    "INST": {
+      "de": "Instrumental",
+      "de_plain": "Womit-Fall (Werkzeug)",
+      "en": "Instrumental",
+      "roman_deu": "sohaperípe",
+      "roman_int": "sohaperípe"
+    },
+    "INT": {
+      "de": "interrogativ (ADV/PRON)",
+      "de_plain": "fragend (Umstandswort / Fürwort)",
+      "en": "interrogative (ADV/PRON)",
+      "roman_deu": "phutschlíndo (kerilmóskero álav/ vaschipéskero álav)",
+      "roman_int": "phučlíndo (kerilmóskero álav/ vašipéskero álav)"
+    },
+    "INTERJ": {
+      "de": "Interjektion",
+      "de_plain": "Ausruf",
+      "en": "Interjection",
+      "roman_deu": "arakarípe",
+      "roman_int": "arakarípe"
+    },
+    "IRR": {
+      "de": "Irrealis",
+      "de_plain": "Unmöglichkeit",
+      "en": "Irrealis",
+      "roman_deu": "naschtípe",
+      "roman_int": "naštípe"
+    },
+    "LOC": {
+      "de": "Lokativ",
+      "de_plain": "Wo(hin)-Fall",
+      "en": "Locative",
+      "roman_deu": "kajperípe",
+      "roman_int": "kajperípe"
+    },
+    "M": {
+      "de": "maskulin",
+      "de_plain": "männlich",
+      "en": "masculine",
+      "roman_deu": "murschálo/i",
+      "roman_int": "muršálo/i"
+    },
+    "MOD": {
+      "de": "modal (ADV)",
+      "de_plain": "Art und Weise (Umstandswort)",
+      "en": "modal (ADV)",
+      "roman_deu": "modóskero (kerilmóskero álav)",
+      "roman_int": "modóskero (kerilmóskero álav)"
+    },
+    "MULT": {
+      "de": "Multiplikativzahl",
+      "de_plain": "Vervielfältigungszahl",
+      "en": "mulitplicative (number)",
+      "roman_deu": "butaripéskeri géndi",
+      "roman_int": "butaripéskeri géndi"
+    },
+    "N": {
+      "de": "Nomen = Substantiv",
+      "de_plain": "Hauptwort",
+      "en": "Noun",
+      "roman_deu": "scheréskero álav",
+      "roman_int": "šeréskero álav"
+    },
+    "NARR": {
+      "de": "narrativ (PTCL)",
+      "de_plain": "erzähl(end) (Beiwort)",
+      "en": "narrative (PTCL)",
+      "roman_deu": "phukajínidi (tschésca)",
+      "roman_int": "phukajínidi (čésca)"
+    },
+    "NEG": {
+      "de": "Negation, negativ",
+      "de_plain": "Verneinung",
+      "en": "Negation, negative",
+      "roman_deu": "naphenípe, naphéndo/i",
+      "roman_int": "naphenípe, naphéndo/i"
+    },
+    "NMR": {
+      "de": "Numerus",
+      "de_plain": "Zahl",
+      "en": "Number",
+      "roman_deu": "géndi",
+      "roman_int": "géndi"
+    },
+    "NOM": {
+      "de": "Nominativ",
+      "de_plain": "Wer-Fall",
+      "en": "Nominative",
+      "roman_deu": "kopherípe",
+      "roman_int": "kopherípe"
+    },
+    "NP": {
+      "de": "Nominalphrase",
+      "de_plain": "Hauptwortgruppe",
+      "en": "Nounphrase",
+      "roman_deu": "grupa lé scheréskere alavéha",
+      "roman_int": "grupa lé šeréskere alavéha"
+    },
+    "NPFV": {
+      "de": "Nichtperfektiv",
+      "de_plain": "unvollendet",
+      "en": "Nonperfective",
+      "roman_deu": "nakerdípe",
+      "roman_int": "nakerdípe"
+    },
+    "NUM": {
+      "de": "Numeral",
+      "de_plain": "Zahlwort",
+      "en": "Numeral (number)",
+      "roman_deu": "gendískero álav",
+      "roman_int": "gendískero álav"
+    },
+    "OBL": {
+      "de": "Obliquus (CASE)",
+      "de_plain": "gebogener Fall",
+      "en": "Oblique (CASE)",
+      "roman_deu": "bángo perípe",
+      "roman_int": "bángo perípe"
+    },
+    "ORD": {
+      "de": "Ordinalzahl",
+      "de_plain": "Ordnungszahl",
+      "en": "ordinal (number)",
+      "roman_deu": "ordnipéskeri géndi",
+      "roman_int": "ordnipéskeri géndi"
+    },
+    "PE": {
+      "de": "voreuropäisch",
+      "en": "pre-european",
+      "roman_deu": "angleuropítiko",
+      "roman_int": "angleuropítiko/i"
+    },
+    "PERS": {
+      "de": "personal (PRON)",
+      "de_plain": "persönlich (Fürwort)",
+      "en": "personal (PRON)",
+      "roman_deu": "dschenáno (vaschipéskero álav)",
+      "roman_int": "dženáno (vašipéskero álav)"
+    },
+    "PFV": {
+      "de": "perfektiv",
+      "de_plain": "abgeschlossen",
+      "en": "perfective",
+      "roman_deu": "kerdípe",
+      "roman_int": "kerdípe"
+    },
+    "PL": {
+      "de": "Plural",
+      "de_plain": "Mehrzahl",
+      "en": "Plural",
+      "roman_deu": "butípe",
+      "roman_int": "butípe"
+    },
+    "POSS": {
+      "de": "possessiv (PRN)",
+      "de_plain": "besitzanzeigend (Fürwort)",
+      "en": "possessive (PRON)",
+      "roman_deu": "imíndo (vaschipéskero álav)",
+      "roman_int": "imíndo (vašipéskero álav)"
+    },
+    "PPRON": {
+      "de": "Personalpronomen",
+      "de_plain": "persönliches Fürwort",
+      "en": "Personal pronoun",
+      "roman_deu": "dschenáno vaschipéskero álav",
+      "roman_int": "dženáno vašipéskero álav"
+    },
+    "PREF": {
+      "de": "Präfix",
+      "de_plain": "Vorsilbe",
+      "en": "Prefix",
+      "roman_deu": "andesóta",
+      "roman_int": "andesóta"
+    },
+    "PREFV": {
+      "de": "Präfixverb",
+      "de_plain": "Zeitwort mit Vorsilbe",
+      "en": "Prefix verb",
+      "roman_deu": "cajtískero álav lá andesotáha",
+      "roman_int": "cajtískero álav lá andesotáha"
+    },
+    "PREP": {
+      "de": "Präposition",
+      "de_plain": "(Da)Vorwort",
+      "en": "Preposition",
+      "roman_deu": "anglodálav",
+      "roman_int": "anglodálav"
+    },
+    "PRON": {
+      "de": "Pronomen",
+      "de_plain": "Fürwort",
+      "en": "Pronoun",
+      "roman_deu": "vaschipéskero álav",
+      "roman_int": "vašipéskero álav"
+    },
+    "PRS": {
+      "de": "Präsens",
+      "de_plain": "Gegenwart",
+      "en": "Present",
+      "roman_deu": "akanípe",
+      "roman_int": "akanípe"
+    },
+    "PST": {
+      "de_plain": "Vergangenheit",
+      "en": "Past",
+      "roman_deu": "fagelípe",
+      "roman_int": "fagelípe"
+    },
+    "PTCL": {
+      "de": "Partikel",
+      "de_plain": "Beiwort",
+      "en": "Particle",
+      "roman_deu": "tschésca",
+      "roman_int": "čésca"
+    },
+    "PTCLV": {
+      "de": "Partikelverb",
+      "de_plain": "Verb mit Zusatz",
+      "en": "Particle verb",
+      "roman_deu": "cajtískero álav lé usetschipéha",
+      "roman_int": "cajtískero álav lé usečipéha"
+    },
+    "RECT": {
+      "de": "REKTUS",
+      "de_plain": "gerader Fall",
+      "en": "Rectus (CASE)",
+      "roman_deu": "térdo perípe",
+      "roman_int": "térdo perípe"
+    },
+    "REFL": {
+      "de": "reflexiv (PRON)",
+      "de_plain": "rückbezüglich (Fürwort)",
+      "en": "reflexive (PRON)",
+      "roman_deu": "palodnosúno (vaschipéskero álav)",
+      "roman_int": "palodnosúno (vašipéskero álav)"
+    },
+    "REL": {
+      "de": "relativ (PRON)",
+      "de_plain": "bezüglich (Fürwort)",
+      "en": "relative (PRON)",
+      "roman_deu": "odnosúno (vaschipéskero álav)",
+      "roman_int": "odnosúno (vašipéskero álav)"
+    },
+    "SBJV": {
+      "de": "Konjunktiv",
+      "de_plain": "Möglichkeitsform",
+      "en": "subjunctive",
+      "roman_deu": "schajipe",
+      "roman_int": "šajipe"
+    },
+    "SG": {
+      "de": "Singular",
+      "de_plain": "Einzahl",
+      "en": "Singular",
+      "roman_deu": "jekípe",
+      "roman_int": "jekípe"
+    },
+    "SOC": {
+      "de": "Soziativ",
+      "de_plain": "Mit-Wem-Fall (Begleiter)",
+      "en": "Sociative",
+      "roman_deu": "kahaperípe",
+      "roman_int": "kahaperípe"
+    },
+    "SUB": {
+      "de": "subordierend (CONJ)",
+      "de_plain": "unterordnend (Bindewort)",
+      "en": "subordinating (CONJ)",
+      "roman_deu": "telordníndo (phandipéskero álav)",
+      "roman_int": "telordníndo (phandipéskero álav)"
+    },
+    "SUP": {
+      "de": "superlativ (PTCL)",
+      "de_plain": "Höchststufenbeiwort",
+      "en": "superlative (PTCL)",
+      "roman_deu": "lék féder álav",
+      "roman_int": "lék féder álav"
+    },
+    "TEMP": {
+      "de": "temporal (ADV)",
+      "de_plain": "zeitlich (Umstandswort)",
+      "en": "temporal (ADV)",
+      "roman_deu": "cajtútno (kerilmóskero álav)",
+      "roman_int": "cajtútno (kerilmóskero álav)"
+    },
+    "TMA": {
+      "de": "Zeit-Modus-Aspekt",
+      "de_plain": "Zeit-Art-Verlauf",
+      "en": "Tense-Mood-Aspect",
+      "roman_deu": "cájt-módo-fanaschípe",
+      "roman_int": "cájt-módo-fanašípe"
+    },
+    "TNS": {
+      "de": "Tempus",
+      "de_plain": "Zeit",
+      "en": "Tense",
+      "roman_deu": "cájt",
+      "roman_int": "cájt"
+    },
+    "V": {
+      "de": "Verb",
+      "de_plain": "Zeitwort",
+      "en": "Verb",
+      "roman_deu": "cájtískero alav",
+      "roman_int": "cájtískero alav"
+    },
+    "VB": {
+      "de": "verbal (PTCL)",
+      "de_plain": "zeitwörtlich (Beiwort)",
+      "en": "verbal (PTCL)",
+      "roman_deu": "cajtískeri alavikáni  (tschésca)",
+      "roman_int": "cajtískeri alavikáni  (čésca)"
+    },
+    "VP": {
+      "de": "Verbalphrase",
+      "de_plain": "Zeitwortgruppe",
+      "en": "verb phrase",
+      "roman_deu": "grúpa lé cajtískere alavéha",
+      "roman_int": "grúpa lé cajtískere alavéha"
+    },
+    "irr": {
+      "de": "irregulär (Form)",
+      "de_plain": "unregelmäßig (Form)",
+      "en": "irrgular (formation)",
+      "roman_deu": "nareglími (fórma)",
+      "roman_int": "nareglími (fórma)"
+    }
+  },
+  "language_abbreviations": {
+    "ARM": {
+      "de": "Armenisch",
+      "en": "Armenian",
+      "iso": "ISO 639-3",
+      "roman_deu": "armenítiko",
+      "roman_int": "armenítiko"
+    },
+    "DEU": {
+      "de": "Deutsch",
+      "en": "German",
+      "iso": "ISO 639-3",
+      "roman_deu": "gadschikán (nímtschko)",
+      "roman_int": "gadžikán (nímčko)"
+    },
+    "ENG": {
+      "de": "Englisch",
+      "en": "English",
+      "iso": "ISO 639-3",
+      "roman_deu": "englítiko",
+      "roman_int": "englítiko"
+    },
+    "GRC": {
+      "de": "Byzantinisch Griechisch (bis 1453)",
+      "en": "Byzantine Greek (until 1453)",
+      "iso": "ISO 639-3",
+      "roman_deu": "grichitíko bicantinítiko (dschi 1453)",
+      "roman_int": "grixitíko bicantinítiko (dži 1453)"
+    },
+    "HUN": {
+      "de": "Ungarisch",
+      "en": "Hungarian",
+      "iso": "ISO 639-3",
+      "roman_deu": "ungríko",
+      "roman_int": "ungríko"
+    },
+    "INC": {
+      "de": "Indo-Arisch (global)",
+      "en": "Indo-Aryan (global)",
+      "iso": "ISO 639-5",
+      "roman_deu": "inditíko",
+      "roman_int": "inditíko"
+    },
+    "IRA": {
+      "de": "Iranisch (global)",
+      "en": "Iranian (global)",
+      "iso": "ISO 639-5",
+      "roman_deu": "iranítiko",
+      "roman_int": "iranítiko"
+    },
+    "SLA": {
+      "de": "Südslawisch (global)",
+      "en": "South Slavic (global)",
+      "roman_deu": "südútno slavitíko",
+      "roman_int": "südútno slavitíko"
+    },
+    "dial": {
+      "de": "dialektal",
+      "en": "dialectal",
+      "roman_deu": "dialektálo",
+      "roman_int": "dialektálo"
+    },
+    "etym?": {
+      "de": "keine Etymologie",
+      "en": "no etymology",
+      "roman_deu": "nisávi etymologíja",
+      "roman_int": "nisávi etymologíja"
+    }
+  },
+  "source_markers": {
+    "etym?": {
+      "de": "keine gesicherte Etymologie",
+      "en": "no confirmed etymology"
+    },
+    "←": {
+      "de": "abgeleitet oder entlehnt aus",
+      "en": "derived from or borrowed from"
+    },
+    "→": {
+      "de": "interne Ableitung oder Wortfamilienbezug",
+      "en": "internal derivation or word-family link"
+    }
+  }
+}
