@@ -10,10 +10,66 @@
   </head>
   <body>
     <a class="skip-link" href="#search-input">Skip to dictionary search</a>
-    <div class="app-shell">
+    <header class="story-hero" id="introduction">
+      <nav class="story-nav" aria-label="Primary navigation">
+        <a class="wordmark" href="#introduction" aria-label="Roman Dictionary home">Roman</a>
+        <div>
+          <a href="#story">Context</a>
+          <a href="#dictionary">Dictionary</a>
+        </div>
+      </nav>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">The language of the Burgenland Roma</p>
+          <h1>Roman lives in words, memory, and use.</h1>
+          <p class="hero-intro">Explore a growing record of Roman across two spellings, with German and English meanings.</p>
+          <a class="primary-link" href="#dictionary">Open the dictionary <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="hero-mark" aria-hidden="true">
+          <span class="hero-r">R</span>
+          <span class="orbit orbit-one">Roman</span>
+          <span class="orbit orbit-two">romani</span>
+          <span class="orbit orbit-three">Wörter · words</span>
+        </div>
+      </div>
+      <div class="hero-facts" aria-label="Dictionary facts">
+        <p><strong>12,525</strong><span>entries</span></p>
+        <p><strong>2</strong><span>Roman spellings</span></p>
+        <p><strong>DE · EN</strong><span>meanings</span></p>
+      </div>
+    </header>
+
+    <section class="story-section" id="story" aria-labelledby="story-title">
+      <div class="story-heading">
+        <p class="eyebrow">A short context</p>
+        <h2 id="story-title">A documented language with a living history</h2>
+      </div>
+      <div class="story-grid">
+        <article>
+          <span>01</span>
+          <h3>Place and contact</h3>
+          <p>Roman is the name Burgenland Roma use for their language. It is a Romani variety shaped in the former western Hungarian region and influenced over time by German and Croatian.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>Pressure and continuity</h3>
+          <p>Persecution, the Holocaust, persistent discrimination, and post-war language shift sharply reduced everyday use. Roman nevertheless remains an important marker of community and identity.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Codification and access</h3>
+          <p>Community self-organisation led to codification work with linguists from the University of Graz. Teaching, media, Roma-Service activities, and this dictionary continue that work.</p>
+        </article>
+      </div>
+      <p class="heritage-note">Roman has been listed in the Austrian UNESCO Commission’s national inventory of intangible cultural heritage since 2011.</p>
+      <p class="story-source">Context condensed from the German and English project manuscripts supplied with the dictionary data. Copy and attribution remain provisional until the major review.</p>
+    </section>
+
+    <div class="app-shell" id="dictionary">
       <header class="topbar">
         <div>
-          <h1>Roman Dictionary</h1>
+          <p class="dictionary-kicker">Search the collection</p>
+          <h2 class="dictionary-title">Roman Dictionary</h2>
           <p id="data-status" role="status" aria-live="polite">Loading dictionary data...</p>
         </div>
         <div class="controls" aria-label="Display controls">

@@ -28,6 +28,16 @@ an entry-chunk manifest. Full entry records are fetched in 500-entry chunks on
 demand. The monolithic `entries.json` remains generated for audit/compatibility,
 but the frontend no longer blocks on it.
 
+## 2026-06-21 — Introductory story uses only supplied manuscript claims
+
+The first visual story is intentionally short and based on the supplied English
+and German project manuscripts: the regional/contact setting of Roman, the
+effects of persecution and language shift, codification with the University of
+Graz, subsequent Roma-Service activity, and the 2011 Austrian UNESCO Commission
+inventory listing. The presentation and copy are provisional. The later major
+review must check tone, emphasis, attribution, rights, and whether community
+voices or imagery should replace or extend this institutional summary.
+
 ## 2026-06-21 — June source package is authoritative
 
 Use `2026-06-17_roman-wb.xlsx` and `2026-06-17_struktur.pdf`. Keep May files and
