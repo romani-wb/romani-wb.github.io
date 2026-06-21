@@ -1,42 +1,4 @@
 {
-  "grammar_abbreviation_variants": {
-    "LOC": [
-      {
-        "de": "lokal (ADV)",
-        "de_plain": "örtlich (Umstandswort)",
-        "en": "local (ADV)",
-        "explanation_de": "Lokativ. In den Kasustabellen ist das der Wo-/Wohin-Fall.",
-        "explanation_en": "Locative. In the case tables this is the 'where/where-to-case'.",
-        "roman_deu": "thanútno (kerilmóskero álav)",
-        "roman_int": "thanútno (kerilmóskero álav)"
-      },
-      {
-        "de": "Lokativ",
-        "de_plain": "Wo(hin)-Fall",
-        "en": "Locative",
-        "explanation_de": "Lokativ. In den Kasustabellen ist das der Wo-/Wohin-Fall.",
-        "explanation_en": "Locative. In the case tables this is the 'where/where-to-case'.",
-        "roman_deu": "kajperípe",
-        "roman_int": "kajperípe"
-      }
-    ],
-    "MOD": [
-      {
-        "de": "Modus",
-        "de_plain": "Aussageweise",
-        "en": "Mood",
-        "roman_deu": "módo lé arphenipéske",
-        "roman_int": "módo lé arphenipéske"
-      },
-      {
-        "de": "modal (ADV)",
-        "de_plain": "Art und Weise (Umstandswort)",
-        "en": "modal (ADV)",
-        "roman_deu": "modóskero (kerilmóskero álav)",
-        "roman_int": "modóskero (kerilmóskero álav)"
-      }
-    ]
-  },
   "grammar_abbreviations": {
     "1PL": {
       "de": "1. Person Plural",
@@ -487,13 +449,6 @@
       "roman_deu": "vaschipéskero álav",
       "roman_int": "vašipéskero álav"
     },
-    "PROP": {
-      "de": "Proprium",
-      "de_plain": "Eigenname",
-      "en": "proper (noun/adjective)",
-      "roman_deu": "schátno ánav",
-      "roman_int": "proprio"
-    },
     "PRS": {
       "de": "Präsens",
       "de_plain": "Gegenwart",
@@ -702,25 +657,6 @@
       "en": "no etymology",
       "roman_deu": "nisávi etymologíja",
       "roman_int": "nisávi etymologíja"
-    }
-  },
-  "lexical_abbreviations": {
-    "de": {
-      "etw.": "etwas",
-      "f.": "feminin",
-      "jmd.": "jemand",
-      "m.": "maskulin",
-      "med.": "medizinisch",
-      "rel.": "religiös"
-    },
-    "en": {
-      "f.": "feminine",
-      "m.": "mackuline",
-      "med.": "medical",
-      "os.": "oneself",
-      "rel.": "religious",
-      "sb.": "somebody",
-      "sth.": "something"
     }
   },
   "source_markers": {

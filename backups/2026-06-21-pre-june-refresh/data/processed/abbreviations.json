@@ -615,16 +615,6 @@
       "abbr.": "PRON"
     },
     {
-      "DEUTSCH": "Proprium",
-      "ENGLiSH": "proper (noun/adjective)",
-      "Roman DEU": "schátno ánav",
-      "RomanINT": "proprio",
-      "Unnamed: 3": "Eigenname",
-      "Unnamed: 5": "šátno ánav",
-      "Unnamed: 7": "próprio",
-      "abbr.": "PROP"
-    },
-    {
       "DEUTSCH": "Präsens",
       "ENGLiSH": "Present",
       "Roman DEU": "akanípe",
@@ -881,48 +871,6 @@
       "Roman DEU": "südútno slavitíko",
       "Roman INT": "südútno slavitíko",
       "code": "SLA"
-    }
-  ],
-  "abbrs-lex": [
-    {
-      "de": "jemand",
-      "de_code": "jmd.",
-      "en": "oneself",
-      "en_code": "os."
-    },
-    {
-      "de": "etwas",
-      "de_code": "etw.",
-      "en": "something",
-      "en_code": "sth."
-    },
-    {
-      "de": "religiös",
-      "de_code": "rel.",
-      "en": "somebody",
-      "en_code": "sb."
-    },
-    {
-      "de": "medizinisch",
-      "de_code": "med.",
-      "en": "religious",
-      "en_code": "rel."
-    },
-    {
-      "de": "feminin",
-      "de_code": "f.",
-      "en": "medical",
-      "en_code": "med."
-    },
-    {
-      "de": "maskulin",
-      "de_code": "m.",
-      "en": "feminine",
-      "en_code": "f."
-    },
-    {
-      "en": "mackuline",
-      "en_code": "m."
     }
   ]
 }

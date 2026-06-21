@@ -1,85 +1,61 @@
-# Romani Dictionary Project Context
+# Roman Dictionary — Agent Working Agreement
 
-## Project Purpose
+## Goal
 
-This repository is the early technical base for a Romani dictionary website. `WB`
-means the German `Wörterbuch`. The project should primarily become a dictionary,
-with room for related linguistic views such as paradigms, word families, domains,
-and source/etymology views.
+Build a reliable, static-site-friendly dictionary for Roman, the Romani variety
+documented with Dieter Halwachs. The product includes a short, carefully sourced
+introduction before the dictionary. Correctness and editorial traceability take
+precedence over visual polish.
 
-The current priority is not visual polish. The priority is a reliable data
-pipeline and a simple information architecture that can survive long pauses
-between work sessions.
+## Authoritative sources
 
-## Source Data
+- Current workbook: `roman-wb-valentin/2026-06-17_roman-wb.xlsx`
+- Current structure definition: `roman-wb-valentin/2026-06-17_struktur.pdf`
+- Context manuscripts: `roman-wb-valentin/materials/`
+- File status and checksums: `docs/source-register.md`
 
-Treat files in `data/` as source material unless explicitly asked to edit them.
+Never edit raw files in `roman-wb-valentin/`. Previous generated/source data is
+kept under `backups/`; it is not an input to the current build.
 
-- `data/2026-05-07_roman-wb-2.xlsx`: main workbook.
-- `data/2026-05-07_struktur.pdf`: column and entry logic notes.
-- `data/README.md`: current human-readable source overview and known issues.
-- `docs/stakeholder-structure.md`: distilled implementation rules from the PDF.
+## Data contract
 
-The main workbook sheet is `GLOSSARY`:
+- `GLOSSARY` has 42 logical columns and 12,525 entries in the June source.
+- Roman spelling (`INT`/`DEU`) and meaning language (`DEUTSCH`/`ENGLISH`) are
+  independent UI choices.
+- Square brackets `[…]` are supplementary information for lemma, flexion, and
+  source. Round brackets `(…)` are supplementary information in equivalents.
+- Preserve source values and workbook row numbers. Report anomalies; do not
+  silently repair them.
+- Empty unnamed Excel formatting columns may be ignored. Any non-empty
+  unexpected column must fail ingestion.
+- Morphology output is provisional until the representative corpus is reviewed.
+- Current entry IDs include workbook row numbers and are not yet permanent URLs.
 
-- 12,464 entries.
-- 42 fixed columns.
-- Important independent display switches:
-  - Roman spelling: `INT` or `DEU`.
-  - Translation language: `DEUTSCH` or `ENGLISH`.
+## Workflow
 
-Key implementation sheets:
+1. Change `scripts/preprocess_data.py` or its tests.
+2. Run `python3 -m unittest discover -s tests -v`.
+3. Run `python3 scripts/preprocess_data.py`.
+4. Inspect `data/processed/reports/validation_summary.json`.
+5. Compare generated output and commit source, code, tests, reports, and docs
+   together.
 
-- `GLOSSARY`: lexical entries.
-- `ADJ-DECL`, `F-DECL`, `M-DECL`, `MF-DECL`, `V-CONJG`, `V-EXIST`: morphology.
-- `abbrs-gram`, `abbrs-lang`: abbreviation/reference tables.
-- `structure`: stakeholder-provided structure notes. Treat this as a helpful
-  interpretive guide, not as the authoritative schema.
+The pipeline must be deterministic. Generated JSON is frontend input, not an
+editorial source.
 
-## Data Pipeline
+## Review gates
 
-The intended workflow is:
+Do not cross a gate without recording the decision in `docs/decisions.md`:
 
-1. Keep the raw Excel and PDF intact.
-2. Run `scripts/preprocess_data.py`.
-3. Use generated JSON in `data/processed/` as the stable frontend input.
-4. Add richer validation and morphology generation only after the basic
-   dictionary entry model is confirmed.
+1. Data/schema and representative-entry review.
+2. Search behavior and entry information architecture.
+3. Story, tone, attribution, and visual direction.
+4. Accessibility, performance, deployment, and publication readiness.
 
-The preprocessing script should stay deterministic: same input workbook, same
-output files.
+## Engineering constraints
 
-## Frontend Direction
-
-Start with a static site-friendly architecture. The first usable product should
-prioritize:
-
-- Search by Roman `INT`, Roman `DEU`, German meaning, and eventually English.
-- Entry detail view with spelling toggle and translation-language toggle.
-- Optional sections for composition, variation, reconstruction, source/base,
-  grammar/flexion, paradigm, and domain.
-- A conservative route structure such as:
-  - `/` search and browse.
-  - `/entry/:id` entry detail.
-  - `/about` data/source notes.
-
-Do not build around a complex backend until the data model requires it.
-
-## Known Data Caveats
-
-Preserve auditability back to workbook rows. `data/README.md` lists current
-known inconsistencies, including a corrupted word-class value, possible shifted
-fields, incomplete English meanings, sheet-name mismatches between PDF and
-workbook, and paradigm keys that may need explicit mapping.
-
-The stakeholder-created `structure` sheet may express the intended grammar, but
-the stakeholder is not expected to provide a clean technical schema. Prefer
-observed workbook columns, actual row patterns, and explicit validation reports
-over assuming the `structure` sheet is complete or internally consistent.
-
-The PDF is stronger than the `structure` sheet for intended display logic:
-hyphens are internal stem markers, `Paradigm` and `Domain` are internal fields,
-forms should be generated from the paradigm tables, and word-family links should
-come from `Base INT/DEU`.
-
-When adding validation, report issues instead of silently correcting source data.
+- Keep the site static until a concrete editorial need requires a backend.
+- Add dependencies only when they remove meaningful complexity.
+- Test transformations against the real workbook and small explicit fixtures.
+- Avoid linguistic inference. Encode only source rules or reviewed decisions.
+- Do not publish or push changes without explicit authorization.

@@ -1,0 +1,14 @@
+{
+  "source_workbook": "roman-wb-valentin/2026-06-17_roman-wb.xlsx",
+  "status": "pending stakeholder review",
+  "entries": [
+    {"row": 5, "reason": "verb with five English and six German equivalents"},
+    {"row": 7, "reason": "verb with reconstruction metadata"},
+    {"row": 62, "reason": "proper noun, domain, and feminine noun paradigm"},
+    {"row": 104, "reason": "interjection with variation metadata"},
+    {"row": 852, "reason": "NME-i alias resolved to the June NM-E-i header"},
+    {"row": 2157, "reason": "known missing ROMAN DEU lemma; fallback behavior"},
+    {"row": 4363, "reason": "verb with preserved Source-2 hyperlinks"},
+    {"row": 4561, "reason": "irregular EXIST paradigm"}
+  ]
+}

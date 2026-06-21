@@ -1,6 +1,6 @@
 # Stakeholder Structure Notes
 
-These notes summarize `data/2026-05-07_struktur.pdf`. Treat the PDF as the
+These notes summarize `roman-wb-valentin/2026-06-17_struktur.pdf`. Treat the PDF as the
 stakeholder's intended model. It is important context for the pipeline, even
 where the workbook contains inconsistencies or the PDF has outdated sheet names.
 
@@ -19,11 +19,17 @@ where the workbook contains inconsistencies or the PDF has outdated sheet names.
 The PDF describes the intended entry as:
 
 ```text
-lemma (composition; variation; reconstruction)
-WORDCLASS 1. WORDCLASS 2. FLEX1 (flex2; flex3)
+lemma [composition; variation; reconstruction]
+WORDCLASS 1. WORDCLASS 2. FLEX1 [flex2; flex3]
 meaning 01, ..., 10
 [SOURCE1 source2]
 ```
+
+In the June definition, supplementary lemma information (composition,
+variation, reconstruction), flexion information, and source information uses
+square brackets `[…]`. Supplementary information inside an equivalent continues
+to use round brackets `(…)`. The field role determines the presentation; source
+punctuation is not rewritten.
 
 For the viewer, this means:
 
@@ -79,7 +85,7 @@ The current workbook has a small set of paradigm-name drifts where `GLOSSARY`
 uses one name and the paradigm table uses another. The pipeline resolves these
 through explicit aliases while preserving the original source value:
 
-- `NME-i` -> `M-E-i`
+- `NME-i` -> `NM-E-i`
 - `NME-IRR-01` -> `NM-IRR-01`
 - `NME-IRR-02` -> `NM-IRR-02`
 - `NME-IRR-03` -> `NM-IRR-03`
@@ -87,5 +93,6 @@ through explicit aliases while preserving the original source value:
 - `NME-IRR-05` -> `NM-IRR-05`
 - `NFPE-∅-01` -> `NFPE-∅-1`
 
-These aliases are intentionally not source edits. They are compatibility rules
-for generating forms from the current workbook.
+These aliases are intentionally not source edits. They are provisional
+compatibility rules for generating forms from the current workbook and require
+review through the representative corpus.

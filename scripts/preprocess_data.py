@@ -16,13 +16,13 @@ from openpyxl import load_workbook
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_WORKBOOK = ROOT / "data" / "2026-05-07_roman-wb-2.xlsx"
+DEFAULT_WORKBOOK = ROOT / "roman-wb-valentin" / "2026-06-17_roman-wb.xlsx"
 DEFAULT_OUTPUT_DIR = ROOT / "data" / "processed"
 
 DASH_VALUES = {"", "-", "–", "—", "―"}
 
 GLOSSARY_SHEET = "GLOSSARY"
-ABBREVIATION_SHEETS = ("abbrs-gram", "abbrs-lang")
+ABBREVIATION_SHEETS = ("abbrs-gram", "abbrs-lang", "abbrs-lex")
 PARADIGM_SHEETS = (
     "ADJ-DECL",
     "F-DECL",
@@ -83,8 +83,6 @@ PAIRED_COLUMNS = (
     ("Reconstruction INT", "Reconstruction DEU"),
     ("Source-2 INT", "Source-2 DEU"),
     ("Base INT", "Base DEU"),
-    ("Flexion 2 INT", "Flexion 2 DEU"),
-    ("Flexion 3 INT", "Flexion 3 DEU"),
 )
 
 EXPECTED_WORD_CLASSES = {
@@ -112,9 +110,8 @@ PARADIGM_KEY_RE = re.compile(
 )
 
 PARADIGM_ALIASES = {
-    # The PDF/workbook examples imply these are masculine NME paradigms, while
-    # the paradigm table headers use NM/M spellings.
-    "NME-i": "M-E-i",
+    # The glossary and paradigm table use slightly different spellings.
+    "NME-i": "NM-E-i",
     "NME-IRR-01": "NM-IRR-01",
     "NME-IRR-02": "NM-IRR-02",
     "NME-IRR-03": "NM-IRR-03",
@@ -233,6 +230,13 @@ def compact_dict(data: dict[str, Any]) -> dict[str, Any]:
     return {key: value for key, value in data.items() if value not in ("", [], {})}
 
 
+def source_path(workbook: Path) -> str:
+    try:
+        return str(workbook.relative_to(ROOT))
+    except ValueError:
+        return str(workbook)
+
+
 def first_present(*values: str) -> str:
     for value in values:
         cleaned = clean_value(value)
@@ -272,7 +276,16 @@ def load_glossary(workbook: Path) -> pd.DataFrame:
         dtype=str,
         keep_default_na=False,
     )
-    return df.map(clean_value)
+    df = df.map(clean_value)
+    dropped_empty_columns = [
+        column
+        for column in df.columns
+        if str(column).startswith("Unnamed:") and not df[column].any()
+    ]
+    if dropped_empty_columns:
+        df = df.drop(columns=dropped_empty_columns)
+    df.attrs["dropped_empty_columns"] = dropped_empty_columns
+    return df
 
 
 def validate_glossary_columns(df: pd.DataFrame) -> None:
@@ -287,8 +300,37 @@ def validate_glossary_columns(df: pd.DataFrame) -> None:
         )
 
 
-def build_entries(df: pd.DataFrame) -> list[dict[str, Any]]:
+def load_glossary_hyperlinks(workbook: Path) -> dict[int, dict[str, str]]:
+    """Return source links keyed by one-based workbook row."""
+    wb = load_workbook(workbook, read_only=False, data_only=True)
+    ws = wb[GLOSSARY_SHEET]
+    headers = {
+        clean_value(cell.value): cell.column
+        for cell in ws[1]
+        if clean_value(cell.value)
+    }
+    links: dict[int, dict[str, str]] = {}
+    for source_column, output_key in (
+        ("Source-2 INT", "source_2_int_url"),
+        ("Source-2 DEU", "source_2_deu_url"),
+    ):
+        column = headers.get(source_column)
+        if not column:
+            continue
+        for source_row in range(2, ws.max_row + 1):
+            hyperlink = ws.cell(source_row, column).hyperlink
+            if hyperlink and hyperlink.target:
+                links.setdefault(source_row, {})[output_key] = hyperlink.target
+    wb.close()
+    return links
+
+
+def build_entries(
+    df: pd.DataFrame,
+    source_hyperlinks: dict[int, dict[str, str]] | None = None,
+) -> list[dict[str, Any]]:
     entries: list[dict[str, Any]] = []
+    source_hyperlinks = source_hyperlinks or {}
     for zero_index, row in df.iterrows():
         source_row = int(zero_index) + 2
         roman_int = clean_value(row.get("ROMAN INT", ""))
@@ -308,6 +350,7 @@ def build_entries(df: pd.DataFrame) -> list[dict[str, Any]]:
                         "source_1": clean_value(row.get("Source-1", "")),
                         "source_2_int": clean_value(row.get("Source-2 INT", "")),
                         "source_2_deu": clean_value(row.get("Source-2 DEU", "")),
+                        **source_hyperlinks.get(source_row, {}),
                     }
                 ),
                 "base": paired_detail(row, "Base INT", "Base DEU"),
@@ -401,6 +444,22 @@ def sheet_to_matrix(workbook: Path, sheet_name: str) -> list[list[str]]:
         matrix.pop()
 
     return matrix
+
+
+def lexical_abbreviation_rows(workbook: Path) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    for row in sheet_to_matrix(workbook, "abbrs-lex"):
+        item = compact_dict(
+            {
+                "de_code": clean_value(row[0] if len(row) > 0 else ""),
+                "de": clean_value(row[1] if len(row) > 1 else ""),
+                "en_code": clean_value(row[3] if len(row) > 3 else ""),
+                "en": clean_value(row[4] if len(row) > 4 else ""),
+            }
+        )
+        if item:
+            rows.append(item)
+    return rows
 
 
 def extract_paradigm_keys(paradigm_tables: dict[str, list[list[str]]]) -> dict[str, list[str]]:
@@ -842,13 +901,15 @@ def structure_word_classes(workbook: Path) -> list[str]:
 def build_references(workbook: Path) -> dict[str, Any]:
     grammar_rows = sheet_to_matrix(workbook, "abbrs-gram")
     language_rows = sheet_to_matrix(workbook, "abbrs-lang")
+    lexical_rows = lexical_abbreviation_rows(workbook)
 
     grammar: dict[str, dict[str, str]] = {}
+    grammar_variants: dict[str, list[dict[str, str]]] = {}
     for row in grammar_rows[1:]:
         code = clean_value(row[0] if len(row) > 0 else "")
         if not code:
             continue
-        grammar[code] = compact_dict(
+        reference = compact_dict(
             {
                 "en": clean_value(row[1] if len(row) > 1 else ""),
                 "de": clean_value(row[2] if len(row) > 2 else ""),
@@ -865,6 +926,8 @@ def build_references(workbook: Path) -> dict[str, Any]:
                 ),
             }
         )
+        grammar_variants.setdefault(code, []).append(reference)
+        grammar[code] = reference
 
     languages: dict[str, dict[str, str]] = {}
     for row in language_rows[1:]:
@@ -881,9 +944,24 @@ def build_references(workbook: Path) -> dict[str, Any]:
             }
         )
 
+    lexical: dict[str, dict[str, str]] = {"de": {}, "en": {}}
+    for row in lexical_rows:
+        de_code = row.get("de_code", "")
+        en_code = row.get("en_code", "")
+        if de_code:
+            lexical["de"][de_code] = row.get("de", "")
+        if en_code:
+            lexical["en"][en_code] = row.get("en", "")
+
     return {
         "grammar_abbreviations": grammar,
+        "grammar_abbreviation_variants": {
+            code: variants
+            for code, variants in grammar_variants.items()
+            if len(variants) > 1
+        },
         "language_abbreviations": languages,
+        "lexical_abbreviations": lexical,
         "source_markers": SOURCE_MARKER_LABELS,
     }
 
@@ -895,10 +973,12 @@ def reference_label(references: dict[str, Any], code: str, language: str = "en")
     grammar = references.get("grammar_abbreviations", {}).get(code, {})
     source_marker = references.get("source_markers", {}).get(code, {})
     language_ref = references.get("language_abbreviations", {}).get(code, {})
+    lexical_ref = references.get("lexical_abbreviations", {}).get(language, {}).get(code, "")
     return first_present(
         grammar.get(language, ""),
         source_marker.get(language, ""),
         language_ref.get(language, ""),
+        lexical_ref,
         code,
     )
 
@@ -950,6 +1030,40 @@ def build_validation_report(
     entries_by_row = {entry["source"]["row"]: entry for entry in entries}
     structure_classes = structure_word_classes(workbook)
     observed_classes = sorted({value for value in df["Word class 1"].tolist() if value})
+    references = build_references(workbook)
+
+    for column in df.attrs.get("dropped_empty_columns", []):
+        issues.append(
+            issue(
+                "empty_formatting_column_ignored",
+                "info",
+                "An unnamed, fully empty Excel formatting column was ignored.",
+                fields=[str(column)],
+            )
+        )
+
+    for code, variants in references.get("grammar_abbreviation_variants", {}).items():
+        issues.append(
+            issue(
+                "duplicate_grammar_abbreviation",
+                "warning",
+                "Grammar abbreviation has multiple source definitions; all variants are preserved.",
+                fields=["abbrs-gram"],
+                values={"code": code, "variant_count": str(len(variants))},
+            )
+        )
+
+    lexical_masculine = references.get("lexical_abbreviations", {}).get("en", {}).get("m.", "")
+    if lexical_masculine.lower() == "mackuline":
+        issues.append(
+            issue(
+                "suspected_reference_typo",
+                "warning",
+                "Lexical abbreviation label appears to contain a source typo.",
+                fields=["abbrs-lex", "English m."],
+                values={"source_value": lexical_masculine},
+            )
+        )
 
     all_paradigm_keys = {
         key
@@ -1178,7 +1292,7 @@ def build_validation_report(
             issue_samples[code].append(item)
 
     return {
-        "source_workbook": str(workbook.relative_to(ROOT)),
+        "source_workbook": source_path(workbook),
         "issue_count": len(issues),
         "counts_by_severity": dict(sorted(counts_by_severity.items())),
         "counts_by_code": dict(sorted(counts_by_code.items())),
@@ -1186,6 +1300,7 @@ def build_validation_report(
         "structure_sheet_word_classes": structure_classes,
         "parsed_paradigm_keys": paradigm_keys,
         "paradigm_aliases": PARADIGM_ALIASES,
+        "dropped_empty_columns": df.attrs.get("dropped_empty_columns", []),
         "issue_samples": issue_samples,
         "issues": issues,
     }
@@ -1201,13 +1316,21 @@ def build_summary(workbook: Path, df: pd.DataFrame, entries: list[dict[str, Any]
         df["Word class 1"].value_counts(dropna=False).rename_axis("word_class").to_dict()
     )
     paradigm_counts = df["Paradigm"].value_counts(dropna=False).rename_axis("paradigm").to_dict()
+    source_hyperlink_count = sum(
+        1
+        for entry in entries
+        for key in entry.get("details", {}).get("source", {})
+        if key.endswith("_url")
+    )
 
     return {
-        "source_workbook": str(workbook.relative_to(ROOT)),
+        "source_workbook": source_path(workbook),
         "glossary_entries": len(entries),
         "entries_with_german_meaning": de_count,
         "entries_with_english_meaning": en_count,
         "entries_with_generated_forms": generated_forms_count,
+        "preserved_source_hyperlinks": source_hyperlink_count,
+        "ignored_empty_formatting_columns": df.attrs.get("dropped_empty_columns", []),
         "word_class_counts": word_class_counts,
         "top_paradigm_counts": dict(list(paradigm_counts.items())[:30]),
         "output_files": [
@@ -1240,8 +1363,8 @@ def build_data_coverage_report(
         "Reconstruction INT": "entries[].details.reconstruction.int",
         "Reconstruction DEU": "entries[].details.reconstruction.deu",
         "Source-1": "entries[].details.source.source_1 and source_1_label",
-        "Source-2 INT": "entries[].details.source.source_2_int",
-        "Source-2 DEU": "entries[].details.source.source_2_deu",
+        "Source-2 INT": "entries[].details.source.source_2_int and source_2_int_url when hyperlinked",
+        "Source-2 DEU": "entries[].details.source.source_2_deu and source_2_deu_url when hyperlinked",
         "Base INT": "entries[].details.base.int and viewer word-family index",
         "Base DEU": "entries[].details.base.deu and viewer word-family index",
         "Word class 1": "entries[].grammar.word_class_1 and readable labels",
@@ -1273,7 +1396,7 @@ def build_data_coverage_report(
         morphology_counts[key] += 1
 
     return {
-        "source_workbook": str(workbook.relative_to(ROOT)),
+        "source_workbook": source_path(workbook),
         "glossary_columns": list(df.columns),
         "all_columns_mapped": set(df.columns) == set(column_mapping),
         "column_mapping": column_mapping,
@@ -1285,6 +1408,7 @@ def build_data_coverage_report(
             "Hyphenated lemmas preserve raw source values and add display_* values without internal hyphen markers.",
             "Paradigm and Domain are preserved, but treated as internal fields in the viewer per the PDF.",
             "Explicit paradigm aliases preserve the source value and add a resolved value only for form generation.",
+            "Generated morphology is provisional until representative entries are reviewed by the linguistic stakeholder.",
         ],
     }
 
@@ -1308,12 +1432,19 @@ def preprocess(workbook: Path, output_dir: Path) -> None:
     validate_glossary_columns(glossary)
 
     abbreviations = {
-        sheet: sheet_to_records(workbook, sheet) for sheet in ABBREVIATION_SHEETS
+        "abbrs-gram": sheet_to_records(workbook, "abbrs-gram"),
+        "abbrs-lang": sheet_to_records(workbook, "abbrs-lang"),
+        "abbrs-lex": lexical_abbreviation_rows(workbook),
     }
     references = build_references(workbook)
     paradigm_tables = {sheet: sheet_to_matrix(workbook, sheet) for sheet in PARADIGM_SHEETS}
     paradigm_model = build_paradigm_model(paradigm_tables)
-    entries = enrich_entries(build_entries(glossary), paradigm_model, references)
+    source_hyperlinks = load_glossary_hyperlinks(workbook)
+    entries = enrich_entries(
+        build_entries(glossary, source_hyperlinks),
+        paradigm_model,
+        references,
+    )
     search_entries = build_search_entries(entries)
     paradigm_keys = extract_paradigm_keys(paradigm_tables)
     validation_report = build_validation_report(workbook, glossary, entries, paradigm_keys)
@@ -1328,6 +1459,7 @@ def preprocess(workbook: Path, output_dir: Path) -> None:
             "structure_sheet_word_classes",
             "parsed_paradigm_keys",
             "paradigm_aliases",
+            "dropped_empty_columns",
             "issue_samples",
         )
     }

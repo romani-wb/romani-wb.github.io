@@ -1,130 +1,66 @@
-# Data Workflow
+# Data workflow
 
-## Why Preprocess
+## Source and output
 
-The workbook is the editorial source, but it is not the ideal runtime format for
-a website. The first technical step should be a small, repeatable preprocessing
-layer that turns the workbook into explicit JSON files:
-
-- one full entry file for detail pages,
-- one lightweight search file for fast lookup,
-- one reference file for abbreviations,
-- one raw paradigm-table file for later morphology work,
-- one summary file for counts and quick sanity checks.
-
-This keeps the frontend simple and makes future sessions easy to restart.
-
-The workbook also contains a `structure` sheet. Use it as stakeholder context
-for the intended linguistic model, but do not treat it as a strict technical
-schema. The practical source of truth for preprocessing is the actual `GLOSSARY`
-columns and the values found in the workbook.
-
-Also use `data/2026-05-07_struktur.pdf` as the stakeholder's intended model for
-display and morphology rules. The distilled implementation notes are in
-`docs/stakeholder-structure.md`.
-
-## Current Output Files
-
-Run:
+The editorial source is
+`roman-wb-valentin/2026-06-17_roman-wb.xlsx`. It is never modified by the build.
+`scripts/preprocess_data.py` writes deterministic runtime data to
+`data/processed/`.
 
 ```bash
+python3 -m unittest discover -s tests -v
 python3 scripts/preprocess_data.py
 ```
 
-Default input:
+Generated files include full entries, a compact search index, reference tables,
+provisional morphology tables, a source-to-output coverage report, and row-level
+validation reports.
 
-```text
-data/2026-05-07_roman-wb-2.xlsx
-```
+## Ingestion rules
 
-Default output directory:
+- Require the 42 named `GLOSSARY` columns.
+- Ignore only unnamed columns that are completely empty formatting residue.
+- Fail when an unexpected column contains data.
+- Preserve raw source values, workbook row numbers, spelling variants, and
+  embedded Source-2 hyperlinks.
+- Parse `abbrs-gram`, `abbrs-lang`, and `abbrs-lex` independently.
+- Preserve duplicate abbreviation definitions as variants instead of silently
+  overwriting them.
+- Apply explicit paradigm aliases only in generated morphology; retain the
+  original glossary value.
 
-```text
-data/processed/
-```
+## Presentation semantics
 
-Generated files:
+Per the 17 June structure PDF and Dieter Halwachs's accompanying email:
 
-- `entries.json`: normalized glossary records with source row numbers.
-- `entries_search.json`: compact search/display records.
-- `abbreviations.json`: grammar and language abbreviation tables.
-- `references.json`: abbreviation and source-marker lookup tables for readable
-  UI labels.
-- `paradigm_model.json`: compact parsed morphology tables used by the viewer to
-  generate forms for the selected entry.
-- `paradigm_tables.json`: raw morphology/reference tables for later parsing.
-- `summary.json`: counts and source metadata.
-- `reports/data_coverage.json`: source-column to processed-schema mapping and
-  non-empty counts, used to verify that the pipeline preserves the workbook
-  structure.
-- `reports/validation_summary.json`: issue counts, samples, parsed paradigm keys,
-  and structure-sheet comparisons.
-- `reports/validation_report.json`: complete row-level issue list.
+- supplementary information for lemma, flexion, and source uses square brackets
+  `[…]`;
+- supplementary information within German/English equivalents uses round
+  brackets `(…)`;
+- `Paradigm` and `Domain` are internal fields;
+- internal lemma hyphens are retained in raw values and removed only in explicit
+  display values;
+- word-family behavior derives from `Base INT/DEU`.
 
-## First Dictionary Model
+Do not infer brackets merely from punctuation in arbitrary text. The UI should
+render brackets according to the field group.
 
-Each entry should be understood as:
+## Validation policy
 
-- stable audit identifier,
-- source workbook row,
-- Roman lemma in `INT` and `DEU`,
-- display lemma with internal hyphen markers removed,
-- word class and flexion metadata,
-- German meanings,
-- English meanings where available,
-- optional detail groups:
-  - composition,
-  - variation,
-  - reconstruction,
-  - etymological source,
-  - base or word family,
-  - domain,
-  - paradigm.
+Validation does not repair source data. Each issue has a severity and, where
+applicable, a workbook row:
 
-The website should have two independent switches:
+- `error`: missing core data or a value outside the accepted source model;
+- `warning`: ambiguity or an editorial/linguistic decision still required;
+- `info`: preserved source behavior or a non-blocking structural observation.
 
-- Roman spelling: `INT` or `DEU`.
-- meaning language: `DEUTSCH` or `ENGLISH`.
+The current known errors are one missing `ROMAN DEU` lemma and one corrupted
+`Word class 1` value. Known reference warnings include duplicate `LOC`/`MOD`
+definitions and English `m. = mackuline` in `abbrs-lex`.
 
-## What Not To Solve Yet
+## Morphology status
 
-Do not make morphology generation a blocker for the first frontend. Paradigm
-tables have multi-row and multi-section structures, and irregular forms need
-special handling. The current viewer can generate forms for entries whose
-paradigm is present in `paradigm_model.json`; entries with unmatched or suspicious
-paradigms should show an explicit "no generated forms" note rather than guessing.
-
-Do not silently repair source inconsistencies in generated output. Add validation
-reports first, then ask the data owner for corrections or explicit mapping rules.
-
-## Validation Severity
-
-The validation report intentionally separates different kinds of concern:
-
-- `error`: data that is likely corrupt or outside the expected model.
-- `warning`: data that may be valid stakeholder logic, but needs a rule before
-  the website can safely derive forms or display it as structured grammar.
-- `info`: known incompleteness or context mismatch, such as missing English
-  translations or values present in `GLOSSARY` but absent from the `structure`
-  sheet.
-
-The current workflow should not auto-correct these issues. It should preserve
-the source values, report them with workbook row numbers, and let us decide
-whether each case needs a source correction, a mapping rule, or a UI fallback.
-
-Explicit paradigm aliases are allowed when the workbook and paradigm table use
-different names for what is evidently the same stakeholder concept. These aliases
-must remain visible in `scripts/preprocess_data.py`, appear in the validation
-summary, and preserve the original source `Paradigm` value in each entry.
-
-## Recommended Next Steps
-
-1. Add validation reports for missing paired `INT`/`DEU` fields, suspicious word
-   classes, unmatched paradigm keys, and mismatches between the `structure` sheet
-   and actual `GLOSSARY` values.
-2. Build a minimal static UI against `data/processed/entries_search.json` and
-   `data/processed/entries.json`.
-3. Review the entry detail wireframe with the stakeholder before investing in
-   visual design.
-4. Add morphology generation only for the most common noun/adjective/verb cases,
-   backed by tests and fixture entries.
+Generated forms are a hypothesis derived from the workbook tables. They are not
+publication-ready until the entries in `tests/fixtures/review-corpus.json` have
+been checked. A failed or unmatched paradigm must produce an explicit absence,
+never a guessed form.

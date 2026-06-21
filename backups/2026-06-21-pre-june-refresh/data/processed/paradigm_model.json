@@ -1478,7 +1478,7 @@
     },
     "M": {
       "deu": {
-        "NM-E-i": [
+        "M-E-i": [
           {
             "case": "NOM",
             "case_group": "RECT",
@@ -3024,7 +3024,7 @@
         ]
       },
       "int": {
-        "NM-E-i": [
+        "M-E-i": [
           {
             "case": "NOM",
             "case_group": "RECT",
@@ -9430,7 +9430,7 @@
         },
         {
           "aspect": "PFV",
-          "ending": "híndo/i (híja)",
+          "ending": "híja",
           "person_number": "3SG",
           "tense": "PST"
         },
@@ -13618,7 +13618,7 @@
         },
         {
           "aspect": "PFV",
-          "ending": "híndo/i (híja)",
+          "ending": "híja",
           "person_number": "3SG",
           "tense": "PST"
         },
