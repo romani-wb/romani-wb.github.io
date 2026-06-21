@@ -1,5 +1,8 @@
 # Roman Dictionary — Agent Working Agreement
 
+Start every new agent session with `HANDOFF.md`, then use this file as the
+binding working agreement.
+
 ## Goal
 
 Build a reliable, static-site-friendly dictionary for Roman, the Romani variety
