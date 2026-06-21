@@ -1,0 +1,163 @@
+{
+  "chunk_size": 500,
+  "chunks": {
+    "000": {
+      "count": 500,
+      "file": "entries/entries-000.json",
+      "first_source_row": 2,
+      "last_source_row": 501
+    },
+    "001": {
+      "count": 500,
+      "file": "entries/entries-001.json",
+      "first_source_row": 502,
+      "last_source_row": 1001
+    },
+    "002": {
+      "count": 500,
+      "file": "entries/entries-002.json",
+      "first_source_row": 1002,
+      "last_source_row": 1501
+    },
+    "003": {
+      "count": 500,
+      "file": "entries/entries-003.json",
+      "first_source_row": 1502,
+      "last_source_row": 2001
+    },
+    "004": {
+      "count": 500,
+      "file": "entries/entries-004.json",
+      "first_source_row": 2002,
+      "last_source_row": 2501
+    },
+    "005": {
+      "count": 500,
+      "file": "entries/entries-005.json",
+      "first_source_row": 2502,
+      "last_source_row": 3001
+    },
+    "006": {
+      "count": 500,
+      "file": "entries/entries-006.json",
+      "first_source_row": 3002,
+      "last_source_row": 3501
+    },
+    "007": {
+      "count": 500,
+      "file": "entries/entries-007.json",
+      "first_source_row": 3502,
+      "last_source_row": 4001
+    },
+    "008": {
+      "count": 500,
+      "file": "entries/entries-008.json",
+      "first_source_row": 4002,
+      "last_source_row": 4501
+    },
+    "009": {
+      "count": 500,
+      "file": "entries/entries-009.json",
+      "first_source_row": 4502,
+      "last_source_row": 5001
+    },
+    "010": {
+      "count": 500,
+      "file": "entries/entries-010.json",
+      "first_source_row": 5002,
+      "last_source_row": 5501
+    },
+    "011": {
+      "count": 500,
+      "file": "entries/entries-011.json",
+      "first_source_row": 5502,
+      "last_source_row": 6001
+    },
+    "012": {
+      "count": 500,
+      "file": "entries/entries-012.json",
+      "first_source_row": 6002,
+      "last_source_row": 6501
+    },
+    "013": {
+      "count": 500,
+      "file": "entries/entries-013.json",
+      "first_source_row": 6502,
+      "last_source_row": 7001
+    },
+    "014": {
+      "count": 500,
+      "file": "entries/entries-014.json",
+      "first_source_row": 7002,
+      "last_source_row": 7501
+    },
+    "015": {
+      "count": 500,
+      "file": "entries/entries-015.json",
+      "first_source_row": 7502,
+      "last_source_row": 8001
+    },
+    "016": {
+      "count": 500,
+      "file": "entries/entries-016.json",
+      "first_source_row": 8002,
+      "last_source_row": 8501
+    },
+    "017": {
+      "count": 500,
+      "file": "entries/entries-017.json",
+      "first_source_row": 8502,
+      "last_source_row": 9001
+    },
+    "018": {
+      "count": 500,
+      "file": "entries/entries-018.json",
+      "first_source_row": 9002,
+      "last_source_row": 9501
+    },
+    "019": {
+      "count": 500,
+      "file": "entries/entries-019.json",
+      "first_source_row": 9502,
+      "last_source_row": 10001
+    },
+    "020": {
+      "count": 500,
+      "file": "entries/entries-020.json",
+      "first_source_row": 10002,
+      "last_source_row": 10501
+    },
+    "021": {
+      "count": 500,
+      "file": "entries/entries-021.json",
+      "first_source_row": 10502,
+      "last_source_row": 11001
+    },
+    "022": {
+      "count": 500,
+      "file": "entries/entries-022.json",
+      "first_source_row": 11002,
+      "last_source_row": 11501
+    },
+    "023": {
+      "count": 500,
+      "file": "entries/entries-023.json",
+      "first_source_row": 11502,
+      "last_source_row": 12001
+    },
+    "024": {
+      "count": 500,
+      "file": "entries/entries-024.json",
+      "first_source_row": 12002,
+      "last_source_row": 12501
+    },
+    "025": {
+      "count": 25,
+      "file": "entries/entries-025.json",
+      "first_source_row": 12502,
+      "last_source_row": 12526
+    }
+  },
+  "entry_count": 12525,
+  "schema_version": 1
+}

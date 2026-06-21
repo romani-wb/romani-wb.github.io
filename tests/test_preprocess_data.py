@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -64,6 +66,27 @@ class JuneWorkbookIngestionTests(unittest.TestCase):
             "source_2_int_url",
             by_row[4363]["details"]["source"],
         )
+
+    def test_search_records_locate_lazy_entry_chunks(self) -> None:
+        entries = preprocess_data.build_entries(self.glossary, self.hyperlinks)
+        search_entries = preprocess_data.build_search_entries(entries)
+        self.assertEqual(search_entries[0]["chunk"], "000")
+        self.assertEqual(search_entries[500]["chunk"], "001")
+        self.assertEqual(search_entries[0]["base_int"], "berš")
+
+    def test_entry_chunks_cover_every_entry_once(self) -> None:
+        entries = preprocess_data.build_entries(self.glossary, self.hyperlinks)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manifest = preprocess_data.write_entry_chunks(Path(temp_dir), entries)
+            self.assertEqual(manifest["entry_count"], 12_525)
+            self.assertEqual(len(manifest["chunks"]), 26)
+            chunked_ids = []
+            for item in manifest["chunks"].values():
+                chunked_ids.extend(
+                    entry["id"]
+                    for entry in json.loads((Path(temp_dir) / item["file"]).read_text())
+                )
+            self.assertEqual(chunked_ids, [entry["id"] for entry in entries])
 
 
 class StrictSchemaTests(unittest.TestCase):

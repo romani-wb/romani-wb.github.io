@@ -16,6 +16,11 @@ Generated files include full entries, a compact search index, reference tables,
 provisional morphology tables, a source-to-output coverage report, and row-level
 validation reports.
 
+The frontend loads `entries_search.json` and `entries_manifest.json` first, then
+fetches `entries/entries-NNN.json` in 500-entry chunks as entries are selected.
+`entries.json` remains a complete audit/compatibility artifact and is not part of
+the initial browser request.
+
 ## Ingestion rules
 
 - Require the 42 named `GLOSSARY` columns.

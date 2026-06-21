@@ -22,6 +22,7 @@ auditable JSON for a static frontend.
 python3 -m pip install -r requirements.txt
 python3 -m unittest discover -s tests -v
 python3 scripts/preprocess_data.py
+node tests/frontend-smoke.mjs
 python3 -m http.server 8000
 ```
 

@@ -3,27 +3,29 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Romani WB</title>
+    <title>Roman Dictionary</title>
+    <meta name="description" content="Search the Roman dictionary in two Roman spellings with German and English meanings.">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
+    <a class="skip-link" href="#search-input">Skip to dictionary search</a>
     <div class="app-shell">
       <header class="topbar">
         <div>
-          <h1>Romani WB</h1>
-          <p id="data-status">Loading dictionary data...</p>
+          <h1>Roman Dictionary</h1>
+          <p id="data-status" role="status" aria-live="polite">Loading dictionary data...</p>
         </div>
         <div class="controls" aria-label="Display controls">
           <fieldset class="segmented">
             <legend>Spelling</legend>
-            <button type="button" class="active" data-spelling="int">INT</button>
-            <button type="button" data-spelling="deu">DEU</button>
+            <button type="button" class="active" data-spelling="int" aria-pressed="true">INT</button>
+            <button type="button" data-spelling="deu" aria-pressed="false">DEU</button>
           </fieldset>
           <fieldset class="segmented">
             <legend>Meanings</legend>
-            <button type="button" class="active" data-language="de">DE</button>
-            <button type="button" data-language="en">EN</button>
+            <button type="button" class="active" data-language="de" aria-pressed="true">DE</button>
+            <button type="button" data-language="en" aria-pressed="false">EN</button>
           </fieldset>
         </div>
       </header>
@@ -32,9 +34,9 @@
         <section class="search-pane" aria-label="Dictionary search">
           <div class="search-wrap">
             <label for="search-input">Search</label>
-            <input id="search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Roman, German, English">
+            <input id="search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Roman, German, English" aria-describedby="result-meta">
           </div>
-          <div class="result-meta" id="result-meta"></div>
+          <div class="result-meta" id="result-meta" role="status" aria-live="polite"></div>
           <ol class="results" id="results"></ol>
         </section>
 

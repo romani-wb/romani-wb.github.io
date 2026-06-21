@@ -35,9 +35,10 @@ kept under `backups/`; it is not an input to the current build.
 
 1. Change `scripts/preprocess_data.py` or its tests.
 2. Run `python3 -m unittest discover -s tests -v`.
-3. Run `python3 scripts/preprocess_data.py`.
-4. Inspect `data/processed/reports/validation_summary.json`.
-5. Compare generated output and commit source, code, tests, reports, and docs
+3. Run `node tests/frontend-smoke.mjs` for frontend/data-contract changes.
+4. Run `python3 scripts/preprocess_data.py`.
+5. Inspect `data/processed/reports/validation_summary.json`.
+6. Compare generated output and commit source, code, tests, reports, and docs
    together.
 
 The pipeline must be deterministic. Generated JSON is frontend input, not an
@@ -51,6 +52,12 @@ Do not cross a gate without recording the decision in `docs/decisions.md`:
 2. Search behavior and entry information architecture.
 3. Story, tone, attribution, and visual direction.
 4. Accessibility, performance, deployment, and publication readiness.
+
+As of 21 June 2026, Valentin has authorized fast-tracking these gates until a
+later major review. Continue autonomously with reversible, conservative defaults;
+record assumptions and deferred questions rather than pausing. This does not
+authorize silent source corrections, publication, pushing, or claims that
+provisional morphology has been linguistically approved.
 
 ## Engineering constraints
 

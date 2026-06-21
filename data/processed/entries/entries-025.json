@@ -1,0 +1,1327 @@
+[
+  {
+    "details": {
+      "base": {
+        "deu": "vristscha",
+        "int": "vrisča"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vristscha",
+        "source_2_int": "vrisča"
+      }
+    },
+    "grammar": {
+      "flexion_2_deu": "-tsch-",
+      "flexion_2_int": "-č-",
+      "flexion_3_deu": "-de",
+      "flexion_3_int": "-de",
+      "labels": {
+        "word_class_1": "V · Verb"
+      },
+      "paradigm": "V-01",
+      "word_class_1": "V"
+    },
+    "id": "g12502_f31d3d6d",
+    "lemma": {
+      "deu": "vristschán-av",
+      "display_deu": "vristschánav",
+      "display_int": "vrisčánav",
+      "int": "vrisčán-av"
+    },
+    "meanings": {
+      "de": [
+        "schreien",
+        "rufen",
+        "brüllen",
+        "jauchzen"
+      ],
+      "en": [
+        "to shout",
+        "to scream",
+        "to call",
+        "to roar",
+        "to cheer"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "kind": "verb_conjugation",
+      "paradigm": "V-01"
+    },
+    "source": {
+      "row": 12502,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vristscha",
+        "int": "vrisča"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vristscha",
+        "source_2_int": "vrisča"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M",
+      "flexion_2_deu": "-és-",
+      "flexion_2_int": "-és-",
+      "flexion_3_deu": "-tscha",
+      "flexion_3_int": "-ča",
+      "labels": {
+        "flexion_1": "M · masculine",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NMPE-A",
+      "word_class_1": "N"
+    },
+    "id": "g12503_2ce01320",
+    "lemma": {
+      "deu": "vristschaníp-e",
+      "display_deu": "vristschanípe",
+      "display_int": "vrisčanípe",
+      "int": "vrisčaníp-e"
+    },
+    "meanings": {
+      "de": [
+        "Schreien",
+        "Geschrei",
+        "Rufen",
+        "Ruferei",
+        "Brüllen",
+        "Brüllerei",
+        "Jauchzen",
+        "Jauchzerei"
+      ],
+      "en": [
+        "shouting",
+        "screaming",
+        "calling",
+        "roaring",
+        "cheering"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "M",
+      "kind": "noun_declension",
+      "paradigm": "NMPE-A"
+    },
+    "source": {
+      "row": 12503,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vualeti",
+        "int": "vualeti"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vualeti",
+        "source_2_int": "vualeti"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M/F",
+      "flexion_2_deu": "-ís-/-á-",
+      "flexion_2_int": "-ís-/-á-",
+      "flexion_3_deu": "-tscha/-kíji",
+      "flexion_3_int": "-ča/-kíji",
+      "labels": {
+        "flexion_1": "M/F",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NMF-02",
+      "word_class_1": "N"
+    },
+    "id": "g12504_0fa67ea7",
+    "lemma": {
+      "deu": "vuálet-i",
+      "display_deu": "vuáleti",
+      "display_int": "vuáleti/kíja",
+      "int": "vuálet-i/-kíja"
+    },
+    "meanings": {
+      "de": [
+        "Wurlerte",
+        "Nervöse",
+        "Unruhige",
+        "Hibbelige"
+      ],
+      "en": [
+        "nervous (one)",
+        "restless (one)",
+        "fidgety (one)",
+        "jittery (one)"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "M/F",
+      "kind": "noun_declension",
+      "paradigm": "NMF-02"
+    },
+    "source": {
+      "row": 12504,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vualeti",
+        "int": "vualeti"
+      },
+      "source": {
+        "source_1": "DEU",
+        "source_1_label": "DEU · German",
+        "source_2_deu": "wurlert (dial)",
+        "source_2_int": "wurlert (dial)"
+      }
+    },
+    "grammar": {
+      "labels": {
+        "word_class_1": "ADJ · Adjectiv",
+        "word_class_2": "INDECL · indeclinable"
+      },
+      "word_class_1": "ADJ",
+      "word_class_2": "INDECL"
+    },
+    "id": "g12505_11c2223f",
+    "lemma": {
+      "deu": "vuáleti",
+      "display_deu": "vuáleti",
+      "display_int": "vuáleti",
+      "int": "vuáleti"
+    },
+    "meanings": {
+      "de": [
+        "wurlert",
+        "nervös",
+        "unruhig",
+        "hibbelig"
+      ],
+      "en": [
+        "nervous",
+        "restless",
+        "fidgety",
+        "jittery"
+      ]
+    },
+    "morphology": {
+      "available": false,
+      "kind": "adjective_declension"
+    },
+    "source": {
+      "row": 12505,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vualeti",
+        "int": "vualeti"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vualeti",
+        "source_2_int": "vualeti"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M",
+      "flexion_2_deu": "-és-",
+      "flexion_2_int": "-és-",
+      "flexion_3_deu": "-tscha",
+      "flexion_3_int": "-ča",
+      "labels": {
+        "flexion_1": "M · masculine",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NMPE-A",
+      "word_class_1": "N"
+    },
+    "id": "g12506_d7c45029",
+    "lemma": {
+      "deu": "vualetíp-e",
+      "display_deu": "vualetípe",
+      "display_int": "vualetípe",
+      "int": "vualetíp-e"
+    },
+    "meanings": {
+      "de": [
+        "Wurlertsein",
+        "Nervössein",
+        "Nervosität",
+        "Unruhigsein",
+        "Unruhe",
+        "Hibbeligsein"
+      ],
+      "en": [
+        "being nervous",
+        "nervousness",
+        "being restless",
+        "restlessness",
+        "being fidgety",
+        "being jittery"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "M",
+      "kind": "noun_declension",
+      "paradigm": "NMPE-A"
+    },
+    "source": {
+      "row": 12506,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vudar",
+        "int": "vudar"
+      },
+      "source": {
+        "source_1": "INC",
+        "source_1_label": "INC · Indo-Aryan (global)",
+        "source_2_deu": "duvāra",
+        "source_2_int": "duvāra"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M",
+      "flexion_2_deu": "-és-",
+      "flexion_2_int": "-és-",
+      "flexion_3_deu": "-a",
+      "flexion_3_int": "-a",
+      "labels": {
+        "flexion_1": "M · masculine",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NMPE-∅",
+      "word_class_1": "N"
+    },
+    "id": "g12507_6bd6f5ba",
+    "lemma": {
+      "deu": "vúdar",
+      "display_deu": "vúdar",
+      "display_int": "vúdar",
+      "int": "vúdar"
+    },
+    "meanings": {
+      "de": [
+        "Tür",
+        "Tor"
+      ],
+      "en": [
+        "door",
+        "gate"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "M",
+      "kind": "noun_declension",
+      "paradigm": "NMPE-∅"
+    },
+    "source": {
+      "row": 12507,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vudar",
+        "int": "vudar"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vudar",
+        "source_2_int": "vudar"
+      },
+      "variation": {
+        "deu": "vudaráschi",
+        "int": "vudaráši"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M/F",
+      "flexion_2_deu": "-ís-/-á-",
+      "flexion_2_int": "-ís-/-á-",
+      "flexion_3_deu": "-tscha/-kíji",
+      "flexion_3_int": "-ča/-kíji",
+      "labels": {
+        "flexion_1": "M/F",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NMF-02",
+      "word_class_1": "N"
+    },
+    "id": "g12508_ec163f7a",
+    "lemma": {
+      "deu": "vudarár-i/-kíja",
+      "display_deu": "vudarári/kíja",
+      "display_int": "vudarári/kíja",
+      "int": "vudarár-i/-kíja"
+    },
+    "meanings": {
+      "de": [
+        "Türsteher/in",
+        "Portier/in",
+        "Torwächter/in"
+      ],
+      "en": [
+        "doorman/woman",
+        "concierge",
+        "gatekeeper"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "M/F",
+      "kind": "noun_declension",
+      "paradigm": "NMF-02"
+    },
+    "source": {
+      "row": 12508,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "desto",
+        "int": "desto"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "desto",
+        "source_2_int": "desto"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M",
+      "labels": {
+        "flexion_1": "M · masculine",
+        "word_class_1": "NP · Nounphrase"
+      },
+      "word_class_1": "NP"
+    },
+    "id": "g12509_0038a07f",
+    "lemma": {
+      "deu": "vudaréskero désto",
+      "display_deu": "vudaréskero désto",
+      "display_int": "vudaréskero désto",
+      "int": "vudaréskero désto"
+    },
+    "meanings": {
+      "de": [
+        "Türgriff",
+        "Türschnalle"
+      ],
+      "en": [
+        "door handle",
+        "door latch"
+      ]
+    },
+    "source": {
+      "row": 12509,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vujno",
+        "int": "vujno"
+      },
+      "source": {
+        "source_1": "HUN",
+        "source_1_label": "HUN · Hungarian",
+        "source_2_deu": "vonó",
+        "source_2_int": "vonó"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M",
+      "flexion_2_deu": "-ós-",
+      "flexion_2_int": "-ós-",
+      "flexion_3_deu": "-i",
+      "flexion_3_int": "-i",
+      "labels": {
+        "flexion_1": "M · masculine",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NME-o-1",
+      "word_class_1": "N"
+    },
+    "id": "g12510_721bc8fb",
+    "lemma": {
+      "deu": "vújn-o",
+      "display_deu": "vújno",
+      "display_int": "vújno",
+      "int": "vújn-o"
+    },
+    "meanings": {
+      "de": [
+        "Geigenbogen"
+      ],
+      "en": [
+        "violin bow"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "M",
+      "kind": "noun_declension",
+      "paradigm": "NME-o-1"
+    },
+    "source": {
+      "row": 12510,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vujno",
+        "int": "vujno"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vujno",
+        "source_2_int": "vujno"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M/F",
+      "flexion_2_int": "-e/-a",
+      "labels": {
+        "flexion_1": "M/F",
+        "word_class_1": "ADJ · Adjectiv"
+      },
+      "paradigm": "ADJ-DECL",
+      "word_class_1": "ADJ"
+    },
+    "id": "g12511_84a9a626",
+    "lemma": {
+      "deu": "vujnún-o/-i",
+      "display_deu": "vujnúno/i",
+      "display_int": "vujnúno/i",
+      "int": "vujnún-o/-i"
+    },
+    "meanings": {
+      "de": [
+        "Geigenbogen-"
+      ],
+      "en": [
+        "violin-bow"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "kind": "adjective_declension",
+      "paradigm": "ADJ-DECL"
+    },
+    "source": {
+      "row": 12511,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vulkan",
+        "int": "vulkan"
+      },
+      "source": {
+        "source_1": "DEU",
+        "source_1_label": "DEU · German",
+        "source_2_deu": "Vulkan",
+        "source_2_int": "Vulkan"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M",
+      "flexion_2_deu": "-ís-",
+      "flexion_2_int": "-ís-",
+      "flexion_3_deu": "-tscha",
+      "flexion_3_int": "-ča",
+      "labels": {
+        "flexion_1": "M · masculine",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NME-∅-1",
+      "word_class_1": "N"
+    },
+    "id": "g12512_4c8a49bf",
+    "lemma": {
+      "deu": "vulkán",
+      "display_deu": "vulkán",
+      "display_int": "vulkán",
+      "int": "vulkán"
+    },
+    "meanings": {
+      "de": [
+        "Vulkan"
+      ],
+      "en": [
+        "volcano"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "M",
+      "kind": "noun_declension",
+      "paradigm": "NME-∅-1"
+    },
+    "source": {
+      "row": 12512,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vulkan",
+        "int": "vulkan"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vulkan",
+        "source_2_int": "vulkan"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M/F",
+      "flexion_2_int": "-e/-a",
+      "labels": {
+        "flexion_1": "M/F",
+        "word_class_1": "ADJ · Adjectiv"
+      },
+      "paradigm": "ADJ-DECL",
+      "word_class_1": "ADJ"
+    },
+    "id": "g12513_d1c36bac",
+    "lemma": {
+      "deu": "vulkanún-o/-i",
+      "display_deu": "vulkanúno/i",
+      "display_int": "vulkanúno/i",
+      "int": "vulkanún-o/-i"
+    },
+    "meanings": {
+      "de": [
+        "Vulkan-",
+        "vulkanisch"
+      ],
+      "en": [
+        "volcano",
+        "volcanic"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "kind": "adjective_declension",
+      "paradigm": "ADJ-DECL"
+    },
+    "source": {
+      "row": 12513,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vuna",
+        "int": "vuna"
+      },
+      "source": {
+        "source_1": "SLA",
+        "source_1_label": "SLA · South Slavic (global)",
+        "source_2_deu": "vuna",
+        "source_2_int": "vuna"
+      }
+    },
+    "grammar": {
+      "flexion_1": "F",
+      "flexion_2_deu": "-á-",
+      "flexion_2_int": "-á-",
+      "flexion_3_deu": "-i",
+      "flexion_3_int": "-i",
+      "labels": {
+        "flexion_1": "F · feminine",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NFE-a",
+      "word_class_1": "N"
+    },
+    "id": "g12514_af0108df",
+    "lemma": {
+      "deu": "vún-a",
+      "display_deu": "vúna",
+      "display_int": "vúna",
+      "int": "vún-a"
+    },
+    "meanings": {
+      "de": [
+        "Fell",
+        "Pelz"
+      ],
+      "en": [
+        "fur"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "F",
+      "kind": "noun_declension",
+      "paradigm": "NFE-a"
+    },
+    "source": {
+      "row": 12514,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "kirhaj",
+        "int": "kirhaj"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "kirhaj",
+        "source_2_int": "kirhaj"
+      }
+    },
+    "grammar": {
+      "flexion_1": "F",
+      "labels": {
+        "flexion_1": "F · feminine",
+        "word_class_1": "NP · Nounphrase"
+      },
+      "word_class_1": "NP"
+    },
+    "id": "g12515_437e5270",
+    "lemma": {
+      "deu": "vunákeri kírhaj",
+      "display_deu": "vunákeri kírhaj",
+      "display_int": "vunákeri kírhaj",
+      "int": "vunákeri kírhaj"
+    },
+    "meanings": {
+      "de": [
+        "Pelzstiefel"
+      ],
+      "en": [
+        "fur boots"
+      ]
+    },
+    "source": {
+      "row": 12515,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vuna",
+        "int": "vuna"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vuna",
+        "source_2_int": "vuna"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M/F",
+      "flexion_2_int": "-e/-a",
+      "labels": {
+        "flexion_1": "M/F",
+        "word_class_1": "ADJ · Adjectiv"
+      },
+      "paradigm": "ADJ-DECL",
+      "word_class_1": "ADJ"
+    },
+    "id": "g12516_25cf3378",
+    "lemma": {
+      "deu": "vunál-o/-i",
+      "display_deu": "vunálo/i",
+      "display_int": "vunálo/i",
+      "int": "vunál-o/-i"
+    },
+    "meanings": {
+      "de": [
+        "Fell-",
+        "fellern",
+        "Pelz-",
+        "pelzern"
+      ],
+      "en": [
+        "fur"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "kind": "adjective_declension",
+      "paradigm": "ADJ-DECL"
+    },
+    "source": {
+      "row": 12516,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vuna",
+        "int": "vuna"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vuna",
+        "source_2_int": "vuna"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M/F",
+      "flexion_2_int": "-e/-a",
+      "labels": {
+        "flexion_1": "M/F",
+        "word_class_1": "ADJ · Adjectiv"
+      },
+      "paradigm": "ADJ-DECL",
+      "word_class_1": "ADJ"
+    },
+    "id": "g12517_920d0659",
+    "lemma": {
+      "deu": "vunikál-o/-i",
+      "display_deu": "vunikálo/i",
+      "display_int": "vunikálo/i",
+      "int": "vunikál-o/-i"
+    },
+    "meanings": {
+      "de": [
+        "fellig",
+        "pelzig"
+      ],
+      "en": [
+        "fur-like",
+        "fury"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "kind": "adjective_declension",
+      "paradigm": "ADJ-DECL"
+    },
+    "source": {
+      "row": 12517,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vurca",
+        "int": "vurca"
+      },
+      "source": {
+        "source_1": "GRC",
+        "source_1_label": "GRC · Byzantine Greek (until 1453)",
+        "source_2_deu": "vúrtsa",
+        "source_2_int": "vúrtsa"
+      }
+    },
+    "grammar": {
+      "flexion_1": "F",
+      "flexion_2_deu": "-á-",
+      "flexion_2_int": "-á-",
+      "flexion_3_deu": "-i",
+      "flexion_3_int": "-i",
+      "labels": {
+        "flexion_1": "F · feminine",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NFPE-a",
+      "word_class_1": "N"
+    },
+    "id": "g12518_b46fbd07",
+    "lemma": {
+      "deu": "vúrc-a",
+      "display_deu": "vúrca",
+      "display_int": "vúrca",
+      "int": "vúrc-a"
+    },
+    "meanings": {
+      "de": [
+        "Bürste"
+      ],
+      "en": [
+        "brush"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "F",
+      "kind": "noun_declension",
+      "paradigm": "NFPE-a"
+    },
+    "source": {
+      "row": 12518,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vurca",
+        "int": "vurca"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vurca",
+        "source_2_int": "vurca"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M/F",
+      "flexion_2_int": "-e/-a",
+      "labels": {
+        "flexion_1": "M/F",
+        "word_class_1": "ADJ · Adjectiv"
+      },
+      "paradigm": "ADJ-DECL",
+      "word_class_1": "ADJ"
+    },
+    "id": "g12519_23fddf29",
+    "lemma": {
+      "deu": "vurcún-o/-i",
+      "display_deu": "vurcúno/i",
+      "display_int": "vurcúno/i",
+      "int": "vurcún-o/-i"
+    },
+    "meanings": {
+      "de": [
+        "Bürsten-"
+      ],
+      "en": [
+        "brush"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "kind": "adjective_declension",
+      "paradigm": "ADJ-DECL"
+    },
+    "source": {
+      "row": 12519,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vusko",
+        "int": "vusko"
+      },
+      "source": {
+        "source_1": "SLA",
+        "source_1_label": "SLA · South Slavic (global)",
+        "source_2_deu": "uzak",
+        "source_2_int": "uzak"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M/F",
+      "flexion_2_int": "-e/-a",
+      "labels": {
+        "flexion_1": "M/F",
+        "word_class_1": "ADJ · Adjectiv"
+      },
+      "paradigm": "ADJ-DECL",
+      "word_class_1": "ADJ"
+    },
+    "id": "g12520_90b991d8",
+    "lemma": {
+      "deu": "vúsk-o/-i",
+      "display_deu": "vúsko/i",
+      "display_int": "vúsko/i",
+      "int": "vúsk-o/-i"
+    },
+    "meanings": {
+      "de": [
+        "schmal",
+        "eng"
+      ],
+      "en": [
+        "narrow"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "kind": "adjective_declension",
+      "paradigm": "ADJ-DECL"
+    },
+    "source": {
+      "row": 12520,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vusko",
+        "int": "vusko"
+      },
+      "reconstruction": {
+        "deu": "< *vuskóvav",
+        "int": "< *vuskóvav"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vusko",
+        "source_2_int": "vusko"
+      }
+    },
+    "grammar": {
+      "flexion_2_deu": "-íl-",
+      "flexion_2_int": "-íl-",
+      "flexion_3_deu": "-íle",
+      "flexion_3_int": "-íle",
+      "labels": {
+        "word_class_1": "V · Verb",
+        "word_class_2": "INTR"
+      },
+      "paradigm": "V-04",
+      "word_class_1": "V",
+      "word_class_2": "INTR"
+    },
+    "id": "g12521_51378e30",
+    "lemma": {
+      "deu": "vusk-ójav",
+      "display_deu": "vuskójav",
+      "display_int": "vuskójav",
+      "int": "vusk-ójav"
+    },
+    "meanings": {
+      "de": [
+        "schmal werden",
+        "schmälern (sich)",
+        "eng werden",
+        "verengen (sich)"
+      ],
+      "en": [
+        "to become narrow",
+        "to narrow (os.)"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "kind": "verb_conjugation",
+      "paradigm": "V-04"
+    },
+    "source": {
+      "row": 12521,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vusko",
+        "int": "vusko"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vusko",
+        "source_2_int": "vusko"
+      }
+    },
+    "grammar": {
+      "flexion_2_deu": "-tsch-",
+      "flexion_2_int": "-č-",
+      "flexion_3_deu": "-de",
+      "flexion_3_int": "-de",
+      "labels": {
+        "word_class_1": "V · Verb"
+      },
+      "paradigm": "V-01",
+      "word_class_1": "V"
+    },
+    "id": "g12522_a19d0944",
+    "lemma": {
+      "deu": "vuskár-av",
+      "display_deu": "vuskárav",
+      "display_int": "vuskárav",
+      "int": "vuskár-av"
+    },
+    "meanings": {
+      "de": [
+        "schmal machen",
+        "schmälern (etw.)",
+        "eng machen",
+        "verengen (etw.)"
+      ],
+      "en": [
+        "to make narrow",
+        "to narrow (sth.)",
+        "to belittle",
+        "to minimise"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "kind": "verb_conjugation",
+      "paradigm": "V-01"
+    },
+    "source": {
+      "row": 12522,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vusko",
+        "int": "vusko"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vusko",
+        "source_2_int": "vusko"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M",
+      "flexion_2_deu": "-és-",
+      "flexion_2_int": "-és-",
+      "flexion_3_deu": "-tscha",
+      "flexion_3_int": "-ča",
+      "labels": {
+        "flexion_1": "M · masculine",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NMPE-A",
+      "word_class_1": "N"
+    },
+    "id": "g12523_08b9169f",
+    "lemma": {
+      "deu": "vuskaríp-e",
+      "display_deu": "vuskarípe",
+      "display_int": "vuskarípe",
+      "int": "vuskaríp-e"
+    },
+    "meanings": {
+      "de": [
+        "Schmalmachen",
+        "Schmälern (etw.)",
+        "Schmälerung",
+        "Engmachen",
+        "Verengen (etw.)",
+        "Verengung (etw.)"
+      ],
+      "en": [
+        "making narrow",
+        "narrowing (sth.)",
+        "belittling",
+        "minimising",
+        "minimisation"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "M",
+      "kind": "noun_declension",
+      "paradigm": "NMPE-A"
+    },
+    "source": {
+      "row": 12523,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vusko",
+        "int": "vusko"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vusko",
+        "source_2_int": "vusko"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M",
+      "flexion_2_deu": "-és-",
+      "flexion_2_int": "-és-",
+      "flexion_3_deu": "-tscha",
+      "flexion_3_int": "-ča",
+      "labels": {
+        "flexion_1": "M · masculine",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NMPE-A",
+      "word_class_1": "N"
+    },
+    "id": "g12524_a097d384",
+    "lemma": {
+      "deu": "vuskíp-e",
+      "display_deu": "vuskípe",
+      "display_int": "vuskípe",
+      "int": "vuskíp-e"
+    },
+    "meanings": {
+      "de": [
+        "Schmalsein",
+        "Schmalheit",
+        "Engsein",
+        "Enge"
+      ],
+      "en": [
+        "being narrow",
+        "narrowness",
+        "narrow-mindedness"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "M",
+      "kind": "noun_declension",
+      "paradigm": "NMPE-A"
+    },
+    "source": {
+      "row": 12524,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "drom",
+        "int": "drom"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "drom",
+        "source_2_int": "drom"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M",
+      "labels": {
+        "flexion_1": "M · masculine",
+        "word_class_1": "NP · Nounphrase"
+      },
+      "word_class_1": "NP"
+    },
+    "id": "g12525_9fa54a79",
+    "lemma": {
+      "deu": "vúsko dróm",
+      "display_deu": "vúsko dróm",
+      "display_int": "vúsko dróm",
+      "int": "vúsko dróm"
+    },
+    "meanings": {
+      "de": [
+        "schmaler Weg",
+        "Pfad"
+      ],
+      "en": [
+        "narrow road",
+        "path"
+      ]
+    },
+    "source": {
+      "row": 12525,
+      "sheet": "GLOSSARY"
+    }
+  },
+  {
+    "details": {
+      "base": {
+        "deu": "vusko",
+        "int": "vusko"
+      },
+      "source": {
+        "source_1": "→",
+        "source_1_label": "→ · internal derivation or word-family link",
+        "source_2_deu": "vusko",
+        "source_2_int": "vusko"
+      }
+    },
+    "grammar": {
+      "flexion_1": "M",
+      "flexion_2_deu": "-és-",
+      "flexion_2_int": "-és-",
+      "flexion_3_deu": "-tscha",
+      "flexion_3_int": "-ča",
+      "labels": {
+        "flexion_1": "M · masculine",
+        "word_class_1": "N · Noun"
+      },
+      "paradigm": "NMPE-A",
+      "word_class_1": "N"
+    },
+    "id": "g12526_33430fb6",
+    "lemma": {
+      "deu": "vuskojíp-e",
+      "display_deu": "vuskojípe",
+      "display_int": "vuskojípe",
+      "int": "vuskojíp-e"
+    },
+    "meanings": {
+      "de": [
+        "Schmalwerden",
+        "Verschmälern (sich)",
+        "Engwerden",
+        "Verengen (sich)",
+        "Verengung (sich)"
+      ],
+      "en": [
+        "becoming narrow",
+        "narrowing (os.)"
+      ]
+    },
+    "morphology": {
+      "available": true,
+      "gender_class": "M",
+      "kind": "noun_declension",
+      "paradigm": "NMPE-A"
+    },
+    "source": {
+      "row": 12526,
+      "sheet": "GLOSSARY"
+    }
+  }
+]

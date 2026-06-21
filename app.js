@@ -1,5 +1,5 @@
 const DATA_URLS = {
-  entries: "data/processed/entries.json",
+  manifest: "data/processed/entries_manifest.json",
   search: "data/processed/entries_search.json",
   references: "data/processed/references.json",
   paradigmModel: "data/processed/paradigm_model.json",
@@ -7,6 +7,9 @@ const DATA_URLS = {
 
 const state = {
   entriesById: new Map(),
+  entryChunks: new Map(),
+  searchEntriesById: new Map(),
+  entryManifest: {},
   searchEntries: [],
   wordFamilies: new Map(),
   references: {},
@@ -94,7 +97,8 @@ function combineStemAndEnding(stem, ending) {
 }
 
 function displayLemma(searchEntry) {
-  return state.spelling === "deu" ? searchEntry.roman_deu : searchEntry.roman_int;
+  const preferred = state.spelling === "deu" ? searchEntry.roman_deu : searchEntry.roman_int;
+  return preferred || searchEntry.roman_int || searchEntry.roman_deu || "Untitled entry";
 }
 
 function rawLemma(entry) {
@@ -103,6 +107,7 @@ function rawLemma(entry) {
 }
 
 function entryDisplayLemma(entry) {
+  if (!entry?.lemma) return displayLemma(entry || {});
   const lemma = entry?.lemma || {};
   return lemma[`display_${state.spelling}`] || lemma.display_int || lemma.display_deu || "";
 }
@@ -275,10 +280,10 @@ function renderForms(entry) {
   if (!generated) {
     if (!morphology.kind) return "";
     return `
-      <section class="entry-section">
-        <h3>Forms</h3>
+      <details class="entry-section forms-disclosure">
+        <summary>Forms <span class="provisional-badge">Provisional</span></summary>
         <p class="fallback-note">No generated forms available for this entry yet. Paradigm: ${escapeHtml(morphology.source_paradigm || morphology.paradigm || "none")}.</p>
-      </section>
+      </details>
     `;
   }
 
@@ -290,9 +295,9 @@ function renderForms(entry) {
   }[generated.kind] || "Forms";
 
   return `
-    <section class="entry-section">
-      <h3>${escapeHtml(title)}</h3>
-      <p class="form-note">Generated from paradigm ${escapeHtml(generated.paradigm)} using the ${state.spelling.toUpperCase()} spelling.</p>
+    <details class="entry-section forms-disclosure">
+      <summary>${escapeHtml(title)} <span class="provisional-badge">Provisional</span></summary>
+      <p class="form-note">Generated from paradigm ${escapeHtml(generated.paradigm)} using the ${state.spelling.toUpperCase()} spelling. These forms have not yet passed linguistic review.</p>
       ${renderGenerationExplanation(entry, generated)}
       <div class="form-table-wrap">
         <table class="form-table">
@@ -318,7 +323,7 @@ function renderForms(entry) {
           </tbody>
         </table>
       </div>
-    </section>
+    </details>
   `;
 }
 
@@ -360,9 +365,8 @@ function prepareSearchEntries(entries) {
 function buildWordFamilies(entries) {
   const families = new Map();
   for (const entry of entries) {
-    const base = entry.details?.base || {};
     for (const spelling of ["int", "deu"]) {
-      const value = base[spelling];
+      const value = entry[`base_${spelling}`];
       if (!value) continue;
       const key = normalizeSearch(`${spelling}:${value}`);
       if (!families.has(key)) families.set(key, []);
@@ -377,9 +381,10 @@ function renderWordFamily(entry) {
   const baseValue = base[state.spelling] || base.int || base.deu;
   if (!baseValue) return "";
 
-  const key = normalizeSearch(`${state.spelling}:${base[state.spelling] || baseValue}`);
+  const baseSpelling = base[state.spelling] ? state.spelling : (base.int ? "int" : "deu");
+  const key = normalizeSearch(`${baseSpelling}:${baseValue}`);
   const related = (state.wordFamilies.get(key) || [])
-    .map((id) => state.entriesById.get(id))
+    .map((id) => state.searchEntriesById.get(id))
     .filter(Boolean)
     .filter((item) => item.id !== entry.id)
     .slice(0, 60);
@@ -419,6 +424,10 @@ function updateFilteredEntries() {
   const query = normalizeSearch(state.query);
   if (!query) {
     state.filteredEntries = state.searchEntries.slice(0, MAX_RESULTS);
+    const selected = state.searchEntriesById.get(state.selectedId);
+    if (selected && !state.filteredEntries.some((entry) => entry.id === selected.id)) {
+      state.filteredEntries = [selected, ...state.filteredEntries.slice(0, MAX_RESULTS - 1)];
+    }
     if (!state.selectedId && state.filteredEntries.length) {
       state.selectedId = state.filteredEntries[0].id;
     }
@@ -470,6 +479,24 @@ function field(label, value) {
   `;
 }
 
+function linkedField(label, value, url) {
+  if (!value) return "";
+  let safeUrl = "";
+  try {
+    const parsed = new URL(url);
+    if (["http:", "https:"].includes(parsed.protocol)) safeUrl = parsed.href;
+  } catch {
+    // Invalid or unsupported source links remain visible as plain text.
+  }
+  if (!safeUrl) return field(label, value);
+  return `
+    <div class="field">
+      <dt>${escapeHtml(label)}</dt>
+      <dd><a href="${escapeHtml(safeUrl)}" target="_blank" rel="noreferrer">${escapeHtml(value)}</a></dd>
+    </div>
+  `;
+}
+
 function pairFields(label, value) {
   if (!value) return "";
   const parts = [];
@@ -513,8 +540,8 @@ function renderEntry() {
     pairFields("Reconstruction", details.reconstruction),
     pairFields("Base", details.base),
     field("Source type", labelWithCode(details.source?.source_1)),
-    field("Source 2 INT", details.source?.source_2_int),
-    field("Source 2 DEU", details.source?.source_2_deu),
+    linkedField("Source 2 INT", details.source?.source_2_int, details.source?.source_2_int_url),
+    linkedField("Source 2 DEU", details.source?.source_2_deu, details.source?.source_2_deu_url),
     field("Paradigm", grammar.paradigm),
     field("Resolved paradigm", entry.morphology?.source_paradigm ? entry.morphology.paradigm : ""),
     field("Domain", labelWithCode(grammar.domain)),
@@ -569,41 +596,150 @@ function renderEntry() {
   `;
 }
 
-function render() {
+function storedPreference(key, fallback) {
+  try {
+    return localStorage.getItem(key) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function savePreference(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // The URL still preserves the current choice when storage is unavailable.
+  }
+}
+
+function applyUrlState() {
+  const params = new URL(window.location.href).searchParams;
+  const spelling = params.get("spelling") || storedPreference("roman-spelling", "int");
+  const language = params.get("meaning") || storedPreference("roman-meaning", "de");
+  state.spelling = ["int", "deu"].includes(spelling) ? spelling : "int";
+  state.language = ["de", "en"].includes(language) ? language : "de";
+  state.query = params.get("q") || "";
+  state.selectedId = params.get("entry") || state.selectedId;
+  if (state.selectedId && !state.searchEntriesById.has(state.selectedId)) {
+    state.selectedId = null;
+  }
+  els.search.value = state.query;
+  updateControlButtons();
+}
+
+function syncUrl() {
+  const url = new URL(window.location.href);
+  const params = url.searchParams;
+  state.query ? params.set("q", state.query) : params.delete("q");
+  state.selectedId ? params.set("entry", state.selectedId) : params.delete("entry");
+  params.set("spelling", state.spelling);
+  params.set("meaning", state.language);
+  history.replaceState(null, "", url);
+}
+
+function updateControlButtons() {
+  els.spellingButtons.forEach((button) => {
+    const active = button.dataset.spelling === state.spelling;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  els.languageButtons.forEach((button) => {
+    const active = button.dataset.language === state.language;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+}
+
+async function ensureEntryLoaded(id) {
+  if (!id || state.entriesById.has(id)) return state.entriesById.get(id);
+  const searchEntry = state.searchEntriesById.get(id);
+  const chunkId = searchEntry?.chunk;
+  const chunk = state.entryManifest.chunks?.[chunkId];
+  if (!chunk) throw new Error(`Entry data chunk is missing for ${id}.`);
+
+  if (!state.entryChunks.has(chunkId)) {
+    const request = fetch(`data/processed/${chunk.file}`)
+      .then((response) => {
+        if (!response.ok) throw new Error(`Could not load ${chunk.file}.`);
+        return response.json();
+      })
+      .then((entries) => {
+        entries.forEach((entry) => state.entriesById.set(entry.id, entry));
+        return entries;
+      })
+      .catch((error) => {
+        state.entryChunks.delete(chunkId);
+        throw error;
+      });
+    state.entryChunks.set(chunkId, request);
+  }
+
+  await state.entryChunks.get(chunkId);
+  return state.entriesById.get(id);
+}
+
+async function renderSelectedEntry() {
+  const selectedId = state.selectedId;
+  if (!selectedId) {
+    renderEntry();
+    return;
+  }
+  if (!state.entriesById.has(selectedId)) {
+    els.entryPane.setAttribute("aria-busy", "true");
+    els.entryPane.innerHTML = `
+      <div class="empty-state loading-state">
+        <h2>Loading entry…</h2>
+      </div>
+    `;
+  }
+  try {
+    await ensureEntryLoaded(selectedId);
+    if (state.selectedId === selectedId) {
+      els.entryPane.setAttribute("aria-busy", "false");
+      renderEntry();
+    }
+  } catch (error) {
+    if (state.selectedId === selectedId) {
+      els.entryPane.setAttribute("aria-busy", "false");
+      els.entryPane.innerHTML = `<div class="error-state">${escapeHtml(error.message)}</div>`;
+    }
+  }
+}
+
+function render({ updateUrl = true } = {}) {
   updateFilteredEntries();
   renderResults();
-  renderEntry();
+  void renderSelectedEntry();
+  if (updateUrl) syncUrl();
 }
 
 function selectEntry(id) {
   state.selectedId = id;
-  renderResults();
-  renderEntry();
+  render();
 }
 
 async function loadData() {
-  const [entriesResponse, searchResponse, referencesResponse, paradigmModelResponse] = await Promise.all([
-    fetch(DATA_URLS.entries),
+  const responses = await Promise.all([
+    fetch(DATA_URLS.manifest),
     fetch(DATA_URLS.search),
     fetch(DATA_URLS.references),
     fetch(DATA_URLS.paradigmModel),
   ]);
-  if (!entriesResponse.ok || !searchResponse.ok || !referencesResponse.ok || !paradigmModelResponse.ok) {
+  if (responses.some((response) => !response.ok)) {
     throw new Error("Could not load processed dictionary JSON.");
   }
-  const [entries, searchEntries, references, paradigmModel] = await Promise.all([
-    entriesResponse.json(),
-    searchResponse.json(),
-    referencesResponse.json(),
-    paradigmModelResponse.json(),
-  ]);
-  state.entriesById = new Map(entries.map((entry) => [entry.id, entry]));
-  state.wordFamilies = buildWordFamilies(entries);
+  const [entryManifest, searchEntries, references, paradigmModel] = await Promise.all(
+    responses.map((response) => response.json()),
+  );
+  state.entryManifest = entryManifest;
   state.searchEntries = prepareSearchEntries(searchEntries);
+  state.searchEntriesById = new Map(state.searchEntries.map((entry) => [entry.id, entry]));
+  state.wordFamilies = buildWordFamilies(state.searchEntries);
   state.references = references;
   state.paradigmModel = paradigmModel;
-  state.selectedId = state.searchEntries[0]?.id || null;
-  els.status.textContent = `${entries.length.toLocaleString()} entries loaded`;
+  applyUrlState();
+  state.selectedId ||= state.searchEntries[0]?.id || null;
+  els.status.textContent = `${entryManifest.entry_count.toLocaleString()} entries indexed · details load on demand`;
   render();
 }
 
@@ -614,22 +750,19 @@ els.search.addEventListener("input", (event) => {
 
 els.results.addEventListener("click", (event) => {
   const button = event.target.closest("[data-entry-id]");
-  if (button) {
-    selectEntry(button.dataset.entryId);
-  }
+  if (button) selectEntry(button.dataset.entryId);
 });
 
 els.entryPane.addEventListener("click", (event) => {
   const button = event.target.closest("[data-entry-id]");
-  if (button) {
-    selectEntry(button.dataset.entryId);
-  }
+  if (button) selectEntry(button.dataset.entryId);
 });
 
 els.spellingButtons.forEach((button) => {
   button.addEventListener("click", () => {
     state.spelling = button.dataset.spelling;
-    els.spellingButtons.forEach((item) => item.classList.toggle("active", item === button));
+    savePreference("roman-spelling", state.spelling);
+    updateControlButtons();
     render();
   });
 });
@@ -637,9 +770,15 @@ els.spellingButtons.forEach((button) => {
 els.languageButtons.forEach((button) => {
   button.addEventListener("click", () => {
     state.language = button.dataset.language;
-    els.languageButtons.forEach((item) => item.classList.toggle("active", item === button));
+    savePreference("roman-meaning", state.language);
+    updateControlButtons();
     render();
   });
+});
+
+window.addEventListener("popstate", () => {
+  applyUrlState();
+  render({ updateUrl: false });
 });
 
 loadData().catch((error) => {

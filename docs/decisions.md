@@ -1,5 +1,33 @@
 # Decision log
 
+## 2026-06-21 — Review gates temporarily fast-tracked
+
+Valentin asked development to continue without intermediate review and will do a
+major review later. Engineering may use conservative defaults and proceed through
+the planned gates. Every unreviewed product or linguistic choice remains
+provisional and must be easy to locate in this log, `AGENTS.md`, tests, or source
+validation reports.
+
+Current provisional defaults:
+
+- English interface labels;
+- `INT` Roman spelling on first visit;
+- German meanings on first visit;
+- URL parameters override remembered browser preferences;
+- generated morphology is collapsed and labelled `Provisional`;
+- the static-site architecture remains in place;
+- current row-derived entry IDs may be shared during development but are not a
+  permanent identity contract.
+
+These choices are reversible and do not alter editorial source data.
+
+## 2026-06-21 — Entry details load in deterministic chunks
+
+The initial browser load uses the search index, references, morphology model, and
+an entry-chunk manifest. Full entry records are fetched in 500-entry chunks on
+demand. The monolithic `entries.json` remains generated for audit/compatibility,
+but the frontend no longer blocks on it.
+
 ## 2026-06-21 — June source package is authoritative
 
 Use `2026-06-17_roman-wb.xlsx` and `2026-06-17_struktur.pdf`. Keep May files and

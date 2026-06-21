@@ -30,6 +30,22 @@ input {
   font: inherit;
 }
 
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 20;
+  padding: 9px 12px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: #fff;
+  transform: translateY(-150%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 .app-shell {
   min-height: 100vh;
   display: flex;
@@ -353,12 +369,59 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+.field a {
+  color: var(--accent-strong);
+  text-underline-offset: 0.18em;
+}
+
 details.entry-section summary {
   cursor: pointer;
   color: var(--muted);
   font-size: 13px;
   font-weight: 800;
   text-transform: uppercase;
+}
+
+.forms-disclosure > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.forms-disclosure[open] > summary {
+  margin-bottom: 16px;
+}
+
+.provisional-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: #fff1dd;
+  color: #754113;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.loading-state {
+  animation: loading-pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes loading-pulse {
+  from { opacity: 0.45; }
+  to { opacity: 0.85; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-state {
+    animation: none;
+  }
 }
 
 details.entry-section .definition-grid {

@@ -18,6 +18,7 @@ from openpyxl import load_workbook
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_WORKBOOK = ROOT / "roman-wb-valentin" / "2026-06-17_roman-wb.xlsx"
 DEFAULT_OUTPUT_DIR = ROOT / "data" / "processed"
+ENTRY_CHUNK_SIZE = 500
 
 DASH_VALUES = {"", "-", "–", "—", "―"}
 
@@ -403,11 +404,14 @@ def build_search_entries(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
         lemma = entry.get("lemma", {})
         grammar = entry.get("grammar", {})
         meanings = entry.get("meanings", {})
+        details = entry.get("details", {})
+        source_row = entry["source"]["row"]
         search_entries.append(
             compact_dict(
                 {
                     "id": entry["id"],
-                    "source_row": entry["source"]["row"],
+                    "source_row": source_row,
+                    "chunk": f"{(source_row - 2) // ENTRY_CHUNK_SIZE:03d}",
                     "roman_int": lemma.get("display_int", lemma.get("int", "")),
                     "roman_deu": lemma.get("display_deu", lemma.get("deu", "")),
                     "raw_roman_int": lemma.get("int", ""),
@@ -416,6 +420,8 @@ def build_search_entries(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
                     "word_class_label": grammar.get("labels", {}).get("word_class_1", ""),
                     "subclass": grammar.get("word_class_2", ""),
                     "subclass_label": grammar.get("labels", {}).get("word_class_2", ""),
+                    "base_int": details.get("base", {}).get("int", ""),
+                    "base_deu": details.get("base", {}).get("deu", ""),
                     "de": meanings.get("de", [])[:3],
                     "en": meanings.get("en", [])[:3],
                 }
@@ -1335,6 +1341,8 @@ def build_summary(workbook: Path, df: pd.DataFrame, entries: list[dict[str, Any]
         "top_paradigm_counts": dict(list(paradigm_counts.items())[:30]),
         "output_files": [
             "entries.json",
+            "entries_manifest.json",
+            "entries/entries-*.json",
             "entries_search.json",
             "abbreviations.json",
             "references.json",
@@ -1420,6 +1428,39 @@ def write_json(path: Path, data: Any) -> None:
     )
 
 
+def write_entry_chunks(output_dir: Path, entries: list[dict[str, Any]]) -> dict[str, Any]:
+    entries_dir = output_dir / "entries"
+    entries_dir.mkdir(parents=True, exist_ok=True)
+    chunks: dict[str, dict[str, Any]] = {}
+    expected_files: set[str] = set()
+
+    for start in range(0, len(entries), ENTRY_CHUNK_SIZE):
+        chunk_entries = entries[start : start + ENTRY_CHUNK_SIZE]
+        chunk_id = f"{start // ENTRY_CHUNK_SIZE:03d}"
+        filename = f"entries-{chunk_id}.json"
+        expected_files.add(filename)
+        write_json(entries_dir / filename, chunk_entries)
+        chunks[chunk_id] = {
+            "file": f"entries/{filename}",
+            "count": len(chunk_entries),
+            "first_source_row": chunk_entries[0]["source"]["row"],
+            "last_source_row": chunk_entries[-1]["source"]["row"],
+        }
+
+    for existing in entries_dir.glob("entries-*.json"):
+        if existing.name not in expected_files:
+            existing.unlink()
+
+    manifest = {
+        "schema_version": 1,
+        "chunk_size": ENTRY_CHUNK_SIZE,
+        "entry_count": len(entries),
+        "chunks": chunks,
+    }
+    write_json(output_dir / "entries_manifest.json", manifest)
+    return manifest
+
+
 def preprocess(workbook: Path, output_dir: Path) -> None:
     if not workbook.exists():
         raise FileNotFoundError(f"Workbook not found: {workbook}")
@@ -1467,6 +1508,7 @@ def preprocess(workbook: Path, output_dir: Path) -> None:
     coverage_report = build_data_coverage_report(workbook, glossary, entries)
 
     write_json(output_dir / "entries.json", entries)
+    write_entry_chunks(output_dir, entries)
     write_json(output_dir / "entries_search.json", search_entries)
     write_json(output_dir / "abbreviations.json", abbreviations)
     write_json(output_dir / "references.json", references)

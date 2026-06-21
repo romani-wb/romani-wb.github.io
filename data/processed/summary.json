@@ -10,6 +10,8 @@
   ],
   "output_files": [
     "entries.json",
+    "entries_manifest.json",
+    "entries/entries-*.json",
     "entries_search.json",
     "abbreviations.json",
     "references.json",
