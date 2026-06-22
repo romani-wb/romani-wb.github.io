@@ -44,6 +44,8 @@ The current prototype is a static Roman dictionary with:
   at the bottom;
 - search results grouped into readable word types instead of an arbitrary first
   page of 80 alphabetical entries;
+- a globally ranked Best matches section where exact meanings outrank whole-word,
+  prefix, and loose substring matches;
 - word-type filters and a Browse catalogue with real entry counts;
 - source codes such as `PTCLV` translated into readable result labels such as
   `Particle verb`; raw codes remain in Details;
@@ -197,18 +199,20 @@ Useful manual check:
    cards (All words, Grammar guide, and seven types) are below it.
 3. Search `stay`; confirm results are grouped under Nouns and Verbs and badges
    read `Verb`, `Verb phrase`, or `Particle verb`, never bare source codes.
-4. Open verb `g00005_236c444a` (`áčav`); confirm six present forms and five
+4. Search lowercase `essen`; confirm `háv` is the first Best match and
+   `armiršágo` (`Ausmessen`) is not ranked ahead of exact eating meanings.
+5. Open verb `g00005_236c444a` (`áčav`); confirm six present forms and five
    aspect/tense groups in Conjugation.
-5. Open noun `g00003_b284cd5c` (`ablativ`); confirm seven case rows with singular
+6. Open noun `g00003_b284cd5c` (`ablativ`); confirm seven case rows with singular
    and plural columns.
-6. Open adjective `g00008_ffa2702b` (`ačálo/i`); confirm basic/oblique forms
+7. Open adjective `g00008_ffa2702b` (`ačálo/i`); confirm basic/oblique forms
    across gender and number.
-7. Toggle `INT/DEU`, `DE/EN`, layout, and type, then reload the explicit URL.
-8. Open Details and check a Source-2 link; check the site at mobile width.
-9. Click `Surprise me`; the entry and URL should change without losing settings.
-10. Open `word-list.html`; confirm 240 of 12,525 rows render initially, then test
+8. Toggle `INT/DEU`, `DE/EN`, layout, and type, then reload the explicit URL.
+9. Open Details and check a Source-2 link; check the site at mobile width.
+10. Click `Surprise me`; the entry and URL should change without losing settings.
+11. Open `word-list.html`; confirm 240 of 12,525 rows render initially, then test
     search, word type, letter, spelling, meaning language, and progressive loading.
-11. Open `grammar.html`; confirm seven noun cases, six verb persons, adjective
+12. Open `grammar.html`; confirm seven noun cases, six verb persons, adjective
     agreement, readable word-type codes, and three links to live paradigms.
 
 Focus should place navigation above the entry; Browse should place the word-type

@@ -1,5 +1,13 @@
 # Decision log
 
+## 2026-06-22 — Exact meanings outrank substrings
+
+Dictionary search ranks exact case-preserving meanings, normalized exact meanings,
+whole meaning words, prefixes, and loose substrings in that order. A globally
+ranked Best matches block appears before the remaining word-type groups. This
+prevents a query such as lowercase `essen` from ranking `Ausmessen` ahead of the
+verb whose supplied German meaning is exactly `essen`.
+
 ## 2026-06-22 — Browse becomes the default reading flow
 
 Browse now keeps search and Surprise me at the top, presents the selected entry

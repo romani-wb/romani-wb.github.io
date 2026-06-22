@@ -27,6 +27,7 @@ const state = {
   wordClassFilter: "all",
   wordTypeCounts: new Map(),
   matchTypeCounts: new Map(),
+  matchGroupOrder: [],
   totalMatches: 0,
 };
 
@@ -88,6 +89,13 @@ function normalizeSearch(value) {
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
     .toLowerCase()
+    .trim();
+}
+
+function normalizeSearchCase(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
     .trim();
 }
 
@@ -623,21 +631,38 @@ function renderWordFamily(entry) {
   `;
 }
 
-function rankEntry(entry, query) {
+function meaningMatchRank(entry, query, rawQuery) {
+  let best = 0;
+  for (const meaning of [...(entry.de || []), ...(entry.en || [])]) {
+    const cased = normalizeSearchCase(meaning);
+    const normalized = cased.toLowerCase();
+    if (cased === rawQuery) best = Math.max(best, 130);
+    else if (normalized === query) best = Math.max(best, 125);
+    else if (normalized.split(/[^\p{L}\p{N}]+/u).includes(query)) best = Math.max(best, 90);
+    else if (normalized.startsWith(query)) best = Math.max(best, 75);
+    else if (normalized.includes(query)) best = Math.max(best, 50);
+  }
+  return best;
+}
+
+function rankEntry(entry, query, rawQuery) {
   if (!query) return 1;
   const lemma = normalizeSearch(displayLemma(entry));
   const raw = normalizeSearch(
     state.spelling === "deu" ? entry.raw_roman_deu : entry.raw_roman_int,
   );
-  if (lemma === query || raw === query) return 100;
-  if (lemma.startsWith(query) || raw.startsWith(query)) return 80;
-  if (lemma.includes(query) || raw.includes(query)) return 60;
-  if (entry._search.includes(query)) return 20;
-  return 0;
+  if (lemma === query || raw === query) return 150;
+  const meaningRank = meaningMatchRank(entry, query, rawQuery);
+  const lemmaRank = lemma.startsWith(query) || raw.startsWith(query)
+    ? 120
+    : (lemma.includes(query) || raw.includes(query) ? 100 : 0);
+  const metadataRank = entry._search.includes(query) ? 20 : 0;
+  return Math.max(meaningRank, lemmaRank, metadataRank);
 }
 
 function updateFilteredEntries() {
   const query = normalizeSearch(state.query);
+  const rawQuery = normalizeSearchCase(state.query);
   const hasTypeFilter = state.wordClassFilter !== "all";
   const eligible = hasTypeFilter
     ? state.searchEntries.filter((entry) => wordTypeGroup(entry).key === state.wordClassFilter)
@@ -646,16 +671,18 @@ function updateFilteredEntries() {
   if (!query && !hasTypeFilter) {
     state.totalMatches = state.searchEntries.length;
     state.matchTypeCounts = state.wordTypeCounts;
+    state.matchGroupOrder = WORD_TYPE_GROUPS.map((group) => group.key);
     state.filteredEntries = [];
     return;
   }
 
   const ranked = eligible
-    .map((entry) => ({ entry, rank: rankEntry(entry, query) }))
+    .map((entry) => ({ entry, rank: rankEntry(entry, query, rawQuery) }))
     .filter((item) => item.rank > 0)
     .sort((a, b) => b.rank - a.rank || displayLemma(a.entry).localeCompare(displayLemma(b.entry)));
   state.totalMatches = ranked.length;
   state.matchTypeCounts = countWordTypes(ranked.map((item) => item.entry));
+  state.matchGroupOrder = [...new Set(ranked.map((item) => wordTypeGroup(item.entry).key))];
   state.filteredEntries = ranked.slice(0, MAX_RESULTS).map((item) => item.entry);
 }
 
@@ -723,7 +750,7 @@ function renderResults() {
 
   const type = WORD_TYPE_GROUPS.find((group) => group.key === state.wordClassFilter);
   els.resultMeta.textContent = query
-    ? `${state.totalMatches.toLocaleString()} match${state.totalMatches === 1 ? "" : "es"}${state.totalMatches > MAX_RESULTS ? ` · ${MAX_RESULTS} shown` : ""} · grouped by word type`
+    ? `${state.totalMatches.toLocaleString()} match${state.totalMatches === 1 ? "" : "es"}${state.totalMatches > MAX_RESULTS ? ` · ${MAX_RESULTS} shown` : ""} · ordered by relevance`
     : `${state.totalMatches.toLocaleString()} ${type?.label.toLowerCase() || "entries"}${state.totalMatches > MAX_RESULTS ? ` · ${MAX_RESULTS} shown` : ""}`;
 
   if (!state.filteredEntries.length) {
@@ -731,8 +758,19 @@ function renderResults() {
     return;
   }
 
-  els.results.innerHTML = WORD_TYPE_GROUPS.map((group) => {
-    const entries = state.filteredEntries.filter((entry) => wordTypeGroup(entry).key === group.key);
+  const orderedGroups = state.matchGroupOrder
+    .map((key) => WORD_TYPE_GROUPS.find((group) => group.key === key))
+    .filter(Boolean);
+  const bestMatches = query ? state.filteredEntries.slice(0, 8) : [];
+  const bestIds = new Set(bestMatches.map((entry) => entry.id));
+  const bestMarkup = bestMatches.length ? `
+    <section class="result-group best-match-group">
+      <div class="result-group-heading"><h2>Best matches</h2><span>${bestMatches.length}</span></div>
+      <div class="result-grid">${bestMatches.map(renderResultButton).join("")}</div>
+    </section>
+  ` : "";
+  const groupedMarkup = orderedGroups.map((group) => {
+    const entries = state.filteredEntries.filter((entry) => !bestIds.has(entry.id) && wordTypeGroup(entry).key === group.key);
     if (!entries.length) return "";
     const total = state.matchTypeCounts.get(group.key) || entries.length;
     return `
@@ -742,6 +780,7 @@ function renderResults() {
       </section>
     `;
   }).join("");
+  els.results.innerHTML = `${bestMarkup}${groupedMarkup}`;
 }
 
 function field(label, value) {

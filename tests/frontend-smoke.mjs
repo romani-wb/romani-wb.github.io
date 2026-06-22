@@ -102,8 +102,15 @@ assert.match(elements.get("#entry-pane").innerHTML, /https:\/\/de\.langenscheidt
 assert.equal(elements.get("#search-input").value, "habrin");
 assert.match(window.location.href, /entry=g04363_b4e42bdd/);
 assert.equal(document.body.dataset.edition, "explorer");
-assert.match(elements.get("#results").innerHTML, /Verbs/);
+assert.match(elements.get("#results").innerHTML, /Best matches/);
 assert.match(elements.get("#results").innerHTML, />Verb</);
+
+elements.get("#search-input").listeners.get("input")({ target: { value: "essen" } });
+const essenResults = elements.get("#results").innerHTML;
+assert.ok(essenResults.indexOf("g04511_54bad702") < essenResults.indexOf("g00701_c18b7ebf"));
+assert.ok(essenResults.indexOf("g04348_a1364d4b") < essenResults.indexOf("g00701_c18b7ebf"));
+assert.match(essenResults, /<h2>Best matches<\/h2>/);
+assert.match(elements.get("#result-meta").textContent, /ordered by relevance/);
 
 elements.get("#entry-pane").listeners.get("click")({
   target: {

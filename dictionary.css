@@ -323,6 +323,15 @@ a { color: inherit; }
 
 .result-group + .result-group { margin-top: 18px; }
 
+.best-match-group {
+  padding: 11px;
+  border: 1px solid #c7d8ce;
+  border-radius: 12px;
+  background: var(--green-pale);
+}
+
+.best-match-group .result-button { background: var(--paper-strong); }
+
 .result-group-heading {
   display: flex;
   align-items: center;
