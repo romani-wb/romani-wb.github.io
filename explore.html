@@ -43,7 +43,7 @@
           <h1>The dictionary,<br><em>connected.</em></h1>
         </div>
         <div class="explore-intro">
-          <p>Start with a word and see the other entries that share its recorded base. The map groups those words by type; it does not infer meanings or invent linguistic links.</p>
+          <p>Begin with the atlas to compare large word families, then open one to see every entry sharing its recorded base. The views use supplied structure; they do not infer meanings or invent linguistic links.</p>
           <dl class="explore-stats" id="explore-stats" aria-label="Dictionary network summary">
             <div><dt>—</dt><dd>entries</dd></div>
             <div><dt>—</dt><dd>recorded bases</dd></div>
@@ -65,15 +65,20 @@
 
       <nav class="featured-families" id="featured-families" aria-label="Large word families"></nav>
 
-      <section class="explore-workspace" aria-label="Word family explorer">
+      <nav class="visualization-switch" id="visualization-switch" aria-label="Choose a visualization">
+        <button type="button" data-explore-view="atlas" aria-pressed="true"><small>01 · Overview</small><span>Family atlas</span><b>Compare the largest recorded families</b></button>
+        <button type="button" data-explore-view="family" aria-pressed="false"><small>02 · Drill down</small><span>Family web</span><b>Inspect one base and every connected entry</b></button>
+      </nav>
+
+      <section class="explore-workspace" aria-label="Dictionary data explorer">
         <article class="network-panel">
           <header class="network-heading">
             <div>
-              <p class="eyebrow">Recorded base</p>
+              <p class="eyebrow" id="visualization-eyebrow">Recorded base</p>
               <h2 id="family-title">Loading…</h2>
               <p id="family-summary">Preparing the family map.</p>
             </div>
-            <div class="network-tools" aria-label="Map zoom controls">
+            <div class="network-tools" id="network-tools" aria-label="Map zoom controls">
               <button type="button" data-network-zoom="out" aria-label="Zoom out">−</button>
               <button type="button" data-network-zoom="reset">Reset</button>
               <button type="button" data-network-zoom="in" aria-label="Zoom in">+</button>
@@ -83,16 +88,17 @@
           <div class="type-filters" id="type-filters" aria-label="Filter family by word type"></div>
 
           <div class="network-frame" id="network-frame">
+            <canvas id="family-atlas" role="img" aria-label="Largest recorded word families grouped by their dominant word type" hidden>Your browser does not support the interactive family atlas.</canvas>
             <svg id="family-network" viewBox="0 0 1000 650" role="img" aria-labelledby="network-title network-description">
               <title id="network-title">Word family network</title>
               <desc id="network-description">A network of dictionary entries grouped around their recorded base word.</desc>
               <g id="network-viewport"></g>
             </svg>
             <div class="network-tooltip" id="network-tooltip" hidden></div>
-            <p class="network-help">Select a dot to inspect a word. Select a type hub to isolate that branch.</p>
+            <p class="network-help" id="network-help">Select a dot to inspect a word. Select a type hub to isolate that branch.</p>
           </div>
 
-          <footer class="network-legend" aria-label="Network legend">
+          <footer class="network-legend" id="network-legend" aria-label="Network legend">
             <span><i class="legend-base"></i> Recorded base</span>
             <span><i class="legend-type"></i> Word type</span>
             <span><i class="legend-entry"></i> Dictionary entry</span>
@@ -105,7 +111,7 @@
         </aside>
       </section>
 
-      <section class="family-members" aria-labelledby="family-members-title">
+      <section class="family-members" id="family-members" aria-labelledby="family-members-title">
         <header>
           <div>
             <p class="eyebrow">Readable view</p>

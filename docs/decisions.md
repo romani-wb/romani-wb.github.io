@@ -9,6 +9,14 @@ The graph has a parallel readable member list and links every word back to its
 full dictionary entry. The implementation uses native SVG and the existing
 search index, preserving the dependency-light static architecture.
 
+The Explore page now starts with a complementary canvas atlas. It shows up to
+42 of the largest multi-word families per dominant word-type group (243 families
+in the June data), rather than pretending that 2,664 overlapping families would
+remain readable at once. Bubble size is entry count, colour is the family's most
+common broad word type, and selecting a bubble opens the source-aligned SVG
+family web. The atlas is an overview sample; corpus totals remain visible and the
+search reaches every entry.
+
 ## 2026-06-22 — Exact meanings outrank substrings
 
 Dictionary search ranks exact case-preserving meanings, normalized exact meanings,
