@@ -81,6 +81,7 @@ globalThis.fetch = async (url) => {
 
 await import(`${pathToFileURL(resolve(root, "app.js")).href}?smoke=1`);
 const wordTypes = await import(`${pathToFileURL(resolve(root, "word-types.js")).href}?smoke=1`);
+const explore = await import(`${pathToFileURL(resolve(root, "explore.js")).href}?smoke=1`);
 
 const deadline = Date.now() + 10_000;
 while (!elements.get("#data-status").textContent.includes("entries indexed")) {
@@ -175,14 +176,34 @@ while (!elements.get("#entry-pane").innerHTML.includes("Explore the whole dictio
 assert.match(elements.get("#entry-pane").innerHTML, /Explore the whole dictionary/);
 assert.match(elements.get("#entry-pane").innerHTML, /word-list\.html\?type=nouns/);
 assert.match(elements.get("#entry-pane").innerHTML, /href="grammar\.html"/);
+assert.match(elements.get("#entry-pane").innerHTML, /href="explore\.html\?spelling=(?:int|deu)&amp;meaning=en"/);
 assert.equal(wordTypes.wordClassLabel("PTCLV"), "Particle verb");
 assert.equal(wordTypes.wordTypeGroup("PTCLV").key, "verbs");
+
+const familyFixture = [
+  { id: "base", roman_int: "kerav", roman_deu: "kerav", base_int: "kerav", base_deu: "kerav", word_class: "V" },
+  { id: "derived", roman_int: "arkerípe", roman_deu: "arkeripe", base_int: "kerav", base_deu: "kerav", word_class: "N" },
+  { id: "other", roman_int: "kher", roman_deu: "kher", base_int: "kher", base_deu: "kher", word_class: "N" },
+];
+const familyIndex = explore.buildFamilyIndex(familyFixture);
+assert.equal(familyIndex.size, 2);
+assert.equal(familyIndex.get("kerav").entries.length, 2);
+const familyLayout = explore.createNetworkLayout(familyIndex.get("kerav"));
+assert.equal(familyLayout.entries.length, 2);
+assert.equal(familyLayout.groups.length, 2);
+assert.equal(familyLayout.edges.length, 4);
+const searchEntries = JSON.parse(await readFile(resolve(root, "data/processed/entries_search.json"), "utf8"));
+const realFamilyIndex = explore.buildFamilyIndex(searchEntries);
+assert.equal(realFamilyIndex.size, 3113);
+assert.equal([...realFamilyIndex.values()].filter((family) => family.entries.length > 1).length, 2664);
 
 const homeHtml = await readFile(resolve(root, "index.html"), "utf8");
 const dictionaryHtml = await readFile(resolve(root, "dictionary.html"), "utf8");
 const wordListHtml = await readFile(resolve(root, "word-list.html"), "utf8");
 const grammarHtml = await readFile(resolve(root, "grammar.html"), "utf8");
+const exploreHtml = await readFile(resolve(root, "explore.html"), "utf8");
 assert.match(homeHtml, /href="dictionary\.html"/);
+assert.match(homeHtml, /href="explore\.html"/);
 assert(!homeHtml.includes("app.js"));
 assert.match(dictionaryHtml, /src="app\.js"/);
 assert.match(dictionaryHtml, /id="edition-select"/);
@@ -192,6 +213,7 @@ assert.match(dictionaryHtml, /value="compact" selected/);
 assert.match(dictionaryHtml, />Split</);
 assert.match(dictionaryHtml, /href="word-list\.html"/);
 assert.match(dictionaryHtml, /href="grammar\.html"/);
+assert.match(dictionaryHtml, /href="explore\.html"/);
 assert.doesNotMatch(dictionaryHtml, /Compare views/);
 assert.doesNotMatch(elements.get("#entry-pane").innerHTML, /New here/);
 assert.match(wordListHtml, /Every recorded word/);
@@ -199,6 +221,11 @@ assert.match(wordListHtml, /src="word-list\.js"/);
 assert.match(grammarHtml, /Noun cases/);
 assert.match(grammarHtml, /Verb forms/);
 assert.match(grammarHtml, /Adjective agreement/);
+assert.match(wordListHtml, /href="explore\.html"/);
+assert.match(grammarHtml, /href="explore\.html"/);
+assert.match(exploreHtml, /id="family-network"/);
+assert.match(exploreHtml, /src="explore\.js"/);
+assert.match(exploreHtml, /Recorded base/);
 await assert.rejects(readFile(resolve(root, "dictionary-lab.html"), "utf8"));
 
-console.log("Frontend smoke test passed: dictionary layouts, Word list, Grammar guide, deep links, and lazy loading are functional.");
+console.log("Frontend smoke test passed: dictionary layouts, Word list, Grammar guide, Explore network, deep links, and lazy loading are functional.");

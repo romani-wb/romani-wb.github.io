@@ -1,5 +1,14 @@
 # Decision log
 
+## 2026-06-22 — Exploration uses recorded base relationships
+
+The first corpus visualization is a dedicated `Explore` page built from the
+workbook's explicit Roman base fields. It groups family entries through readable
+word-type hubs and does not infer semantic similarity, etymology, or morphology.
+The graph has a parallel readable member list and links every word back to its
+full dictionary entry. The implementation uses native SVG and the existing
+search index, preserving the dependency-light static architecture.
+
 ## 2026-06-22 — Exact meanings outrank substrings
 
 Dictionary search ranks exact case-preserving meanings, normalized exact meanings,

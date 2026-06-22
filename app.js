@@ -701,6 +701,7 @@ function renderWordTypeIndex() {
   const items = [
     { key: "all", label: "All words", description: "The complete alphabetical word list", count: state.searchEntries.length, href: `word-list.html?spelling=${encodeURIComponent(state.spelling)}&meaning=${encodeURIComponent(state.language)}` },
     { key: "grammar-guide", label: "Grammar guide", description: "Cases, conjugation, agreement, and notation", count: "Guide", href: "grammar.html" },
+    { key: "family-explorer", label: "Family explorer", description: "Map words that share a recorded base", count: "Map", href: `explore.html?spelling=${encodeURIComponent(state.spelling)}&meaning=${encodeURIComponent(state.language)}` },
     ...WORD_TYPE_GROUPS.filter((group) => (state.wordTypeCounts.get(group.key) || 0) > 0)
       .map((group) => ({ ...group, count: state.wordTypeCounts.get(group.key) || 0 })),
   ];
@@ -709,7 +710,7 @@ function renderWordTypeIndex() {
       <div class="word-type-index-heading">
         <p class="eyebrow">Keep exploring</p>
         <h2 id="word-type-index-title">Explore the whole dictionary</h2>
-        <p>Open the ordered word list, or start with a kind of word.</p>
+        <p>Open the ordered list, map a word family, or start with a kind of word.</p>
       </div>
       <div class="word-type-cards">
         ${items.map((item) => `

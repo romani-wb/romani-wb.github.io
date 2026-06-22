@@ -56,6 +56,9 @@ The current prototype is a static Roman dictionary with:
   identified as awaiting linguistic review;
 - a progressively rendered alphabetical index of all entries at `word-list.html`;
 - a source-aligned grammar cheat-sheet surface at `grammar.html`;
+- an interactive word-family network at `explore.html`, built only from recorded
+  base fields and word classes, with search, filters, random families, zoom, and
+  direct links to full entries;
 - mobile layout, skip link, status announcements, and reduced-motion handling.
 
 Valentin manually opened the current interface and responded positively. This was
@@ -137,6 +140,8 @@ This intentionally remains a dependency-light static site:
 - `dictionary.css` — dictionary-specific responsive information design
 - `word-list.html` / `word-list.js` — complete progressive alphabetical index
 - `grammar.html` — static practical grammar cheat sheets linked to live entries
+- `explore.html` / `explore.js` / `explore.css` — interactive SVG word-family
+  explorer over the existing compact search index
 - `reference.css` — shared Word list and Grammar layout
 - `word-types.js` — shared readable word-class labels and broad type groups
 - `app.js` — search, URL state, lazy entry loading, rendering, word families,
@@ -195,11 +200,11 @@ passes. A second preprocessing run must produce byte-identical output.
 Useful manual check:
 
 1. Open `dictionary.html` and switch among Focus, Browse, and Split.
-2. In Browse, confirm the search is above the entry and the nine exploration
-   cards (All words, Grammar guide, and seven types) are below it.
+2. In Browse, confirm the search is above the entry and the ten exploration
+   cards (All words, Grammar guide, Family explorer, and seven types) are below it.
 3. Search `stay`; confirm results are grouped under Nouns and Verbs and badges
    read `Verb`, `Verb phrase`, or `Particle verb`, never bare source codes.
-4. Search lowercase `essen`; confirm `háv` is the first Best match and
+4. Search lowercase `essen`; confirm `háv` is the first result and
    `armiršágo` (`Ausmessen`) is not ranked ahead of exact eating meanings.
 5. Open verb `g00005_236c444a` (`áčav`); confirm six present forms and five
    aspect/tense groups in Conjugation.
@@ -214,6 +219,9 @@ Useful manual check:
     search, word type, letter, spelling, meaning language, and progressive loading.
 12. Open `grammar.html`; confirm seven noun cases, six verb persons, adjective
     agreement, readable word-type codes, and three links to live paradigms.
+13. Open `explore.html`; search `kerav`, select a network node and a word-type
+    hub, change spelling/meaning, try a featured and random family, zoom the map,
+    and follow the selected word into its full dictionary entry.
 
 Focus should place navigation above the entry; Browse should place the word-type
 catalogue below the entry; Split should preserve the persistent sidebar. Word
@@ -235,6 +243,8 @@ overflow. This is not a screen-reader or full keyboard audit.
 - Entry details are chunked; the search index is loaded initially.
 - Story and dictionary are separate static pages.
 - Visual diagrams use only explicit workbook relationships.
+- Corpus exploration uses recorded base fields; it does not claim inferred
+  semantic, etymological, or morphological relationships.
 - Generated morphology is visible as practical grammar but remains marked as a
   generated preview; raw codes and derivation remain collapsed.
 - Dictionary layouts are presentation modes, not separate codebases.

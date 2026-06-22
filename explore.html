@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Explore Roman Word Families</title>
+    <meta name="description" content="Explore connections between Roman dictionary entries through their recorded base words and word types.">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="dictionary.css">
+    <link rel="stylesheet" href="reference.css">
+    <link rel="stylesheet" href="explore.css">
+  </head>
+  <body class="reference-body explore-body">
+    <a class="skip-link" href="#family-search">Skip to family search</a>
+
+    <header class="reference-header">
+      <a class="dictionary-brand" href="index.html" aria-label="Roman story home"><span>Roman</span><small>Explore</small></a>
+      <nav class="reference-nav" aria-label="Primary navigation">
+        <a href="index.html">Story</a>
+        <a href="dictionary.html">Dictionary</a>
+        <a href="word-list.html">Word list</a>
+        <a href="grammar.html">Grammar</a>
+        <a class="active" href="explore.html" aria-current="page">Explore</a>
+      </nav>
+      <div class="reference-toggles" aria-label="Display controls">
+        <fieldset class="compact-toggle">
+          <legend>Spelling</legend>
+          <button type="button" class="active" data-explore-spelling="int" aria-pressed="true">INT</button>
+          <button type="button" data-explore-spelling="deu" aria-pressed="false">DEU</button>
+        </fieldset>
+        <fieldset class="compact-toggle">
+          <legend>Meaning</legend>
+          <button type="button" data-explore-language="de" aria-pressed="true">DE</button>
+          <button type="button" data-explore-language="en" aria-pressed="false">EN</button>
+        </fieldset>
+      </div>
+    </header>
+
+    <main class="explore-page">
+      <header class="explore-hero">
+        <div>
+          <p class="eyebrow">Data experiment · recorded relationships only</p>
+          <h1>The dictionary,<br><em>connected.</em></h1>
+        </div>
+        <div class="explore-intro">
+          <p>Start with a word and see the other entries that share its recorded base. The map groups those words by type; it does not infer meanings or invent linguistic links.</p>
+          <dl class="explore-stats" id="explore-stats" aria-label="Dictionary network summary">
+            <div><dt>—</dt><dd>entries</dd></div>
+            <div><dt>—</dt><dd>recorded bases</dd></div>
+            <div><dt>—</dt><dd>multi-word families</dd></div>
+          </dl>
+        </div>
+      </header>
+
+      <section class="explore-command" aria-labelledby="explore-command-title">
+        <div class="family-search-wrap">
+          <label class="family-search" for="family-search">
+            <span aria-hidden="true">⌕</span>
+            <span class="family-search-copy"><small id="explore-command-title">Find a word or base</small><input id="family-search" type="search" autocomplete="off" spellcheck="false" placeholder="Try kerav, kher, wash…" aria-controls="family-suggestions" aria-expanded="false"></span>
+          </label>
+          <div class="family-suggestions" id="family-suggestions" role="listbox" hidden></div>
+        </div>
+        <button class="random-family" id="random-family" type="button"><span aria-hidden="true">✦</span> Random family</button>
+      </section>
+
+      <nav class="featured-families" id="featured-families" aria-label="Large word families"></nav>
+
+      <section class="explore-workspace" aria-label="Word family explorer">
+        <article class="network-panel">
+          <header class="network-heading">
+            <div>
+              <p class="eyebrow">Recorded base</p>
+              <h2 id="family-title">Loading…</h2>
+              <p id="family-summary">Preparing the family map.</p>
+            </div>
+            <div class="network-tools" aria-label="Map zoom controls">
+              <button type="button" data-network-zoom="out" aria-label="Zoom out">−</button>
+              <button type="button" data-network-zoom="reset">Reset</button>
+              <button type="button" data-network-zoom="in" aria-label="Zoom in">+</button>
+            </div>
+          </header>
+
+          <div class="type-filters" id="type-filters" aria-label="Filter family by word type"></div>
+
+          <div class="network-frame" id="network-frame">
+            <svg id="family-network" viewBox="0 0 1000 650" role="img" aria-labelledby="network-title network-description">
+              <title id="network-title">Word family network</title>
+              <desc id="network-description">A network of dictionary entries grouped around their recorded base word.</desc>
+              <g id="network-viewport"></g>
+            </svg>
+            <div class="network-tooltip" id="network-tooltip" hidden></div>
+            <p class="network-help">Select a dot to inspect a word. Select a type hub to isolate that branch.</p>
+          </div>
+
+          <footer class="network-legend" aria-label="Network legend">
+            <span><i class="legend-base"></i> Recorded base</span>
+            <span><i class="legend-type"></i> Word type</span>
+            <span><i class="legend-entry"></i> Dictionary entry</span>
+          </footer>
+        </article>
+
+        <aside class="word-inspector" id="word-inspector" aria-live="polite">
+          <p class="eyebrow">Selected word</p>
+          <div class="inspector-empty">Select any entry in the network or list.</div>
+        </aside>
+      </section>
+
+      <section class="family-members" aria-labelledby="family-members-title">
+        <header>
+          <div>
+            <p class="eyebrow">Readable view</p>
+            <h2 id="family-members-title">Words in this family</h2>
+          </div>
+          <p id="member-status" role="status" aria-live="polite"></p>
+        </header>
+        <div class="member-grid" id="member-grid"></div>
+      </section>
+
+      <p class="explore-status" id="explore-status" role="status" aria-live="polite">Loading dictionary relationships…</p>
+    </main>
+
+    <script src="explore.js" type="module"></script>
+  </body>
+</html>
