@@ -65,12 +65,20 @@
 
       <nav class="featured-families" id="featured-families" aria-label="Large word families"></nav>
 
+      <section class="use-case-bar" id="use-case-bar" aria-labelledby="use-case-title">
+        <h2 id="use-case-title">What do you want to find out?</h2>
+        <button type="button" data-use-view="landscape"><strong>Find broad families</strong><span>See which recorded bases contain many entries.</span></button>
+        <button type="button" data-use-view="ribbons"><strong>Trace one base</strong><span>Follow a base through word types to entries.</span></button>
+        <button type="button" data-use-view="compare"><strong>Compare two bases</strong><span>Measure family size and word-type composition.</span></button>
+      </section>
+
       <nav class="visualization-switch" id="visualization-switch" aria-label="Choose a visualization">
         <button type="button" data-explore-view="atlas" aria-pressed="true"><small>01 · Overview</small><span>Family atlas</span><b>Compare the largest recorded families</b></button>
         <button type="button" data-explore-view="family" aria-pressed="false"><small>02 · Drill down</small><span>Family web</span><b>Inspect one base and every connected entry</b></button>
         <button type="button" data-explore-view="ribbons" aria-pressed="false"><small>03 · Flow</small><span>Type ribbons</span><b>Follow a base through types to entries</b></button>
         <button type="button" data-explore-view="rings" aria-pressed="false"><small>04 · Shape</small><span>Family rings</span><b>Read composition as a radial fingerprint</b></button>
         <button type="button" data-explore-view="landscape" aria-pressed="false"><small>05 · Distribution</small><span>Size landscape</span><b>Compare every multi-word family by size</b></button>
+        <button type="button" data-explore-view="compare" aria-pressed="false"><small>06 · Use case</small><span>Compare families</span><b>Measure two recorded bases side by side</b></button>
       </nav>
 
       <section class="explore-workspace" aria-label="Dictionary data explorer">

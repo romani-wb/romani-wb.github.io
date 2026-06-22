@@ -129,3 +129,43 @@
   .word-type-cheat { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .agreement-grid { grid-template-columns: 150px repeat(4,130px); }
 }
+
+/* Grammar is intentionally a plain working reference until content review. */
+.grammar-body { background: #fff; }
+.grammar-page { width: min(960px, calc(100% - 40px)); padding-bottom: 60px; }
+.grammar-page .grammar-hero { padding: 42px 0 28px; }
+.grammar-page .reference-hero h1 { max-width: 720px; font-family: inherit; font-size: clamp(32px, 5vw, 46px); font-weight: 750; letter-spacing: -.035em; line-height: 1.05; }
+.grammar-page .reference-hero > p:last-child { max-width: 650px; margin-top: 12px; font-size: 13px; line-height: 1.55; }
+.grammar-page .grammar-jump { gap: 18px; padding: 12px 0; }
+.grammar-page .grammar-jump a { padding: 3px 0; border: 0; border-radius: 0; background: transparent; color: var(--ink); font-size: 10px; text-decoration: underline; text-underline-offset: 4px; }
+.grammar-page .cheat-section { padding: 42px 0; }
+.grammar-page .cheat-heading { display: block; max-width: 760px; }
+.grammar-page .cheat-number { display: none; }
+.grammar-page .cheat-heading h2 { margin-top: 5px; font-family: inherit; font-size: 28px; font-weight: 750; letter-spacing: -.02em; line-height: 1.15; }
+.grammar-page .cheat-heading div > p:last-child { margin-top: 9px; font-size: 12px; line-height: 1.55; }
+.grammar-page .cheat-layout { grid-template-columns: 260px minmax(0, 1fr); gap: 26px; margin-top: 24px; }
+.grammar-page .cheat-card { padding: 16px 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.grammar-page .cheat-card h3 { font-family: inherit; font-size: 18px; font-weight: 750; }
+.grammar-page .cheat-card p, .grammar-page .cheat-card li { font-size: 11px; }
+.grammar-page .rule-card { padding-top: 0; }
+.grammar-page .cheat-table-wrap { border-radius: 0; }
+.grammar-page .cheat-table tbody th { font-family: inherit; font-size: 13px; }
+.grammar-page .person-cheat { grid-template-columns: repeat(6, minmax(0,1fr)); gap: 0; margin-top: 24px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.grammar-page .person-cheat div { padding: 12px; border: 0; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
+.grammar-page .person-cheat strong { font-family: inherit; font-size: 16px; }
+.grammar-page .concept-grid { gap: 0; margin-top: 22px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.grammar-page .concept-grid .cheat-card { padding: 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.grammar-page .example-card, .grammar-page .example-card h3 { background: transparent; color: var(--ink); }
+.grammar-page .example-card .eyebrow, .grammar-page .example-card p, .grammar-page .example-card .example-link { color: var(--muted); }
+.grammar-page .example-card h3 { font-size: 18px; }
+.grammar-page .agreement-grid { margin-top: 24px; border-radius: 0; }
+.grammar-page .word-type-cheat { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0; margin-top: 24px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.grammar-page .word-type-cheat div { padding: 11px; border: 0; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
+.grammar-page .word-type-cheat strong { font-family: inherit; font-size: 13px; }
+
+@media (max-width: 760px) {
+  .grammar-page { width: min(100% - 28px, 960px); }
+  .grammar-page .cheat-layout, .grammar-page .concept-grid { grid-template-columns: 1fr; }
+  .grammar-page .person-cheat { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .grammar-page .word-type-cheat { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}

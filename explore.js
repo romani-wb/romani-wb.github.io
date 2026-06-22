@@ -269,6 +269,27 @@ export function createLandscapeLayout(families, width = 1000, height = 650, acti
   return { nodes, lanes, ticks, maxSize, width, height, margin };
 }
 
+export function createComparisonModel(primary, secondary, activeType = "all") {
+  const primaryProfile = familyTypeProfile(primary);
+  const secondaryProfile = familyTypeProfile(secondary);
+  const rows = WORD_TYPE_GROUPS
+    .filter((group) => activeType === "all" ? primaryProfile.counts[group.key] || secondaryProfile.counts[group.key] : group.key === activeType)
+    .map((group) => ({
+      key: group.key,
+      label: group.label,
+      primary: primaryProfile.counts[group.key] || 0,
+      secondary: secondaryProfile.counts[group.key] || 0,
+    }));
+  return {
+    rows,
+    primaryTotal: primary.entries.length,
+    secondaryTotal: secondary.entries.length,
+    primaryDiversity: Object.values(primaryProfile.counts).filter(Boolean).length,
+    secondaryDiversity: Object.values(secondaryProfile.counts).filter(Boolean).length,
+    sizeDifference: secondary.entries.length - primary.entries.length,
+  };
+}
+
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]);
 }
@@ -289,6 +310,7 @@ function initExplorer() {
     suggestions: document.querySelector("#family-suggestions"),
     random: document.querySelector("#random-family"),
     featured: document.querySelector("#featured-families"),
+    useCases: document.querySelector("#use-case-bar"),
     viewSwitch: document.querySelector("#visualization-switch"),
     viewButtons: [...document.querySelectorAll("[data-explore-view]")],
     visualizationEyebrow: document.querySelector("#visualization-eyebrow"),
@@ -324,6 +346,7 @@ function initExplorer() {
     landscapeFamilies: [],
     canvasLayout: null,
     family: null,
+    compareFamily: null,
     selectedId: null,
     activeType: "all",
     spelling: "int",
@@ -346,9 +369,12 @@ function initExplorer() {
     const params = new URL(window.location.href).searchParams;
     state.spelling = ["int", "deu"].includes(params.get("spelling")) ? params.get("spelling") : "int";
     state.language = ["de", "en"].includes(params.get("meaning")) ? params.get("meaning") : "de";
-    state.view = ["family", "ribbons", "rings", "landscape"].includes(params.get("view")) ? params.get("view") : "atlas";
+    state.view = ["family", "ribbons", "rings", "landscape", "compare"].includes(params.get("view")) ? params.get("view") : "atlas";
     const requestedFamily = normalizeFamilyKey(params.get("family"));
     state.family = state.families.get(requestedFamily) || state.featured[0] || [...state.families.values()][0];
+    const requestedCompare = normalizeFamilyKey(params.get("compare"));
+    state.compareFamily = state.families.get(requestedCompare) || state.featured.find((family) => family.key !== state.family.key) || state.family;
+    if (state.compareFamily.key === state.family.key) state.compareFamily = state.featured.find((family) => family.key !== state.family.key) || state.family;
     const requestedEntry = params.get("entry");
     state.selectedId = state.family?.entries.some((entry) => entry.id === requestedEntry)
       ? requestedEntry
@@ -367,6 +393,7 @@ function initExplorer() {
     state.selectedId ? url.searchParams.set("entry", state.selectedId) : url.searchParams.delete("entry");
     state.activeType === "all" ? url.searchParams.delete("type") : url.searchParams.set("type", state.activeType);
     state.view === "atlas" ? url.searchParams.delete("view") : url.searchParams.set("view", state.view);
+    state.view === "compare" && state.compareFamily ? url.searchParams.set("compare", state.compareFamily.key) : url.searchParams.delete("compare");
     url.searchParams.set("spelling", state.spelling);
     url.searchParams.set("meaning", state.language);
     history.replaceState(null, "", url);
@@ -434,6 +461,16 @@ function initExplorer() {
       els.typeFilters.innerHTML = filters.map((filter) => `
         <button class="type-filter${state.activeType === filter.key ? " active" : ""}" type="button" data-type-key="${filter.key}" aria-pressed="${state.activeType === filter.key}" style="--type-color:${TYPE_COLORS[filter.key] || "#17211e"}">
           ${filter.key === "all" ? "" : "<i aria-hidden=\"true\"></i>"}${escapeHtml(filter.label)} · ${filter.count}
+        </button>
+      `).join("");
+      return;
+    }
+    if (state.view === "compare") {
+      const comparison = createComparisonModel(state.family, state.compareFamily);
+      const filters = [{ key: "all", label: "All types", count: `${comparison.primaryTotal} / ${comparison.secondaryTotal}` }, ...comparison.rows.map((row) => ({ key: row.key, label: row.label, count: `${row.primary} / ${row.secondary}` }))];
+      els.typeFilters.innerHTML = filters.map((filter) => `
+        <button class="type-filter${state.activeType === filter.key ? " active" : ""}" type="button" data-type-key="${filter.key}" aria-pressed="${state.activeType === filter.key}" style="--type-color:${TYPE_COLORS[filter.key] || "#17211e"}">
+          ${filter.key === "all" ? "" : "<i aria-hidden=\"true\"></i>"}${escapeHtml(filter.label)} · ${escapeHtml(filter.count)}
         </button>
       `).join("");
       return;
@@ -807,6 +844,84 @@ function initExplorer() {
     applyZoom();
   }
 
+  function comparisonFamilyMatches(query) {
+    const normalized = normalizeSearch(query);
+    const families = [...state.families.values()].filter((family) => family.key !== state.family.key);
+    if (!normalized) return state.featured.filter((family) => family.key !== state.family.key).slice(0, 7);
+    return families.map((family) => {
+      const intBase = normalizeSearch(family.base_int);
+      const deuBase = normalizeSearch(family.base_deu);
+      let score = 0;
+      if (intBase === normalized || deuBase === normalized) score = 100;
+      else if (intBase.startsWith(normalized) || deuBase.startsWith(normalized)) score = 70;
+      else if (intBase.includes(normalized) || deuBase.includes(normalized)) score = 40;
+      return { family, score };
+    }).filter((item) => item.score).sort((a, b) => b.score - a.score || b.family.entries.length - a.family.entries.length).slice(0, 7).map((item) => item.family);
+  }
+
+  function renderComparisonInspector(model) {
+    const difference = model.sizeDifference === 0
+      ? "Both families contain the same number of entries."
+      : `${displayBase(state.compareFamily)} has ${Math.abs(model.sizeDifference)} ${model.sizeDifference > 0 ? "more" : "fewer"} recorded entr${Math.abs(model.sizeDifference) === 1 ? "y" : "ies"}.`;
+    const sample = state.compareFamily.entries.slice(0, 5).map((entry) => `<li><strong>${escapeHtml(displayLemma(entry))}</strong><span>${escapeHtml(displayMeaning(entry))}</span></li>`).join("");
+    els.inspector.innerHTML = `
+      <p class="eyebrow">Compare with</p>
+      <h3 class="inspector-lemma">${escapeHtml(displayBase(state.compareFamily))}</h3>
+      <label class="compare-search" for="compare-family-search"><span>Choose another recorded base</span><input id="compare-family-search" type="search" autocomplete="off" spellcheck="false" placeholder="Type a base…"></label>
+      <div class="compare-suggestions" id="compare-suggestions" hidden></div>
+      <p class="comparison-finding">${escapeHtml(difference)}</p>
+      <dl class="inspector-meta">
+        <div><dt>Entries</dt><dd>${model.primaryTotal} / ${model.secondaryTotal}</dd></div>
+        <div><dt>Type spread</dt><dd>${model.primaryDiversity} / ${model.secondaryDiversity}</dd></div>
+      </dl>
+      <div class="compare-actions"><button type="button" data-compare-swap>Swap sides</button><button type="button" data-open-compare-web>Open ${escapeHtml(displayBase(state.compareFamily))} web</button></div>
+      <div class="compare-sample"><strong>Example entries</strong><ul>${sample}</ul></div>
+    `;
+    const input = els.inspector.querySelector("#compare-family-search");
+    const suggestions = els.inspector.querySelector("#compare-suggestions");
+    const updateSuggestions = () => {
+      const matches = comparisonFamilyMatches(input.value);
+      suggestions.innerHTML = matches.map((family) => `<button type="button" data-compare-family="${escapeHtml(family.key)}"><strong>${escapeHtml(displayBase(family))}</strong><span>${family.entries.length} entries</span></button>`).join("");
+      suggestions.hidden = matches.length === 0;
+    };
+    input.addEventListener("input", updateSuggestions);
+    input.addEventListener("focus", updateSuggestions);
+    suggestions.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-compare-family]");
+      if (button) setCompareFamily(button.dataset.compareFamily);
+    });
+  }
+
+  function renderCompare() {
+    prepareFamilyChart({
+      eyebrow: "Practical comparison",
+      help: "Left and right bars show recorded entry counts by broad word type. Use the search panel to change the second base.",
+      legend: `<span><i class="legend-base"></i> Left = ${escapeHtml(displayBase())}</span><span><i class="legend-type"></i> Bar length = entry count</span><span><i class="legend-selected"></i> Right = ${escapeHtml(displayBase(state.compareFamily))}</span>`,
+      labels: false,
+    });
+    els.membersSection.hidden = true;
+    const model = createComparisonModel(state.family, state.compareFamily, state.activeType);
+    const maxCount = Math.max(1, ...model.rows.flatMap((row) => [row.primary, row.secondary]));
+    const center = VIEWBOX.width / 2;
+    const barWidth = 320;
+    const rowHeight = Math.min(78, 450 / Math.max(1, model.rows.length));
+    const startY = 135 + (450 - rowHeight * model.rows.length) / 2;
+    const rows = model.rows.map((row, index) => {
+      const y = startY + index * rowHeight;
+      const leftWidth = row.primary / maxCount * barWidth;
+      const rightWidth = row.secondary / maxCount * barWidth;
+      const color = TYPE_COLORS[row.key] || TYPE_COLORS.other;
+      return `<g class="compare-row" style="--type-color:${color}"><text class="compare-row-label" x="${center}" y="${(y + 17).toFixed(1)}" text-anchor="middle">${escapeXml(row.label)}</text><rect class="compare-bar compare-bar-left" x="${(center - 34 - leftWidth).toFixed(1)}" y="${y.toFixed(1)}" width="${leftWidth.toFixed(1)}" height="28"></rect><rect class="compare-bar compare-bar-right" x="${center + 34}" y="${y.toFixed(1)}" width="${rightWidth.toFixed(1)}" height="28"></rect><text class="compare-count" x="${(center - 42 - leftWidth).toFixed(1)}" y="${(y + 18).toFixed(1)}" text-anchor="end">${row.primary}</text><text class="compare-count" x="${(center + 42 + rightWidth).toFixed(1)}" y="${(y + 18).toFixed(1)}">${row.secondary}</text></g>`;
+    }).join("");
+    const headings = `<g class="compare-headings"><text x="${center - 190}" y="62" text-anchor="middle">${escapeXml(displayBase())}</text><text x="${center + 190}" y="62" text-anchor="middle">${escapeXml(displayBase(state.compareFamily))}</text><text class="compare-total" x="${center - 190}" y="88" text-anchor="middle">${model.primaryTotal} entries · ${model.primaryDiversity} types</text><text class="compare-total" x="${center + 190}" y="88" text-anchor="middle">${model.secondaryTotal} entries · ${model.secondaryDiversity} types</text></g>`;
+    els.viewport.innerHTML = `${headings}${rows}`;
+    els.title.textContent = `${displayBase()} / ${displayBase(state.compareFamily)}`;
+    els.summary.textContent = `${model.primaryTotal} versus ${model.secondaryTotal} recorded entries · ${model.rows.length} visible type${model.rows.length === 1 ? "" : "s"}`;
+    els.description.textContent = `A mirrored comparison of ${displayBase()} and ${displayBase(state.compareFamily)} by broad word-type counts.`;
+    renderComparisonInspector(model);
+    applyZoom();
+  }
+
   function renderInspector(entry) {
     if (!entry) {
       els.inspector.innerHTML = `<p class="eyebrow">Selected word</p><div class="inspector-empty">Select any entry in the network or list.</div>`;
@@ -857,6 +972,7 @@ function initExplorer() {
     renderTypeFilters();
     if (state.view === "atlas") renderAtlas();
     else if (state.view === "landscape") renderLandscape();
+    else if (state.view === "compare") renderCompare();
     else {
       renderFamilyVisualization();
       renderInspector(state.family.entries.find((entry) => entry.id === state.selectedId));
@@ -868,10 +984,12 @@ function initExplorer() {
   function selectFamily(key, entryId = null) {
     const family = state.families.get(normalizeFamilyKey(key));
     if (!family) return;
+    const preserveComparison = state.view === "compare";
     state.family = family;
     state.selectedId = family.entries.some((entry) => entry.id === entryId) ? entryId : preferredEntry(family)?.id || null;
+    if (state.compareFamily?.key === family.key) state.compareFamily = state.featured.find((candidate) => candidate.key !== family.key) || family;
     state.activeType = "all";
-    state.view = "family";
+    state.view = preserveComparison ? "compare" : "family";
     state.zoom = 1;
     els.tooltip.hidden = true;
     els.search.value = "";
@@ -899,6 +1017,12 @@ function initExplorer() {
       syncUrl();
       return;
     }
+    if (state.view === "compare") {
+      renderTypeFilters();
+      renderCompare();
+      syncUrl();
+      return;
+    }
     const selected = state.family.entries.find((entry) => entry.id === state.selectedId);
     if (key !== "all" && wordTypeGroup(selected).key !== key) {
       state.selectedId = state.family.entries.find((entry) => wordTypeGroup(entry).key === key)?.id || state.selectedId;
@@ -911,8 +1035,33 @@ function initExplorer() {
     syncUrl();
   }
 
+  function setCompareFamily(key) {
+    const family = state.families.get(normalizeFamilyKey(key));
+    if (!family || family.key === state.family.key) return;
+    state.compareFamily = family;
+    state.activeType = "all";
+    renderAll();
+  }
+
+  function swapComparison() {
+    const previousPrimary = state.family;
+    state.family = state.compareFamily;
+    state.compareFamily = previousPrimary;
+    state.selectedId = preferredEntry(state.family)?.id || null;
+    state.activeType = "all";
+    renderAll();
+  }
+
+  function openComparisonFamily() {
+    state.family = state.compareFamily;
+    state.selectedId = preferredEntry(state.family)?.id || null;
+    state.activeType = "all";
+    state.view = "family";
+    renderAll();
+  }
+
   function setView(view) {
-    if (!["atlas", "family", "ribbons", "rings", "landscape"].includes(view) || state.view === view) return;
+    if (!["atlas", "family", "ribbons", "rings", "landscape", "compare"].includes(view) || state.view === view) return;
     state.view = view;
     state.activeType = "all";
     state.zoom = 1;
@@ -1011,6 +1160,10 @@ function initExplorer() {
     const button = event.target.closest("[data-family-key]");
     if (button) selectFamily(button.dataset.familyKey);
   });
+  els.useCases.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-use-view]");
+    if (button) setView(button.dataset.useView);
+  });
   els.viewSwitch.addEventListener("click", (event) => {
     const button = event.target.closest("[data-explore-view]");
     if (button) setView(button.dataset.exploreView);
@@ -1045,6 +1198,8 @@ function initExplorer() {
   });
   els.inspector.addEventListener("click", (event) => {
     if (event.target.closest("[data-open-family-web]")) setView("family");
+    if (event.target.closest("[data-compare-swap]")) swapComparison();
+    if (event.target.closest("[data-open-compare-web]")) openComparisonFamily();
   });
   els.members.addEventListener("click", (event) => {
     const button = event.target.closest("[data-member-entry]");
