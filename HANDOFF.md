@@ -44,8 +44,8 @@ The current prototype is a static Roman dictionary with:
   at the bottom;
 - search results grouped into readable word types instead of an arbitrary first
   page of 80 alphabetical entries;
-- a globally ranked Best matches section where exact meanings outrank whole-word,
-  prefix, and loose substring matches;
+- globally ranked leading results where exact meanings outrank whole-word, prefix,
+  and loose substring matches, without a visually privileged result section;
 - word-type filters and a Browse catalogue with real entry counts;
 - source codes such as `PTCLV` translated into readable result labels such as
   `Particle verb`; raw codes remain in Details;

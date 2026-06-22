@@ -761,16 +761,13 @@ function renderResults() {
   const orderedGroups = state.matchGroupOrder
     .map((key) => WORD_TYPE_GROUPS.find((group) => group.key === key))
     .filter(Boolean);
-  const bestMatches = query ? state.filteredEntries.slice(0, 8) : [];
-  const bestIds = new Set(bestMatches.map((entry) => entry.id));
-  const bestMarkup = bestMatches.length ? `
-    <section class="result-group best-match-group">
-      <div class="result-group-heading"><h2>Best matches</h2><span>${bestMatches.length}</span></div>
-      <div class="result-grid">${bestMatches.map(renderResultButton).join("")}</div>
-    </section>
-  ` : "";
+  const leadingResults = query ? state.filteredEntries.slice(0, 8) : [];
+  const leadingIds = new Set(leadingResults.map((entry) => entry.id));
+  const leadingMarkup = leadingResults.length
+    ? `<div class="result-grid top-results">${leadingResults.map(renderResultButton).join("")}</div>`
+    : "";
   const groupedMarkup = orderedGroups.map((group) => {
-    const entries = state.filteredEntries.filter((entry) => !bestIds.has(entry.id) && wordTypeGroup(entry).key === group.key);
+    const entries = state.filteredEntries.filter((entry) => !leadingIds.has(entry.id) && wordTypeGroup(entry).key === group.key);
     if (!entries.length) return "";
     const total = state.matchTypeCounts.get(group.key) || entries.length;
     return `
@@ -780,7 +777,7 @@ function renderResults() {
       </section>
     `;
   }).join("");
-  els.results.innerHTML = `${bestMarkup}${groupedMarkup}`;
+  els.results.innerHTML = `${leadingMarkup}${groupedMarkup}`;
 }
 
 function field(label, value) {

@@ -4,7 +4,7 @@
 
 Dictionary search ranks exact case-preserving meanings, normalized exact meanings,
 whole meaning words, prefixes, and loose substrings in that order. A globally
-ranked Best matches block appears before the remaining word-type groups. This
+ranked set of ordinary result cards appears before the remaining word-type groups. This
 prevents a query such as lowercase `essen` from ranking `Ausmessen` ahead of the
 verb whose supplied German meaning is exactly `essen`.
 
