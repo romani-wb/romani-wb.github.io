@@ -56,11 +56,12 @@ Do not cross a gate without recording the decision in `docs/decisions.md`:
 3. Story, tone, attribution, and visual direction.
 4. Accessibility, performance, deployment, and publication readiness.
 
-As of 21 June 2026, Valentin has authorized fast-tracking these gates until a
+As of 22 June 2026, Valentin has authorized fast-tracking these gates until a
 later major review. Continue autonomously with reversible, conservative defaults;
-record assumptions and deferred questions rather than pausing. This does not
-authorize silent source corrections, publication, pushing, or claims that
-provisional morphology has been linguistically approved.
+record assumptions and deferred questions rather than pausing. He explicitly
+authorized direct commits and pushes to `main` without a PR while the site is not
+in production. This does not authorize silent source corrections, deployment or
+publication, or claims that provisional morphology has been linguistically approved.
 
 ## Engineering constraints
 
@@ -68,4 +69,5 @@ provisional morphology has been linguistically approved.
 - Add dependencies only when they remove meaningful complexity.
 - Test transformations against the real workbook and small explicit fixtures.
 - Avoid linguistic inference. Encode only source rules or reviewed decisions.
-- Do not publish or push changes without explicit authorization.
+- Direct commits and pushes to `main` are authorized. Do not deploy or publish
+  the site without a separate explicit request.

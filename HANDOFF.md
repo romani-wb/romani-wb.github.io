@@ -1,6 +1,6 @@
 # Roman Dictionary — Agent Handoff
 
-Last updated: 21 June 2026
+Last updated: 22 June 2026
 
 This is the primary restart document. Read `AGENTS.md` next, then follow links
 from this file only as needed.
@@ -8,11 +8,11 @@ from this file only as needed.
 ## Resume here
 
 - Repository: `/Users/valentinedelsbrunner/Projects/romani-wb.github.io`
-- Active branch: `rebuild`
+- Active branch: `main`
 - Preservation tag: `prototype-before-june-data-refresh`
-- Working tree at handoff: clean before adding this handoff commit
-- Do not work on `main` and do not push or publish without explicit permission.
-- Valentin has authorized routine edits, generation, tests, and local commits
+- Valentin explicitly authorized direct commits and pushes to `main`, without a
+  PR, while the site is not in production. This does not authorize deployment.
+- Valentin has authorized routine edits, generation, tests, and breaking changes
   inside this repository. Do not repeatedly ask for approval for those actions.
 - Intermediate review gates are temporarily fast-tracked. Make conservative,
   reversible choices and document uncertainty for a later major review.
@@ -20,9 +20,9 @@ from this file only as needed.
 Recent checkpoints:
 
 ```text
+00c73b3 Separate and redesign the Roman dictionary
 f826536 Add sourced Roman introduction and visual shell
 74c26d0 Add lazy dictionary loading and provisional UI state
-a96379b Establish June 2026 dictionary rebuild workflow
 ```
 
 ## Product state
@@ -39,8 +39,13 @@ The current prototype is a static Roman dictionary with:
 - an entry hierarchy based on the professor's required output structure;
 - visual word-structure and interactive Base-to-derived family diagrams;
 - dedicated Entry, Word family, Inflection, and Details views;
-- grammar/details, source hyperlinks, and generated morphology;
-- morphology collapsed and clearly labelled `Provisional`;
+- three presentation modes over one data/state layer: Learner, Compact, Explorer;
+- a comparison surface at `dictionary-lab.html`;
+- grammar/details, source hyperlinks, and generated complete-word morphology;
+- learner-facing verb conjugation, noun case, and adjective agreement grids;
+- collapsed onboarding, plain-language grammar primers, and useful-form previews;
+- technical morphology derivation collapsed and all generated forms clearly
+  identified as awaiting linguistic review;
 - mobile layout, skip link, status announcements, and reduced-motion handling.
 
 Valentin manually opened the current interface and responded positively. This was
@@ -119,6 +124,7 @@ This intentionally remains a dependency-light static site:
 - `index.html` — contextual story/home and portal to the dictionary
 - `styles.css` — story/home visual system
 - `dictionary.html` — standalone dictionary shell and controls
+- `dictionary-lab.html` — explanation and entry points for three dictionary modes
 - `dictionary.css` — dictionary-specific responsive information design
 - `app.js` — search, URL state, lazy entry loading, rendering, word families,
   provisional morphology, and source links
@@ -144,6 +150,7 @@ URL parameters are:
 - `entry` — selected development entry ID
 - `spelling` — `int` or `deu`
 - `meaning` — `de` or `en`
+- `edition` — `learner`, `compact`, or `explorer`
 
 Provisional defaults are English interface labels, `INT` spelling, and German
 meanings. They are documented in `docs/decisions.md`.
@@ -152,7 +159,7 @@ meanings. They are documented in `docs/decisions.md`.
 
 ```bash
 cd /Users/valentinedelsbrunner/Projects/romani-wb.github.io
-git switch rebuild
+git switch main
 python3 -m pip install -r requirements.txt
 python3 -m unittest discover -s tests -v
 python3 scripts/preprocess_data.py
@@ -170,20 +177,27 @@ passes. A second preprocessing run must produce byte-identical output.
 
 Useful manual check:
 
-1. Search for `habrin`.
-2. Confirm `habrínav` loads and the URL contains its entry ID.
-3. Toggle `INT/DEU` and `DE/EN`, then reload the URL.
-4. Open Details and check the Source-2 link.
-5. Open Forms and confirm it is labelled `Provisional`.
-6. Check the story and dictionary at mobile width.
+1. Open `dictionary-lab.html` and enter each dictionary mode.
+2. Open verb `g00005_236c444a` (`áčav`); confirm six present forms and five
+   aspect/tense groups in Conjugation.
+3. Open noun `g00003_b284cd5c` (`ablativ`); confirm seven case rows with singular
+   and plural columns.
+4. Open adjective `g00008_ffa2702b` (`ačálo/i`); confirm basic/oblique forms
+   across gender and number.
+5. Toggle `INT/DEU`, `DE/EN`, and dictionary mode, then reload the explicit URL.
+6. Open Details and check a Source-2 link; check the site at mobile width.
+7. Click `Surprise me`; the entry and URL should change without losing settings.
 
-The Entry view should prioritise meanings, then the explicit structure and
-source relationships. Word family should show an interactive Base hierarchy;
-Inflection should show a simplified two-column provisional table.
+Learner should place meanings and practical grammar side by side on desktop;
+Compact should remove onboarding; Explorer should restore explicit word
+structure. Word family remains an interactive Base hierarchy. Grammar grids
+must never create page-level horizontal overflow on mobile; wide matrices scroll
+inside their panel.
 
-The in-app browser automation connection was unavailable during development, so
-the deterministic smoke harness was added instead. Do not claim comprehensive
-visual, browser, keyboard, or accessibility QA yet.
+On 22 June, in-app browser/Playwright QA covered the three editions, comparison
+page, representative verb/noun/adjective paradigms, mobile width (390×844), URL
+state, `Surprise me`, and console warnings/errors. It found no console errors or
+page-level mobile overflow. This is not a screen-reader or full keyboard audit.
 
 ## Decisions already made
 
@@ -193,7 +207,9 @@ visual, browser, keyboard, or accessibility QA yet.
 - Entry details are chunked; the search index is loaded initially.
 - Story and dictionary are separate static pages.
 - Visual diagrams use only explicit workbook relationships.
-- Morphology remains visible only behind a collapsed provisional disclosure.
+- Generated morphology is visible as practical grammar but remains marked as a
+  generated preview; raw codes and derivation remain collapsed.
+- Dictionary editions are presentation modes, not separate codebases.
 - Story claims are limited to the supplied manuscripts and remain provisional.
 - Review gates are fast-tracked until Valentin performs a major review.
 
@@ -205,16 +221,19 @@ The full rationale is in `docs/decisions.md`.
    frontend smoke test.
 2. Decide and implement a stable public entry-identity strategy before treating
    deep links as permanent.
-3. Run real-browser keyboard, screen-reader, mobile, and performance testing;
-   fix findings without redesigning blindly.
+3. Run screen-reader, full keyboard, and performance testing; mobile visual QA
+   now has a first representative pass.
 4. Improve search result counting/ranking and consider moving search preparation
    to a worker if profiling justifies it.
 5. Add a compact About/Method surface explaining sources, spellings, limitations,
    and the provisional status of generated forms.
-6. During the later major review, revisit audience priority, interface language,
+6. Ask Dieter to review a deliberately small morphology corpus before changing
+   the generated-preview status: at minimum one regular/irregular verb, each noun
+   gender/class pattern, and adjective agreement.
+7. During the later major review, revisit audience priority, interface language,
    spelling default, story tone/rights/attribution, community voice or imagery,
    duplicate behavior, and morphology accuracy.
-7. Prepare a documented December source-refresh procedure before the final
+8. Prepare a documented December source-refresh procedure before the final
    workbook arrives.
 
 Avoid a framework migration unless a measured problem justifies it. Avoid visual

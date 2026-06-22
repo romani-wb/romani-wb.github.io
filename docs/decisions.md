@@ -1,5 +1,23 @@
 # Decision log
 
+## 2026-06-22 — One dictionary, three reading modes
+
+The standalone dictionary now supports `Learner`, `Compact`, and `Explorer`
+editions over the same data, component code, and deep-link state. Learner is the
+provisional default; Compact is a quieter reference view; Explorer preserves
+the structure and relationship visualisations. `dictionary-lab.html` provides
+a stable comparison surface. Separate prototype codebases were rejected because
+they would drift while testing presentation rather than data behavior.
+
+## 2026-06-22 — Paradigms become practical grammar, not bare endings
+
+Generated verb forms are grouped by aspect/tense and person, noun forms by case
+and number, and adjective forms by agreement dimensions. The overview exposes a
+small set of useful complete forms. Plain-language labels and cheat sheets are a
+presentation layer over `paradigm_model.json`; they do not add linguistic rules.
+Every form set is still identified as generated and awaiting linguistic review,
+with raw codes and derivation collapsed underneath.
+
 ## 2026-06-22 — Story and dictionary are separate surfaces
 
 `index.html` is the contextual story/home page. `dictionary.html` is the
@@ -38,7 +56,8 @@ Current provisional defaults:
 - `INT` Roman spelling on first visit;
 - German meanings on first visit;
 - URL parameters override remembered browser preferences;
-- generated morphology is collapsed and labelled `Provisional`;
+- generated morphology is presented as a labelled preview; raw codes and
+  derivation are collapsed;
 - the static-site architecture remains in place;
 - current row-derived entry IDs may be shared during development but are not a
   permanent identity contract.

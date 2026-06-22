@@ -21,6 +21,7 @@ const state = {
   language: "de",
   query: "",
   entryView: "overview",
+  edition: "learner",
   totalMatches: 0,
 };
 
@@ -31,11 +32,50 @@ const els = {
   resultMeta: document.querySelector("#result-meta"),
   entryPane: document.querySelector("#entry-pane"),
   randomEntry: document.querySelector("#random-entry"),
+  editionSelect: document.querySelector("#edition-select"),
   spellingButtons: document.querySelectorAll("[data-spelling]"),
   languageButtons: document.querySelectorAll("[data-language]"),
 };
 
 const MAX_RESULTS = 80;
+
+const PERSON_LABELS = {
+  de: {
+    "1SG": ["ich", "1. Person Singular"],
+    "2SG": ["du", "2. Person Singular"],
+    "3SG": ["er / sie / es", "3. Person Singular"],
+    "1PL": ["wir", "1. Person Plural"],
+    "2PL": ["ihr", "2. Person Plural"],
+    "3PL": ["sie", "3. Person Plural"],
+  },
+  en: {
+    "1SG": ["I", "first person singular"],
+    "2SG": ["you", "second person singular"],
+    "3SG": ["he / she / it", "third person singular"],
+    "1PL": ["we", "first person plural"],
+    "2PL": ["you (plural)", "second person plural"],
+    "3PL": ["they", "third person plural"],
+  },
+};
+
+const CASE_GUIDES = {
+  NOM: ["Nominative", "the subject — who or what acts"],
+  ACC: ["Accusative", "the direct object — whom or what"],
+  DAT: ["Dative", "the recipient — to or for whom"],
+  ABL: ["Ablative", "origin or separation — from where"],
+  LOC: ["Locative", "place or direction — where"],
+  "INS/SOC": ["Instrumental / sociative", "means or company — with whom or by what"],
+  GEN: ["Genitive", "possession or relation — whose"],
+  OBL: ["Oblique", "a form used outside the basic subject form"],
+};
+
+const TENSE_GUIDES = {
+  PRS: ["Present", "now, generally, or repeatedly"],
+  FUT: ["Future", "after now"],
+  PST: ["Past", "before now"],
+  PRT: ["Past", "before now"],
+  IRR: ["Irrealis", "imagined, conditional, or not presented as fact"],
+};
 
 function normalizeSearch(value) {
   return String(value || "")
@@ -268,6 +308,7 @@ function generateForms(entry) {
     kind,
     paradigm,
     rows: rows.map((row) => ({
+      ...row,
       label: rowLabel(row),
       code: [
         row.aspect,
@@ -281,6 +322,7 @@ function generateForms(entry) {
       ].filter(Boolean).join(" · "),
       ending: row.ending || "",
       explanation: rowExplanation(row),
+      gloss: row[state.language === "de" ? "german" : "english"] || "",
       form: kind === "verb_exist"
         ? row[`form_${spelling}`] || row.form_int
         : combineStemAndEnding(stem, row.ending || ""),
@@ -288,56 +330,158 @@ function generateForms(entry) {
   };
 }
 
+function personGuide(code) {
+  return PERSON_LABELS[state.language]?.[code] || PERSON_LABELS.en[code] || [code, code];
+}
+
+function caseGuide(code) {
+  return CASE_GUIDES[code] || [referenceLabel(code), grammarExplanation(code)];
+}
+
+function tenseGuide(code) {
+  return TENSE_GUIDES[code] || [referenceLabel(code), grammarExplanation(code)];
+}
+
+function aspectGuide(code) {
+  if (code === "NPFV") return ["Non-perfective", "the action is viewed as ongoing, repeated, or open-ended"];
+  if (code === "PFV") return ["Perfective", "the action is viewed as a completed whole"];
+  return [referenceLabel(code), grammarExplanation(code)];
+}
+
+function formCell(row) {
+  return row ? `<strong>${escapeHtml(row.form)}</strong>${row.gloss ? `<small>${escapeHtml(row.gloss)}</small>` : ""}` : `<span class="empty-form">—</span>`;
+}
+
+function renderVerbForms(generated) {
+  const groups = new Map();
+  for (const row of generated.rows) {
+    const key = `${row.aspect || ""}|${row.tense || ""}|${row.polarity || ""}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(row);
+  }
+  return `<div class="conjugation-groups">${[...groups.values()].map((rows, index) => {
+    const first = rows[0];
+    const [tense, tenseHelp] = tenseGuide(first.tense);
+    const [aspect, aspectHelp] = first.aspect ? aspectGuide(first.aspect) : ["", ""];
+    const title = [aspect, tense, first.polarity === "NEG" ? "Negative" : ""].filter(Boolean).join(" · ");
+    return `
+      <section class="form-group${index === 0 ? " featured" : ""}">
+        <div class="form-group-heading">
+          <h4>${escapeHtml(title)}</h4>
+          <p>${escapeHtml([aspectHelp, tenseHelp].filter(Boolean).join("; "))}</p>
+        </div>
+        <div class="person-grid">
+          ${rows.map((row) => {
+            const [pronoun, description] = personGuide(row.person_number);
+            return `<div class="person-form"><span><strong>${escapeHtml(pronoun)}</strong><small>${escapeHtml(description)}</small></span>${formCell(row)}</div>`;
+          }).join("")}
+        </div>
+      </section>
+    `;
+  }).join("")}</div>`;
+}
+
+function renderNounForms(generated) {
+  const order = ["NOM", "ACC", "DAT", "ABL", "LOC", "INS/SOC", "GEN"];
+  const hasGenderForms = generated.rows.some((row) => row.gender);
+  const columns = hasGenderForms
+    ? [["SG", "M", "Singular masculine"], ["SG", "F", "Singular feminine"], ["PL", "M", "Plural masculine"], ["PL", "F", "Plural feminine"]]
+    : [["SG", "", "Singular"], ["PL", "", "Plural"]];
+  const rowsByKey = new Map(generated.rows.map((row) => [`${row.case}|${row.number}|${row.gender || ""}`, row]));
+  return `
+    <div class="grammar-matrix-wrap">
+      <table class="grammar-matrix noun-matrix">
+        <thead><tr><th>Case and use</th>${columns.map(([, , label]) => `<th>${escapeHtml(label)}</th>`).join("")}</tr></thead>
+        <tbody>${order.map((code) => {
+          const [label, help] = caseGuide(code);
+          return `<tr><th><strong>${escapeHtml(label)}</strong><small>${escapeHtml(help)}</small></th>${columns.map(([number, gender]) => `<td>${formCell(rowsByKey.get(`${code}|${number}|${gender}`))}</td>`).join("")}</tr>`;
+        }).join("")}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderAdjectiveForms(generated) {
+  const rowsByKey = new Map(generated.rows.map((row) => [`${row.case}|${row.number}|${row.gender}`, row]));
+  const rows = [["NOM", "Basic / nominative", "the basic form"], ["OBL", "Oblique", "used outside the basic case form"]];
+  const columns = [["SG", "M", "Singular masculine"], ["SG", "F", "Singular feminine"], ["PL", "M", "Plural masculine"], ["PL", "F", "Plural feminine"]];
+  return `
+    <div class="grammar-matrix-wrap">
+      <table class="grammar-matrix adjective-matrix">
+        <thead><tr><th>Use</th>${columns.map(([, , label]) => `<th>${escapeHtml(label)}</th>`).join("")}</tr></thead>
+        <tbody>${rows.map(([code, label, help]) => {
+          return `<tr><th><strong>${escapeHtml(label)}</strong><small>${escapeHtml(help)}</small></th>${columns.map(([number, gender]) => `<td>${formCell(rowsByKey.get(`${code}|${number}|${gender}`))}</td>`).join("")}</tr>`;
+        }).join("")}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderGrammarPrimer(kind) {
+  const content = {
+    verb_conjugation: [
+      ["Person", "I, you, we, and they select different verb forms."],
+      ["Tense", "Present, future, and past locate the action in time."],
+      ["Aspect", "Non-perfective and perfective present different views of the action."],
+    ],
+    verb_exist: [
+      ["Person", "The verb ‘to be’ changes with the person."],
+      ["Positive / negative", "Some third-person negative forms are recorded separately."],
+      ["Tense", "The table records present and past forms."],
+    ],
+    noun_declension: [
+      ["Number", "Singular means one; plural means more than one."],
+      ["Case", "A noun’s form changes according to its role in the sentence."],
+      ["Gender / class", "The workbook’s noun class determines which endings are used."],
+    ],
+    adjective_declension: [
+      ["Agreement", "An adjective changes to match the noun it describes."],
+      ["Gender & number", "Masculine/feminine and singular/plural select the form."],
+      ["Basic / oblique", "The oblique form is used beyond the basic subject form."],
+    ],
+  }[kind] || [];
+  return `<div class="grammar-primer">${content.map(([title, text]) => `<div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(text)}</span></div>`).join("")}</div>`;
+}
+
 function renderForms(entry) {
   const generated = generateForms(entry);
   const morphology = entry.morphology || {};
   if (!generated) {
     if (!morphology.kind) {
-      return `<section class="panel-card forms-panel"><h3>No inflection table</h3><p class="panel-note">This word class has no generated paradigm in the current dictionary model.</p></section>`;
+      return `<section class="panel-card forms-panel"><h3>No grammar table</h3><p class="panel-note">This word class has no generated paradigm in the current dictionary model.</p></section>`;
     }
-    return `
-      <section class="panel-card forms-panel">
-        <h3>Inflection</h3>
-        <p class="fallback-note">No generated forms available for this entry yet. Paradigm: ${escapeHtml(morphology.source_paradigm || morphology.paradigm || "none")}.</p>
-      </section>
-    `;
+    return `<section class="panel-card forms-panel"><h3>Grammar</h3><p class="fallback-note">No generated forms are available yet. Paradigm: ${escapeHtml(morphology.source_paradigm || morphology.paradigm || "none")}.</p></section>`;
   }
 
   const title = {
-    adjective_declension: "Adjective declension",
-    noun_declension: "Noun declension",
-    verb_conjugation: "Verb conjugation",
-    verb_exist: "Verb forms",
+    adjective_declension: "How this adjective changes",
+    noun_declension: "How this noun changes",
+    verb_conjugation: "Conjugation",
+    verb_exist: "Conjugation",
   }[generated.kind] || "Forms";
+  const table = generated.kind === "noun_declension"
+    ? renderNounForms(generated)
+    : generated.kind === "adjective_declension"
+      ? renderAdjectiveForms(generated)
+      : renderVerbForms(generated);
 
   return `
-    <section class="panel-card forms-panel">
+    <section class="panel-card forms-panel learner-grammar">
       <div class="panel-heading">
-        <h3>${escapeHtml(title)}</h3>
+        <div><p class="eyebrow">Grammar made practical</p><h3>${escapeHtml(title)}</h3></div>
         <p>${generated.rows.length} forms · ${state.spelling.toUpperCase()}</p>
       </div>
-      <div class="provisional-banner"><strong>Provisional</strong><span>Generated from paradigm ${escapeHtml(generated.paradigm)}. These forms have not yet passed linguistic review.</span></div>
-      <div class="forms-table-wrap">
-        <table class="forms-table">
-          <thead>
-            <tr>
-              <th>Form</th>
-              <th>Grammar</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${generated.rows.map((row) => `
-              <tr>
-                <td>${escapeHtml(row.form)}</td>
-                <td>${escapeHtml(row.label || row.code)}${row.explanation ? `<small>${escapeHtml(row.explanation)}</small>` : ""}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      </div>
+      ${renderGrammarPrimer(generated.kind)}
+      ${table}
+      <div class="provisional-banner"><strong>Generated preview</strong><span>Built from Professor Halwachs’s paradigm ${escapeHtml(generated.paradigm)}. The structure comes from the source workbook; the assembled words still need linguistic review.</span></div>
       <details class="technical-details">
-        <summary>How these forms were generated</summary>
+        <summary>Technical derivation and raw paradigm</summary>
         ${renderGenerationExplanation(entry, generated)}
+        <div class="forms-table-wrap">
+          <table class="forms-table"><thead><tr><th>Form</th><th>Grammar codes</th></tr></thead><tbody>
+            ${generated.rows.map((row) => `<tr><td>${escapeHtml(row.form)}</td><td>${escapeHtml(row.code)}</td></tr>`).join("")}
+          </tbody></table>
+        </div>
       </details>
     </section>
   `;
@@ -643,7 +787,79 @@ function renderSource(entry) {
   `;
 }
 
-function renderOverview(entry) {
+function wordClassGuide(entry) {
+  const grammar = entry.grammar || {};
+  const code = grammar.word_class_1;
+  const base = {
+    V: ["Verb", "describes an action, event, or state"],
+    N: ["Noun", "names a person, place, thing, or idea"],
+    ADJ: ["Adjective", "describes a noun and changes to agree with it"],
+  }[code] || [labelOnly(labelWithCode(code)) || "Entry", "this word class has no learner summary yet"];
+  const detail = code === "N" && grammar.flexion_1
+    ? `${labelOnly(labelWithCode(grammar.flexion_1))} noun class`
+    : grammar.word_class_2
+      ? labelOnly(labelWithCode(grammar.word_class_2))
+      : "";
+  return { code, title: base[0], description: base[1], detail };
+}
+
+function keyFormRows(generated) {
+  if (!generated) return [];
+  if (["verb_conjugation", "verb_exist"].includes(generated.kind)) {
+    const present = generated.rows.filter((row) => row.tense === "PRS" && row.polarity !== "NEG" && (!row.aspect || row.aspect === "NPFV"));
+    return (present.length ? present : generated.rows.slice(0, 6)).map((row) => ({
+      label: personGuide(row.person_number)[0],
+      form: row.form,
+    }));
+  }
+  if (generated.kind === "noun_declension") {
+    return generated.rows
+      .filter((row) => row.case === "NOM")
+      .map((row) => ({
+        label: `${row.number === "SG" ? "one · singular" : "many · plural"}${row.gender ? ` · ${row.gender === "M" ? "masculine" : "feminine"}` : ""}`,
+        form: row.form,
+      }));
+  }
+  if (generated.kind === "adjective_declension") {
+    return generated.rows
+      .filter((row) => row.case === "NOM")
+      .map((row) => ({
+        label: `${row.number === "SG" ? "singular" : "plural"} · ${row.gender === "M" ? "masculine" : "feminine"}`,
+        form: row.form,
+      }));
+  }
+  return [];
+}
+
+function grammarViewLabel(entry) {
+  const kind = entry.morphology?.kind;
+  if (["verb_conjugation", "verb_exist"].includes(kind)) return "Conjugation";
+  if (["noun_declension", "adjective_declension"].includes(kind)) return "Declension";
+  return "Grammar";
+}
+
+function renderGrammarSnapshot(entry, { compact = false } = {}) {
+  const guide = wordClassGuide(entry);
+  const generated = generateForms(entry);
+  const forms = keyFormRows(generated);
+  return `
+    <section class="panel-card grammar-snapshot${compact ? " compact" : ""}">
+      <div class="grammar-summary">
+        <p class="eyebrow">Grammar at a glance</p>
+        <h3>${escapeHtml(guide.title)}</h3>
+        <p>${escapeHtml(guide.description)}${guide.detail ? ` · <strong>${escapeHtml(guide.detail)}</strong>` : ""}</p>
+      </div>
+      ${forms.length ? `
+        <div class="key-forms" aria-label="Useful forms">
+          ${forms.map((item) => `<div><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.form)}</strong></div>`).join("")}
+        </div>
+        <button type="button" class="text-action" data-entry-view="forms">See the full ${escapeHtml(grammarViewLabel(entry).toLowerCase())} →</button>
+      ` : `<p class="panel-note">No generated grammar forms are available for this word.</p>`}
+    </section>
+  `;
+}
+
+function renderMeaningPanel(entry) {
   const meanings = entryMeanings(entry);
   return `
     <section class="panel-card meaning-panel">
@@ -656,11 +872,31 @@ function renderOverview(entry) {
         : `<p class="panel-note">No meaning available.</p>`}
       ${meanings.fallback ? `<p class="fallback-note">${state.language === "en" ? "German shown because English is missing." : "English shown because German is missing."}</p>` : ""}
     </section>
-    <div class="overview-grid">
-      ${renderWordStructure(entry)}
-      ${renderSource(entry)}
-    </div>
   `;
+}
+
+function renderOnboarding(entry) {
+  const hasForms = Boolean(entry.morphology?.kind);
+  return `
+    <details class="entry-onboarding">
+      <summary>New here? Read this entry in three steps</summary>
+      <ol>
+        <li><strong>Meaning</strong><span>Start with the translation below.</span></li>
+        <li><strong>Grammar</strong><span>See what kind of word it is and ${hasForms ? "how its form changes" : "what the source records"}.</span></li>
+        <li><strong>Explore</strong><span>Open the word family or technical details only when you need them.</span></li>
+      </ol>
+    </details>
+  `;
+}
+
+function renderOverview(entry) {
+  if (state.edition === "compact") {
+    return `<div class="compact-overview">${renderMeaningPanel(entry)}${renderGrammarSnapshot(entry, { compact: true })}</div>`;
+  }
+  if (state.edition === "learner") {
+    return `${renderOnboarding(entry)}<div class="learner-overview">${renderMeaningPanel(entry)}${renderGrammarSnapshot(entry)}</div><div class="overview-grid">${renderSource(entry)}</div>`;
+  }
+  return `${renderMeaningPanel(entry)}<div class="overview-grid">${renderWordStructure(entry)}${renderSource(entry)}</div>`;
 }
 
 function renderDetails(entry) {
@@ -700,8 +936,8 @@ function renderDetails(entry) {
 
 function availableEntryViews(entry) {
   const views = [{ id: "overview", label: "Entry" }];
+  if (entry.morphology?.kind) views.push({ id: "forms", label: grammarViewLabel(entry), provisional: true });
   if (familyData(entry)) views.push({ id: "family", label: "Word family" });
-  if (entry.morphology?.kind) views.push({ id: "forms", label: "Inflection", provisional: true });
   views.push({ id: "details", label: "Details" });
   return views;
 }
@@ -740,9 +976,9 @@ function renderEntry() {
           ${supplements ? `<p class="lemma-supplements">${escapeHtml(supplements)}</p>` : ""}
         </div>
         <div class="grammar-stack">
-          ${grammar.word_class_1 ? `<span class="grammar-pill">${escapeHtml(labelWithCode(grammar.word_class_1))}</span>` : ""}
-          ${grammar.word_class_2 ? `<span class="grammar-pill">${escapeHtml(labelWithCode(grammar.word_class_2))}</span>` : ""}
-          ${grammar.flexion_1 ? `<span class="grammar-pill">${escapeHtml(labelWithCode(grammar.flexion_1))}</span>` : ""}
+          ${grammar.word_class_1 ? `<span class="grammar-pill">${escapeHtml(state.edition === "explorer" ? labelWithCode(grammar.word_class_1) : labelOnly(labelWithCode(grammar.word_class_1)))}</span>` : ""}
+          ${grammar.word_class_2 ? `<span class="grammar-pill">${escapeHtml(state.edition === "explorer" ? labelWithCode(grammar.word_class_2) : labelOnly(labelWithCode(grammar.word_class_2)))}</span>` : ""}
+          ${grammar.flexion_1 ? `<span class="grammar-pill">${escapeHtml(state.edition === "explorer" ? labelWithCode(grammar.flexion_1) : labelOnly(labelWithCode(grammar.flexion_1)))}</span>` : ""}
         </div>
       </header>
 
@@ -774,8 +1010,10 @@ function applyUrlState() {
   const params = new URL(window.location.href).searchParams;
   const spelling = params.get("spelling") || storedPreference("roman-spelling", "int");
   const language = params.get("meaning") || storedPreference("roman-meaning", "de");
+  const edition = params.get("edition") || storedPreference("roman-edition", "learner");
   state.spelling = ["int", "deu"].includes(spelling) ? spelling : "int";
   state.language = ["de", "en"].includes(language) ? language : "de";
+  state.edition = ["learner", "compact", "explorer"].includes(edition) ? edition : "learner";
   state.query = params.get("q") || "";
   state.entryView = ["overview", "family", "forms", "details"].includes(params.get("view"))
     ? params.get("view")
@@ -795,11 +1033,14 @@ function syncUrl() {
   state.selectedId ? params.set("entry", state.selectedId) : params.delete("entry");
   params.set("spelling", state.spelling);
   params.set("meaning", state.language);
+  params.set("edition", state.edition);
   state.entryView === "overview" ? params.delete("view") : params.set("view", state.entryView);
   history.replaceState(null, "", url);
 }
 
 function updateControlButtons() {
+  if (els.editionSelect) els.editionSelect.value = state.edition;
+  if (document.body) document.body.dataset.edition = state.edition;
   els.spellingButtons.forEach((button) => {
     const active = button.dataset.spelling === state.spelling;
     button.classList.toggle("active", active);
@@ -936,6 +1177,13 @@ els.randomEntry.addEventListener("click", () => {
   state.query = "";
   els.search.value = "";
   selectEntry(entry.id, "overview");
+});
+
+els.editionSelect?.addEventListener("change", (event) => {
+  state.edition = event.target.value;
+  savePreference("roman-edition", state.edition);
+  updateControlButtons();
+  render();
 });
 
 els.spellingButtons.forEach((button) => {
