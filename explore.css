@@ -55,7 +55,7 @@
 .featured-family:hover, .featured-family.active { border-color: var(--green); background: var(--green); color: #fff; }
 .featured-family:hover small, .featured-family.active small { color: rgba(255,255,255,.7); }
 
-.visualization-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 12px; }
+.visualization-switch { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; margin: 0 0 12px; }
 .visualization-switch button { min-width: 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 13px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 11px; background: rgba(255,255,255,.65); color: var(--muted); cursor: pointer; text-align: left; }
 .visualization-switch small { grid-row: 1 / 3; align-self: center; color: var(--gold); font-size: 8px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .visualization-switch span { color: var(--ink); font-family: Georgia, serif; font-size: 19px; font-weight: 700; }
@@ -76,6 +76,9 @@
 .network-tools button + button { border-left: 0; }
 .network-tools button:last-child { border-radius: 0 7px 7px 0; }
 .network-tools button:hover { background: var(--green-soft); color: var(--green); }
+.network-tools .label-toggle { min-width: 48px; margin-left: 6px; border-left: 1px solid var(--line); border-radius: 7px; }
+.network-tools .label-toggle[aria-pressed="true"] { border-color: var(--green); background: var(--green); color: #fff; }
+.network-tools [hidden] { display: none !important; }
 
 .type-filters { display: flex; gap: 6px; overflow-x: auto; padding: 11px 24px; border-bottom: 1px solid var(--line); }
 .type-filter { flex: 0 0 auto; padding: 6px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper-strong); color: var(--muted); cursor: pointer; font-size: 9px; font-weight: 850; }
@@ -86,8 +89,10 @@
 .network-frame > [hidden], .family-members[hidden], .network-tools[hidden] { display: none !important; }
 #family-network { width: 100%; height: 100%; min-height: 505px; display: block; touch-action: none; }
 #family-atlas { width: 100%; height: 540px; min-height: 505px; display: block; touch-action: pan-y; }
-.network-edge { stroke: #ccd1cb; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.network-edge { fill: none; stroke: #ccd1cb; stroke-width: 1; vector-effect: non-scaling-stroke; transition: opacity .18s ease, stroke .18s ease; }
 .network-edge.type-edge { stroke: #aeb7b0; stroke-width: 1.5; }
+.network-edge.selected-edge, .ribbon-flow.selected-edge { stroke: var(--gold); opacity: 1; }
+.network-cluster-halo { fill: var(--type-color); opacity: .065; pointer-events: none; }
 .network-node { outline: none; }
 .network-dot { display: block; padding: 0; border-radius: 50%; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
 .network-dot:hover, .network-dot:focus-visible, .network-node.selected .network-dot { outline: 0; box-shadow: 0 0 0 4px #fff; transform: scale(1.22); }
@@ -98,8 +103,24 @@
 .entry-dot { width: 12px; height: 12px; margin: 2px; border: 2px solid rgba(255,255,255,.9); background: var(--type-color); }
 .base-entry .entry-dot { width: 18px; height: 18px; }
 .entry-node.selected .entry-dot { background: var(--ink); }
+.entry-node.subdued { opacity: .38; }
 .entry-label { fill: var(--ink); font-family: Georgia, serif; font-size: 11px; opacity: 0; paint-order: stroke; pointer-events: none; stroke: rgba(249,248,244,.98); stroke-width: 5px; transition: opacity .15s ease; }
 .entry-node:hover .entry-label, .entry-node:focus-visible .entry-label, .entry-node.selected .entry-label, .entry-node.base-entry .entry-label { opacity: 1; }
+.labels-visible .entry-label { opacity: .88; }
+.ribbon-columns text { fill: var(--muted); font-size: 8px; font-weight: 850; letter-spacing: .1em; }
+.ribbon-flow { fill: none; stroke: var(--type-color); opacity: .18; vector-effect: non-scaling-stroke; transition: opacity .16s ease, stroke .16s ease; }
+.ribbon-flow.entry-flow { opacity: .3; }
+.ribbon-flow:hover { opacity: .8; }
+.ribbon-entry-label { text-anchor: start; font-size: 9px; }
+.rings-chart .network-help { max-width: 280px; }
+.ring-segment { cursor: pointer; outline: none; stroke: rgba(255,255,255,.82); stroke-width: 2; transition: opacity .15s ease, filter .15s ease; }
+.ring-segment:hover, .ring-segment:focus-visible { filter: brightness(.9); opacity: 1; }
+.ring-type { fill: var(--type-color); opacity: .78; }
+.ring-entry { fill: var(--type-color); opacity: .52; }
+.ring-entry.selected { opacity: 1; stroke: var(--gold); stroke-width: 5; }
+.ring-type-label { fill: #fff; font-size: 9px; font-weight: 850; paint-order: stroke; pointer-events: none; stroke: rgba(23,33,30,.32); stroke-width: 3px; }
+.ring-selected-label { fill: var(--ink); font-family: Georgia, serif; font-size: 11px; paint-order: stroke; pointer-events: none; stroke: rgba(249,248,244,.96); stroke-width: 5px; }
+.ring-base-node circle { fill: #9c672a; }
 .network-tooltip { position: absolute; z-index: 4; max-width: 260px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; background: rgba(23,33,30,.94); color: #fff; box-shadow: 0 8px 25px rgba(0,0,0,.13); pointer-events: none; font-size: 10px; line-height: 1.4; }
 .network-tooltip strong { display: block; font-family: Georgia, serif; font-size: 15px; }
 .network-tooltip span { display: block; margin-top: 2px; color: rgba(255,255,255,.7); }
@@ -147,6 +168,8 @@
 .explore-status { padding: 35px 0; color: var(--muted); font-size: 10px; text-align: center; }
 
 @media (max-width: 1050px) {
+  .visualization-switch { display: flex; overflow-x: auto; }
+  .visualization-switch button { flex: 0 0 230px; }
   .explore-workspace { grid-template-columns: minmax(0, 1fr) 235px; }
   .member-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .member-card:nth-child(4n) { border-right: 1px solid var(--line); }
@@ -167,8 +190,7 @@
   .explore-stats { grid-template-columns: 1fr; }
   .explore-command { grid-template-columns: 1fr; }
   .random-family { min-height: 46px; }
-  .visualization-switch { grid-template-columns: 1fr; }
-  .visualization-switch button { padding: 11px 13px; }
+  .visualization-switch button { flex-basis: 215px; padding: 11px 13px; }
   .network-heading { align-items: flex-start; padding: 19px 16px 13px; }
   .network-tools { margin-top: 4px; }
   .type-filters { padding-right: 15px; padding-left: 15px; }

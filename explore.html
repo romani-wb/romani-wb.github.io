@@ -68,6 +68,9 @@
       <nav class="visualization-switch" id="visualization-switch" aria-label="Choose a visualization">
         <button type="button" data-explore-view="atlas" aria-pressed="true"><small>01 · Overview</small><span>Family atlas</span><b>Compare the largest recorded families</b></button>
         <button type="button" data-explore-view="family" aria-pressed="false"><small>02 · Drill down</small><span>Family web</span><b>Inspect one base and every connected entry</b></button>
+        <button type="button" data-explore-view="ribbons" aria-pressed="false"><small>03 · Flow</small><span>Type ribbons</span><b>Follow a base through types to entries</b></button>
+        <button type="button" data-explore-view="rings" aria-pressed="false"><small>04 · Shape</small><span>Family rings</span><b>Read composition as a radial fingerprint</b></button>
+        <button type="button" data-explore-view="landscape" aria-pressed="false"><small>05 · Distribution</small><span>Size landscape</span><b>Compare every multi-word family by size</b></button>
       </nav>
 
       <section class="explore-workspace" aria-label="Dictionary data explorer">
@@ -78,10 +81,11 @@
               <h2 id="family-title">Loading…</h2>
               <p id="family-summary">Preparing the family map.</p>
             </div>
-            <div class="network-tools" id="network-tools" aria-label="Map zoom controls">
+            <div class="network-tools" id="network-tools" aria-label="Chart controls">
               <button type="button" data-network-zoom="out" aria-label="Zoom out">−</button>
               <button type="button" data-network-zoom="reset">Reset</button>
               <button type="button" data-network-zoom="in" aria-label="Zoom in">+</button>
+              <button type="button" class="label-toggle" data-network-labels aria-pressed="false">Labels</button>
             </div>
           </header>
 

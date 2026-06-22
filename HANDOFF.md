@@ -56,10 +56,10 @@ The current prototype is a static Roman dictionary with:
   identified as awaiting linguistic review;
 - a progressively rendered alphabetical index of all entries at `word-list.html`;
 - a source-aligned grammar cheat-sheet surface at `grammar.html`;
-- two coordinated visualizations at `explore.html`, built only from recorded base
-  fields and word classes: a canvas atlas of 243 representative large families
-  and an SVG family web with search, filters, random families, zoom, and direct
-  links to full entries;
+- a five-view visualization lab at `explore.html`, built only from recorded base
+  fields and word classes: Family atlas, refined Family web, Type ribbons,
+  Family rings, and Size landscape; all share search, filters, URL state, entry
+  inspection, and direct links to full entries;
 - mobile layout, skip link, status announcements, and reduced-motion handling.
 
 Valentin manually opened the current interface and responded positively. This was
@@ -141,8 +141,8 @@ This intentionally remains a dependency-light static site:
 - `dictionary.css` — dictionary-specific responsive information design
 - `word-list.html` / `word-list.js` — complete progressive alphabetical index
 - `grammar.html` — static practical grammar cheat sheets linked to live entries
-- `explore.html` / `explore.js` / `explore.css` — interactive canvas family atlas
-  and SVG family web over the existing compact search index
+- `explore.html` / `explore.js` / `explore.css` — five coordinated canvas/SVG
+  visualization experiments over the existing compact search index
 - `reference.css` — shared Word list and Grammar layout
 - `word-types.js` — shared readable word-class labels and broad type groups
 - `app.js` — search, URL state, lazy entry loading, rendering, word families,
@@ -220,10 +220,10 @@ Useful manual check:
     search, word type, letter, spelling, meaning language, and progressive loading.
 12. Open `grammar.html`; confirm seven noun cases, six verb persons, adjective
     agreement, readable word-type codes, and three links to live paradigms.
-13. Open `explore.html`; filter the Family atlas, hover a bubble, and select one
-    to drill into its Family web. Search `kerav`, select a network node and a
-    word-type hub, change spelling/meaning, try a featured and random family,
-    zoom the map, and follow the selected word into its full dictionary entry.
+13. Open `explore.html`; switch through Family atlas, Family web, Type ribbons,
+    Family rings, and Size landscape. Hover and select marks, filter each view,
+    toggle Family-web labels, search `kerav`, change spelling/meaning, zoom the
+    SVG views, and follow a selected word into its full dictionary entry.
 
 Focus should place navigation above the entry; Browse should place the word-type
 catalogue below the entry; Split should preserve the persistent sidebar. Word

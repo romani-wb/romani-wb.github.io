@@ -176,6 +176,99 @@ export function createAtlasLayout(atlasFamilies, width = 1000, height = 650) {
   return { nodes, clusters, width, height };
 }
 
+export function createRibbonLayout(family, activeType = "all", width = 1000, height = 650) {
+  const entries = family.entries.filter((entry) => activeType === "all" || wordTypeGroup(entry).key === activeType);
+  const groups = WORD_TYPE_GROUPS
+    .map((definition) => ({ ...definition, entries: entries.filter((entry) => wordTypeGroup(entry).key === definition.key) }))
+    .filter((group) => group.entries.length);
+  const root = { x: 105, y: height / 2 };
+  const weightTotal = groups.reduce((sum, group) => sum + Math.max(3, group.entries.length), 0) || 1;
+  const availableHeight = height - 94;
+  let cursor = 47;
+  const nodes = [];
+  const edges = [];
+
+  groups.forEach((group) => {
+    const bandHeight = availableHeight * Math.max(3, group.entries.length) / weightTotal;
+    const hub = { id: `type:${group.key}`, kind: "type", group: group.key, label: group.label, count: group.entries.length, x: width * .42, y: cursor + bandHeight / 2, bandHeight };
+    nodes.push(hub);
+    edges.push({ from: root, to: hub, kind: "type", weight: group.entries.length });
+    group.entries.forEach((entry, index) => {
+      const spacing = bandHeight / Math.max(1, group.entries.length);
+      const node = { id: entry.id, kind: "entry", group: group.key, entry, x: width * .79 + (index % 2) * 34, y: cursor + spacing * (index + .5) };
+      nodes.push(node);
+      edges.push({ from: hub, to: node, kind: "entry", weight: 1 });
+    });
+    cursor += bandHeight;
+  });
+
+  return { root, nodes, edges, groups, entries, width, height };
+}
+
+export function createRingLayout(family, activeType = "all") {
+  const entries = family.entries.filter((entry) => activeType === "all" || wordTypeGroup(entry).key === activeType);
+  const groups = WORD_TYPE_GROUPS
+    .map((definition) => ({ ...definition, entries: entries.filter((entry) => wordTypeGroup(entry).key === definition.key) }))
+    .filter((group) => group.entries.length);
+  const total = entries.length || 1;
+  let cursor = -Math.PI / 2;
+  const groupArcs = [];
+  const entryArcs = [];
+
+  groups.forEach((group) => {
+    const span = Math.PI * 2 * group.entries.length / total;
+    const gap = Math.min(.025, span * .08);
+    const groupArc = { group: group.key, label: group.label, count: group.entries.length, start: cursor + gap, end: cursor + span - gap };
+    groupArcs.push(groupArc);
+    group.entries.forEach((entry, index) => {
+      const entrySpan = span / group.entries.length;
+      const entryGap = Math.min(.012, entrySpan * .14);
+      entryArcs.push({ group: group.key, entry, start: cursor + index * entrySpan + entryGap, end: cursor + (index + 1) * entrySpan - entryGap });
+    });
+    cursor += span;
+  });
+
+  return { groups: groupArcs, entries: entryArcs, total };
+}
+
+function stableFraction(value) {
+  let hash = 2166136261;
+  for (const character of String(value)) {
+    hash ^= character.codePointAt(0);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0) / 4294967295;
+}
+
+export function createLandscapeLayout(families, width = 1000, height = 650, activeType = "all") {
+  const visible = families.filter((item) => activeType === "all" || item.dominantType === activeType);
+  const groups = WORD_TYPE_GROUPS
+    .map((group) => ({ ...group, families: visible.filter((item) => item.dominantType === group.key) }))
+    .filter((group) => group.families.length);
+  const margin = { top: 42, right: 27, bottom: 48, left: 88 };
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
+  const laneHeight = innerHeight / Math.max(1, groups.length);
+  const maxSize = Math.max(2, ...visible.map((item) => item.family.entries.length));
+  const logMin = Math.log(2);
+  const logMax = Math.log(maxSize);
+  const xForSize = (size) => margin.left + ((Math.log(Math.max(2, size)) - logMin) / Math.max(.001, logMax - logMin)) * innerWidth;
+  const lanes = [];
+  const nodes = [];
+
+  groups.forEach((group, index) => {
+    const y = margin.top + laneHeight * (index + .5);
+    lanes.push({ key: group.key, label: group.label, count: group.families.length, y, height: laneHeight });
+    group.families.forEach((item) => {
+      const jitter = (stableFraction(item.family.key) - .5) * laneHeight * .62;
+      nodes.push({ ...item, group: group.key, x: xForSize(item.family.entries.length), y: y + jitter, radius: Math.min(7, 2.2 + Math.sqrt(item.family.entries.length) * .54) });
+    });
+  });
+
+  const ticks = [2, 3, 5, 10, 20, 40, maxSize].filter((value, index, values) => value <= maxSize && values.indexOf(value) === index).map((value) => ({ value, x: xForSize(value) }));
+  return { nodes, lanes, ticks, maxSize, width, height, margin };
+}
+
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]);
 }
@@ -219,6 +312,7 @@ function initExplorer() {
     spellingButtons: [...document.querySelectorAll("[data-explore-spelling]")],
     languageButtons: [...document.querySelectorAll("[data-explore-language]")],
     zoomButtons: [...document.querySelectorAll("[data-network-zoom]")],
+    labelButton: document.querySelector("[data-network-labels]"),
   };
 
   const collator = new Intl.Collator(["rom", "de", "en"], { sensitivity: "base" });
@@ -227,13 +321,15 @@ function initExplorer() {
     families: new Map(),
     featured: [],
     atlasFamilies: [],
-    atlasLayout: null,
+    landscapeFamilies: [],
+    canvasLayout: null,
     family: null,
     selectedId: null,
     activeType: "all",
     spelling: "int",
     language: "de",
     view: "atlas",
+    showLabels: false,
     zoom: 1,
   };
 
@@ -250,7 +346,7 @@ function initExplorer() {
     const params = new URL(window.location.href).searchParams;
     state.spelling = ["int", "deu"].includes(params.get("spelling")) ? params.get("spelling") : "int";
     state.language = ["de", "en"].includes(params.get("meaning")) ? params.get("meaning") : "de";
-    state.view = params.get("view") === "family" ? "family" : "atlas";
+    state.view = ["family", "ribbons", "rings", "landscape"].includes(params.get("view")) ? params.get("view") : "atlas";
     const requestedFamily = normalizeFamilyKey(params.get("family"));
     state.family = state.families.get(requestedFamily) || state.featured[0] || [...state.families.values()][0];
     const requestedEntry = params.get("entry");
@@ -328,10 +424,11 @@ function initExplorer() {
   }
 
   function renderTypeFilters() {
-    if (state.view === "atlas") {
+    if (["atlas", "landscape"].includes(state.view)) {
+      const corpusFamilies = state.view === "landscape" ? state.landscapeFamilies : state.atlasFamilies;
       const atlasCounts = new Map(WORD_TYPE_GROUPS.map((group) => [group.key, 0]));
-      state.atlasFamilies.forEach((item) => atlasCounts.set(item.dominantType, (atlasCounts.get(item.dominantType) || 0) + 1));
-      const filters = [{ key: "all", label: "All families", count: state.atlasFamilies.length }, ...WORD_TYPE_GROUPS
+      corpusFamilies.forEach((item) => atlasCounts.set(item.dominantType, (atlasCounts.get(item.dominantType) || 0) + 1));
+      const filters = [{ key: "all", label: "All families", count: corpusFamilies.length }, ...WORD_TYPE_GROUPS
         .filter((group) => atlasCounts.get(group.key))
         .map((group) => ({ ...group, count: atlasCounts.get(group.key) }))];
       els.typeFilters.innerHTML = filters.map((filter) => `
@@ -386,9 +483,9 @@ function initExplorer() {
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     context.clearRect(0, 0, width, height);
     const visibleFamilies = state.atlasFamilies.filter((item) => state.activeType === "all" || item.dominantType === state.activeType);
-    state.atlasLayout = createAtlasLayout(visibleFamilies, width, height);
+    state.canvasLayout = createAtlasLayout(visibleFamilies, width, height);
 
-    state.atlasLayout.clusters.forEach((cluster) => {
+    state.canvasLayout.clusters.forEach((cluster) => {
       const color = TYPE_COLORS[cluster.key] || TYPE_COLORS.other;
       context.save();
       context.globalAlpha = .065;
@@ -405,7 +502,7 @@ function initExplorer() {
       context.fillText(`${cluster.label.toUpperCase()} · ${cluster.count}`, cluster.bounds.x + 15, cluster.bounds.y + 12);
     });
 
-    state.atlasLayout.nodes.forEach((node) => {
+    state.canvasLayout.nodes.forEach((node) => {
       const color = TYPE_COLORS[node.group] || TYPE_COLORS.other;
       const selected = node.family.key === state.family.key;
       context.save();
@@ -435,6 +532,74 @@ function initExplorer() {
     });
   }
 
+  function drawLandscape() {
+    if (state.view !== "landscape" || els.atlas.hidden) return;
+    const canvas = els.atlas;
+    const width = Math.max(320, canvas.clientWidth || els.frame.clientWidth || 1000);
+    const height = Math.max(470, canvas.clientHeight || 540);
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    const context = canvas.getContext("2d");
+    if (!context) return;
+    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    context.clearRect(0, 0, width, height);
+    state.canvasLayout = createLandscapeLayout(state.landscapeFamilies, width, height, state.activeType);
+
+    state.canvasLayout.lanes.forEach((lane, index) => {
+      const color = TYPE_COLORS[lane.key] || TYPE_COLORS.other;
+      context.fillStyle = index % 2 ? "rgba(23,33,30,.018)" : "rgba(255,255,255,.42)";
+      context.fillRect(state.canvasLayout.margin.left, lane.y - lane.height / 2, width - state.canvasLayout.margin.left - state.canvasLayout.margin.right, lane.height);
+      context.strokeStyle = "rgba(23,33,30,.08)";
+      context.beginPath();
+      context.moveTo(state.canvasLayout.margin.left, lane.y + lane.height / 2);
+      context.lineTo(width - state.canvasLayout.margin.right, lane.y + lane.height / 2);
+      context.stroke();
+      context.fillStyle = color;
+      context.font = "800 9px Inter, system-ui, sans-serif";
+      context.textAlign = "right";
+      context.textBaseline = "middle";
+      context.fillText(`${lane.label} · ${lane.count}`, state.canvasLayout.margin.left - 10, lane.y);
+    });
+
+    state.canvasLayout.ticks.forEach((tick) => {
+      context.strokeStyle = "rgba(23,33,30,.1)";
+      context.beginPath();
+      context.moveTo(tick.x, state.canvasLayout.margin.top);
+      context.lineTo(tick.x, height - state.canvasLayout.margin.bottom);
+      context.stroke();
+      context.fillStyle = "#67706b";
+      context.font = "700 8px Inter, system-ui, sans-serif";
+      context.textAlign = "center";
+      context.textBaseline = "top";
+      context.fillText(String(tick.value), tick.x, height - state.canvasLayout.margin.bottom + 10);
+    });
+    context.fillStyle = "#67706b";
+    context.font = "800 8px Inter, system-ui, sans-serif";
+    context.textAlign = "center";
+    context.fillText("ENTRIES IN RECORDED FAMILY · LOG SCALE", state.canvasLayout.margin.left + (width - state.canvasLayout.margin.left - state.canvasLayout.margin.right) / 2, height - 15);
+
+    state.canvasLayout.nodes.forEach((node) => {
+      const selected = node.family.key === state.family.key;
+      context.save();
+      context.beginPath();
+      context.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+      context.fillStyle = TYPE_COLORS[node.group] || TYPE_COLORS.other;
+      context.globalAlpha = selected ? 1 : .38;
+      context.fill();
+      context.globalAlpha = 1;
+      context.strokeStyle = selected ? "#a66a25" : "rgba(255,255,255,.55)";
+      context.lineWidth = selected ? 3 : 1;
+      context.stroke();
+      context.restore();
+    });
+  }
+
+  function drawCorpusChart() {
+    if (state.view === "atlas") drawAtlas();
+    if (state.view === "landscape") drawLandscape();
+  }
+
   function renderAtlas() {
     els.atlas.hidden = false;
     els.svg.setAttribute("hidden", "");
@@ -448,21 +613,107 @@ function initExplorer() {
     els.networkHelp.textContent = "Hover to read a base. Select a bubble to open its family web.";
     els.networkLegend.innerHTML = `<span><i class="legend-atlas-size"></i> Size = family entries</span><span><i class="legend-type"></i> Colour = dominant word type</span><span><i class="legend-selected"></i> Current family</span>`;
     renderAtlasInspector();
-    drawAtlas();
+    drawCorpusChart();
   }
 
-  function renderNetwork() {
+  function renderLandscape() {
+    els.atlas.hidden = false;
+    els.svg.setAttribute("hidden", "");
+    els.networkTools.hidden = true;
+    els.membersSection.hidden = true;
+    els.visualizationEyebrow.textContent = "Corpus distribution";
+    const visibleCount = state.landscapeFamilies.filter((item) => state.activeType === "all" || item.dominantType === state.activeType).length;
+    els.title.textContent = "Size landscape";
+    els.summary.textContent = `${visibleCount.toLocaleString()} multi-word families · horizontal position shows family size`;
+    els.atlas.setAttribute("aria-label", `${visibleCount} multi-word families arranged in word-type lanes by entry count.`);
+    els.networkHelp.textContent = "Hover any dot to read the base. Select it to open the family web.";
+    els.networkLegend.innerHTML = `<span><i class="legend-entry"></i> Dot = recorded family</span><span><i class="legend-type"></i> Lane = dominant word type</span><span><i class="legend-selected"></i> Current family</span>`;
+    renderAtlasInspector();
+    drawCorpusChart();
+  }
+
+  function curvedPath(from, to, bend = 16) {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const distance = Math.max(1, Math.hypot(dx, dy));
+    const middle = { x: (from.x + to.x) / 2 - dy / distance * bend, y: (from.y + to.y) / 2 + dx / distance * bend };
+    return `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} Q ${middle.x.toFixed(1)} ${middle.y.toFixed(1)} ${to.x.toFixed(1)} ${to.y.toFixed(1)}`;
+  }
+
+  function ribbonPath(from, to) {
+    const delta = (to.x - from.x) * .52;
+    return `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} C ${(from.x + delta).toFixed(1)} ${from.y.toFixed(1)}, ${(to.x - delta).toFixed(1)} ${to.y.toFixed(1)}, ${to.x.toFixed(1)} ${to.y.toFixed(1)}`;
+  }
+
+  function polarPoint(cx, cy, radius, angle) {
+    return { x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius };
+  }
+
+  function ringPath(cx, cy, innerRadius, outerRadius, start, end) {
+    const outerStart = polarPoint(cx, cy, outerRadius, start);
+    const outerEnd = polarPoint(cx, cy, outerRadius, end);
+    const innerEnd = polarPoint(cx, cy, innerRadius, end);
+    const innerStart = polarPoint(cx, cy, innerRadius, start);
+    const large = end - start > Math.PI ? 1 : 0;
+    return `M ${outerStart.x.toFixed(2)} ${outerStart.y.toFixed(2)} A ${outerRadius} ${outerRadius} 0 ${large} 1 ${outerEnd.x.toFixed(2)} ${outerEnd.y.toFixed(2)} L ${innerEnd.x.toFixed(2)} ${innerEnd.y.toFixed(2)} A ${innerRadius} ${innerRadius} 0 ${large} 0 ${innerStart.x.toFixed(2)} ${innerStart.y.toFixed(2)} Z`;
+  }
+
+  function prepareFamilyChart({ eyebrow, help, legend, labels = false }) {
     els.atlas.hidden = true;
     els.svg.removeAttribute("hidden");
     els.networkTools.hidden = false;
+    els.labelButton.hidden = !labels;
+    els.labelButton.setAttribute("aria-pressed", String(state.showLabels));
     els.membersSection.hidden = false;
-    els.visualizationEyebrow.textContent = "Recorded base";
-    els.networkHelp.textContent = "Select a dot to inspect a word. Select a type hub to isolate that branch.";
-    els.networkLegend.innerHTML = `<span><i class="legend-base"></i> Recorded base</span><span><i class="legend-type"></i> Word type</span><span><i class="legend-entry"></i> Dictionary entry</span>`;
+    els.visualizationEyebrow.textContent = eyebrow;
+    els.networkHelp.textContent = help;
+    els.networkLegend.innerHTML = legend;
+    els.svg.setAttribute("class", `${state.view}-chart${state.showLabels ? " labels-visible" : ""}`);
+  }
+
+  function bindSvgChartInteractions() {
+    els.viewport.querySelectorAll("[data-network-entry]").forEach((node) => {
+      const activate = (event) => {
+        event.stopPropagation();
+        selectEntry(node.dataset.networkEntry);
+      };
+      node.addEventListener("click", activate);
+      if (node.tagName.toLowerCase() !== "button") node.addEventListener("keydown", (event) => {
+        if (!["Enter", " "].includes(event.key)) return;
+        event.preventDefault();
+        activate(event);
+      });
+    });
+    els.viewport.querySelectorAll("[data-network-type]").forEach((node) => {
+      const activate = (event) => {
+        event.stopPropagation();
+        setType(node.dataset.networkType);
+      };
+      node.addEventListener("click", activate);
+      if (node.tagName.toLowerCase() !== "button") node.addEventListener("keydown", (event) => {
+        if (!["Enter", " "].includes(event.key)) return;
+        event.preventDefault();
+        activate(event);
+      });
+    });
+  }
+
+  function renderNetwork() {
+    prepareFamilyChart({
+      eyebrow: "Recorded base",
+      help: "Select a dot to inspect a word. Select a type hub to isolate that branch.",
+      legend: `<span><i class="legend-base"></i> Recorded base</span><span><i class="legend-type"></i> Word type hub</span><span><i class="legend-entry"></i> Dictionary entry</span>`,
+      labels: true,
+    });
     const layout = createNetworkLayout(state.family, state.activeType);
     const selected = state.family.entries.find((entry) => entry.id === state.selectedId);
+    const selectedGroup = selected ? wordTypeGroup(selected).key : null;
     const base = displayBase();
-    const edgeMarkup = layout.edges.map((edge) => `<line class="network-edge ${edge.kind}-edge" x1="${edge.from.x.toFixed(1)}" y1="${edge.from.y.toFixed(1)}" x2="${edge.to.x.toFixed(1)}" y2="${edge.to.y.toFixed(1)}"></line>`).join("");
+    const haloMarkup = layout.nodes.filter((node) => node.kind === "type").map((node) => `<circle class="network-cluster-halo" cx="${node.x.toFixed(1)}" cy="${node.y.toFixed(1)}" r="${Math.min(84, 50 + Math.sqrt(node.count) * 5).toFixed(1)}" style="--type-color:${TYPE_COLORS[node.group] || TYPE_COLORS.other}"></circle>`).join("");
+    const edgeMarkup = layout.edges.map((edge) => {
+      const active = edge.kind === "entry" ? edge.to.id === state.selectedId : edge.to.group === selectedGroup;
+      return `<path class="network-edge ${edge.kind}-edge${active ? " selected-edge" : ""}" d="${curvedPath(edge.from, edge.to, edge.kind === "type" ? 10 : 18)}"></path>`;
+    }).join("");
     const nodeMarkup = layout.nodes.map((node) => {
       const color = TYPE_COLORS[node.group] || TYPE_COLORS.other;
       if (node.kind === "type") {
@@ -474,27 +725,86 @@ function initExplorer() {
       const lemma = displayLemma(node.entry);
       const isBase = normalizeFamilyKey(node.entry.roman_int) === state.family.key;
       const dotSize = isBase ? 22 : 16;
-      return `<g class="network-node entry-node${node.entry.id === state.selectedId ? " selected" : ""}${isBase ? " base-entry" : ""}" transform="translate(${node.x.toFixed(1)} ${node.y.toFixed(1)})" style="--type-color:${color}">
+      return `<g class="network-node entry-node${node.entry.id === state.selectedId ? " selected" : ""}${isBase ? " base-entry" : ""}${selectedGroup && node.group !== selectedGroup ? " subdued" : ""}" transform="translate(${node.x.toFixed(1)} ${node.y.toFixed(1)})" style="--type-color:${color}">
         <foreignObject x="${-dotSize / 2}" y="${-dotSize / 2}" width="${dotSize}" height="${dotSize}"><button xmlns="http://www.w3.org/1999/xhtml" class="network-dot entry-dot" type="button" data-network-entry="${node.entry.id}" aria-label="Inspect ${escapeXml(lemma)}"></button></foreignObject>
         <text class="entry-label" text-anchor="middle" y="-13">${escapeXml(truncate(lemma))}</text>
       </g>`;
     }).join("");
     const rootMarkup = `<g class="network-node base-node" transform="translate(${layout.root.x} ${layout.root.y})"><circle r="49"></circle><text text-anchor="middle" dominant-baseline="central">${escapeXml(truncate(base, 13))}</text></g>`;
-    els.viewport.innerHTML = `${edgeMarkup}${rootMarkup}${nodeMarkup}`;
-    els.viewport.querySelectorAll("[data-network-entry]").forEach((node) => node.addEventListener("click", (event) => {
-      event.stopPropagation();
-      selectEntry(node.dataset.networkEntry);
-    }));
-    els.viewport.querySelectorAll("[data-network-type]").forEach((node) => node.addEventListener("click", (event) => {
-      event.stopPropagation();
-      setType(node.dataset.networkType);
-    }));
+    els.viewport.innerHTML = `${haloMarkup}${edgeMarkup}${rootMarkup}${nodeMarkup}`;
+    bindSvgChartInteractions();
     const typeLabel = state.activeType === "all" ? "all word types" : WORD_TYPE_GROUPS.find((group) => group.key === state.activeType)?.label.toLowerCase();
     els.description.textContent = `${layout.entries.length} entries sharing the recorded base ${base}, arranged through ${layout.groups.length} word-type branches. Showing ${typeLabel}.`;
     els.title.textContent = base;
     els.summary.textContent = `${state.family.entries.length.toLocaleString()} recorded entr${state.family.entries.length === 1 ? "y" : "ies"} · ${typeCounts().size} word type${typeCounts().size === 1 ? "" : "s"}`;
     applyZoom();
     if (selected && !layout.entries.some((entry) => entry.id === selected.id)) renderInspector(selected);
+  }
+
+  function renderRibbons() {
+    prepareFamilyChart({
+      eyebrow: "Formation flow",
+      help: "Read left to right: recorded base, broad word type, then individual entries.",
+      legend: `<span><i class="legend-base"></i> Recorded base</span><span><i class="legend-type"></i> Width = entries in type</span><span><i class="legend-entry"></i> Select an entry</span>`,
+      labels: true,
+    });
+    const layout = createRibbonLayout(state.family, state.activeType, VIEWBOX.width, VIEWBOX.height);
+    const base = displayBase();
+    const selected = state.family.entries.find((entry) => entry.id === state.selectedId);
+    const selectedGroup = selected ? wordTypeGroup(selected).key : null;
+    const columns = `<g class="ribbon-columns"><text x="105" y="28" text-anchor="middle">BASE</text><text x="420" y="28" text-anchor="middle">WORD TYPE</text><text x="810" y="28" text-anchor="middle">DICTIONARY ENTRIES</text></g>`;
+    const flows = layout.edges.map((edge) => {
+      const group = edge.kind === "type" ? edge.to.group : edge.from.group;
+      const active = edge.kind === "entry" ? edge.to.id === state.selectedId : edge.to.group === selectedGroup;
+      const width = edge.kind === "type" ? Math.min(25, 3 + edge.weight * .75) : 1.4;
+      return `<path class="ribbon-flow ${edge.kind}-flow${active ? " selected-edge" : ""}" d="${ribbonPath(edge.from, edge.to)}" style="--type-color:${TYPE_COLORS[group] || TYPE_COLORS.other};stroke-width:${width}"></path>`;
+    }).join("");
+    const nodes = layout.nodes.map((node) => {
+      const color = TYPE_COLORS[node.group] || TYPE_COLORS.other;
+      if (node.kind === "type") return `<g class="network-node type-node ribbon-type-node" transform="translate(${node.x.toFixed(1)} ${node.y.toFixed(1)})" style="--type-color:${color}"><foreignObject x="-24" y="-24" width="48" height="48"><button xmlns="http://www.w3.org/1999/xhtml" class="network-dot type-dot" type="button" data-network-type="${node.group}" aria-label="Show ${escapeXml(node.label)} only">${node.count}</button></foreignObject><text class="type-label" text-anchor="middle" y="37">${escapeXml(node.label)}</text></g>`;
+      const lemma = displayLemma(node.entry);
+      const isBase = normalizeSearch(node.entry.roman_int) === normalizeSearch(state.family.base_int);
+      return `<g class="network-node entry-node ribbon-entry-node${node.entry.id === state.selectedId ? " selected" : ""}${isBase ? " base-entry" : ""}" transform="translate(${node.x.toFixed(1)} ${node.y.toFixed(1)})" style="--type-color:${color}"><foreignObject x="-8" y="-8" width="16" height="16"><button xmlns="http://www.w3.org/1999/xhtml" class="network-dot entry-dot" type="button" data-network-entry="${node.entry.id}" aria-label="Inspect ${escapeXml(lemma)}"></button></foreignObject><text class="entry-label ribbon-entry-label" x="13" y="3">${escapeXml(truncate(lemma, 24))}</text></g>`;
+    }).join("");
+    const root = `<g class="network-node base-node ribbon-base-node" transform="translate(${layout.root.x} ${layout.root.y})"><circle r="54"></circle><text text-anchor="middle" dominant-baseline="central">${escapeXml(truncate(base, 13))}</text></g>`;
+    els.viewport.innerHTML = `${columns}${flows}${root}${nodes}`;
+    bindSvgChartInteractions();
+    els.title.textContent = base;
+    els.summary.textContent = `${layout.entries.length} visible entries · ${layout.groups.length} type channel${layout.groups.length === 1 ? "" : "s"}`;
+    els.description.textContent = `A left-to-right flow from the recorded base ${base} through broad word types to ${layout.entries.length} entries.`;
+    applyZoom();
+  }
+
+  function renderRings() {
+    prepareFamilyChart({
+      eyebrow: "Family fingerprint",
+      help: "The middle ring is word type; the outer ring is individual entries. Select any segment.",
+      legend: `<span><i class="legend-base"></i> Centre = recorded base</span><span><i class="legend-type"></i> Middle = word type share</span><span><i class="legend-entry"></i> Outer = entries</span>`,
+      labels: false,
+    });
+    const layout = createRingLayout(state.family, state.activeType);
+    const base = displayBase();
+    const center = { x: VIEWBOX.width / 2, y: VIEWBOX.height / 2 };
+    const groupMarkup = layout.groups.map((arc) => {
+      const color = TYPE_COLORS[arc.group] || TYPE_COLORS.other;
+      const middle = (arc.start + arc.end) / 2;
+      const label = polarPoint(center.x, center.y, 167, middle);
+      return `<path class="ring-segment ring-type" tabindex="0" role="button" data-network-type="${arc.group}" aria-label="Show ${escapeXml(arc.label)} only" d="${ringPath(center.x, center.y, 104, 202, arc.start, arc.end)}" style="--type-color:${color}"></path><text class="ring-type-label" x="${label.x.toFixed(1)}" y="${label.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${escapeXml(arc.label)} · ${arc.count}</text>`;
+    }).join("");
+    const entryMarkup = layout.entries.map((arc) => {
+      const color = TYPE_COLORS[arc.group] || TYPE_COLORS.other;
+      const selected = arc.entry.id === state.selectedId;
+      const middle = (arc.start + arc.end) / 2;
+      const label = polarPoint(center.x, center.y, 267, middle);
+      return `<path class="ring-segment ring-entry${selected ? " selected" : ""}" tabindex="0" role="button" data-network-entry="${arc.entry.id}" aria-label="Inspect ${escapeXml(displayLemma(arc.entry))}" d="${ringPath(center.x, center.y, 214, 307, arc.start, arc.end)}" style="--type-color:${color}"></path>${selected ? `<text class="ring-selected-label" x="${label.x.toFixed(1)}" y="${label.y.toFixed(1)}" text-anchor="middle">${escapeXml(truncate(displayLemma(arc.entry), 18))}</text>` : ""}`;
+    }).join("");
+    const root = `<g class="network-node base-node ring-base-node" transform="translate(${center.x} ${center.y})"><circle r="83"></circle><text text-anchor="middle" dominant-baseline="central">${escapeXml(truncate(base, 13))}</text></g>`;
+    els.viewport.innerHTML = `${groupMarkup}${entryMarkup}${root}`;
+    bindSvgChartInteractions();
+    els.title.textContent = base;
+    els.summary.textContent = `${layout.total} visible entries · radial share by word type`;
+    els.description.textContent = `A radial composition chart for the recorded base ${base}, with broad word types in the middle ring and entries in the outer ring.`;
+    applyZoom();
   }
 
   function renderInspector(entry) {
@@ -533,16 +843,22 @@ function initExplorer() {
     }).join("");
   }
 
+  function renderFamilyVisualization() {
+    if (state.view === "ribbons") renderRibbons();
+    else if (state.view === "rings") renderRings();
+    else renderNetwork();
+  }
+
   function renderAll() {
     if (!state.family) return;
     renderFeatured();
     renderToggles();
     renderViewSwitch();
     renderTypeFilters();
-    if (state.view === "atlas") {
-      renderAtlas();
-    } else {
-      renderNetwork();
+    if (state.view === "atlas") renderAtlas();
+    else if (state.view === "landscape") renderLandscape();
+    else {
+      renderFamilyVisualization();
       renderInspector(state.family.entries.find((entry) => entry.id === state.selectedId));
       renderMembers();
     }
@@ -567,7 +883,7 @@ function initExplorer() {
     const entry = state.family.entries.find((candidate) => candidate.id === id);
     if (!entry) return;
     state.selectedId = id;
-    renderNetwork();
+    renderFamilyVisualization();
     renderInspector(entry);
     renderMembers();
     syncUrl();
@@ -576,9 +892,10 @@ function initExplorer() {
   function setType(key) {
     state.activeType = key;
     els.tooltip.hidden = true;
-    if (state.view === "atlas") {
+    if (["atlas", "landscape"].includes(state.view)) {
       renderTypeFilters();
-      renderAtlas();
+      if (state.view === "atlas") renderAtlas();
+      else renderLandscape();
       syncUrl();
       return;
     }
@@ -588,14 +905,14 @@ function initExplorer() {
     }
     state.zoom = 1;
     renderTypeFilters();
-    renderNetwork();
+    renderFamilyVisualization();
     renderInspector(state.family.entries.find((entry) => entry.id === state.selectedId));
     renderMembers();
     syncUrl();
   }
 
   function setView(view) {
-    if (!["atlas", "family"].includes(view) || state.view === view) return;
+    if (!["atlas", "family", "ribbons", "rings", "landscape"].includes(view) || state.view === view) return;
     state.view = view;
     state.activeType = "all";
     state.zoom = 1;
@@ -659,11 +976,11 @@ function initExplorer() {
   }
 
   function atlasNodeAt(event) {
-    if (!state.atlasLayout) return null;
+    if (!state.canvasLayout) return null;
     const bounds = els.atlas.getBoundingClientRect();
     const x = event.clientX - bounds.left;
     const y = event.clientY - bounds.top;
-    return [...state.atlasLayout.nodes].reverse().find((node) => Math.hypot(x - node.x, y - node.y) <= node.radius + 3) || null;
+    return [...state.canvasLayout.nodes].reverse().find((node) => Math.hypot(x - node.x, y - node.y) <= node.radius + 3) || null;
   }
 
   function showAtlasTooltip(node, event) {
@@ -740,6 +1057,11 @@ function initExplorer() {
     state.zoom = action === "reset" ? 1 : Math.max(.75, Math.min(1.8, state.zoom + (action === "in" ? .2 : -.2)));
     applyZoom();
   }));
+  els.labelButton.addEventListener("click", () => {
+    state.showLabels = !state.showLabels;
+    renderFamilyVisualization();
+    els.labelButton.setAttribute("aria-pressed", String(state.showLabels));
+  });
   document.addEventListener("click", (event) => {
     if (!event.target.closest(".family-search-wrap")) hideSuggestions();
   });
@@ -747,7 +1069,7 @@ function initExplorer() {
 
   if ("ResizeObserver" in window) {
     new ResizeObserver(() => {
-      if (state.view === "atlas") drawAtlas();
+      if (["atlas", "landscape"].includes(state.view)) drawCorpusChart();
     }).observe(els.frame);
   }
 
@@ -761,6 +1083,7 @@ function initExplorer() {
       state.families = buildFamilyIndex(entries);
       state.featured = [...state.families.values()].filter((family) => family.entries.length > 1).sort((a, b) => b.entries.length - a.entries.length || collator.compare(a.base_int, b.base_int));
       state.atlasFamilies = createAtlasFamilies(state.families);
+      state.landscapeFamilies = createAtlasFamilies(state.families, Number.MAX_SAFE_INTEGER);
       applyUrlState();
       renderStats();
       renderAll();

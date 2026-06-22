@@ -17,6 +17,14 @@ common broad word type, and selecting a bubble opens the source-aligned SVG
 family web. The atlas is an overview sample; corpus totals remain visible and the
 search reaches every entry.
 
+Three additional views remain deliberately labelled as exploration choices, not
+final publication decisions. Type ribbons show the explicit base → broad word
+type → entry flow; Family rings encode the same selected-family composition as
+middle and outer arcs; Size landscape plots all 2,664 multi-word families in
+dominant-type lanes against family size. The node-link Family web now adds curved
+paths, type halos, selected-path emphasis, and optional labels. All five views
+reuse one state/data layer and make no etymological or semantic-similarity claim.
+
 ## 2026-06-22 — Exact meanings outrank substrings
 
 Dictionary search ranks exact case-preserving meanings, normalized exact meanings,
