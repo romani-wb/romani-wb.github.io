@@ -36,6 +36,7 @@ const elements = new Map([
   ["#results", new ElementStub()],
   ["#result-meta", new ElementStub()],
   ["#entry-pane", new ElementStub()],
+  ["#random-entry", new ElementStub()],
 ]);
 const spellingButtons = [new ElementStub({ spelling: "int" }), new ElementStub({ spelling: "deu" })];
 const languageButtons = [new ElementStub({ language: "de" }), new ElementStub({ language: "en" })];
@@ -48,7 +49,7 @@ globalThis.document = {
 };
 
 const startUrl = new URL(
-  "http://localhost/?entry=g04363_b4e42bdd&q=habrin&spelling=deu&meaning=en",
+  "http://localhost/dictionary.html?entry=g04363_b4e42bdd&q=habrin&spelling=deu&meaning=en",
 );
 globalThis.window = {
   location: { href: startUrl.href },
@@ -91,9 +92,26 @@ assert(requested.includes("data/processed/entries_manifest.json"));
 assert(requested.includes("data/processed/entries/entries-008.json"));
 assert(!requested.includes("data/processed/entries.json"));
 assert.match(elements.get("#entry-pane").innerHTML, /habrínav/);
-assert.match(elements.get("#entry-pane").innerHTML, /Provisional/);
+assert.match(elements.get("#entry-pane").innerHTML, /English meanings/);
+assert.match(elements.get("#entry-pane").innerHTML, /Word structure/);
 assert.match(elements.get("#entry-pane").innerHTML, /https:\/\/de\.langenscheidt\.com/);
 assert.equal(elements.get("#search-input").value, "habrin");
 assert.match(window.location.href, /entry=g04363_b4e42bdd/);
 
-console.log("Frontend smoke test passed: deep link and lazy chunk loading are functional.");
+elements.get("#entry-pane").listeners.get("click")({
+  target: {
+    closest(selector) {
+      return selector === "[data-entry-view]" ? { dataset: { entryView: "forms" } } : null;
+    },
+  },
+});
+assert.match(elements.get("#entry-pane").innerHTML, /Provisional/);
+assert.match(window.location.href, /view=forms/);
+
+const homeHtml = await readFile(resolve(root, "index.html"), "utf8");
+const dictionaryHtml = await readFile(resolve(root, "dictionary.html"), "utf8");
+assert.match(homeHtml, /href="dictionary\.html"/);
+assert(!homeHtml.includes("app.js"));
+assert.match(dictionaryHtml, /src="app\.js"/);
+
+console.log("Frontend smoke test passed: page separation, deep links, views, and lazy loading are functional.");

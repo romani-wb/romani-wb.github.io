@@ -28,6 +28,9 @@ python3 -m http.server 8000
 
 Open `http://localhost:8000`.
 
+- Story/home: `http://localhost:8000/index.html`
+- Standalone dictionary: `http://localhost:8000/dictionary.html`
+
 Read these before making structural changes:
 
 - `AGENTS.md`
@@ -35,4 +38,5 @@ Read these before making structural changes:
 - `docs/rebuild-plan.md`
 - `docs/source-register.md`
 - `docs/data-workflow.md`
+- `docs/dictionary-interface.md`
 - `docs/stakeholder-structure.md`

@@ -29,13 +29,17 @@ a96379b Establish June 2026 dictionary rebuild workflow
 
 The current prototype is a static Roman dictionary with:
 
-- a sourced introductory story and an initial visual system;
+- a sourced story/home page at `index.html`;
+- a separate bookmarkable dictionary at `dictionary.html`;
 - client-side search across Roman `INT`, Roman `DEU`, German, and English;
 - independent Roman-spelling and meaning-language controls;
 - URL-preserved query, selected entry, spelling, and meaning language;
 - remembered spelling and meaning preferences in browser storage;
 - lazy-loaded full entries in deterministic 500-entry chunks;
-- word families, grammar/details, source hyperlinks, and generated morphology;
+- an entry hierarchy based on the professor's required output structure;
+- visual word-structure and interactive Base-to-derived family diagrams;
+- dedicated Entry, Word family, Inflection, and Details views;
+- grammar/details, source hyperlinks, and generated morphology;
 - morphology collapsed and clearly labelled `Provisional`;
 - mobile layout, skip link, status announcements, and reduced-motion handling.
 
@@ -112,8 +116,10 @@ Important ingestion rules and quirks:
 
 This intentionally remains a dependency-light static site:
 
-- `index.html` — story, semantic shell, controls, and dictionary layout
-- `styles.css` — visual system, responsive layout, reduced-motion rules
+- `index.html` — contextual story/home and portal to the dictionary
+- `styles.css` — story/home visual system
+- `dictionary.html` — standalone dictionary shell and controls
+- `dictionary.css` — dictionary-specific responsive information design
 - `app.js` — search, URL state, lazy entry loading, rendering, word families,
   provisional morphology, and source links
 - `scripts/preprocess_data.py` — deterministic workbook-to-JSON build
@@ -156,6 +162,9 @@ python3 -m http.server 8000
 
 Then open `http://localhost:8000`.
 
+Use `http://localhost:8000/dictionary.html` to bypass the story and open the
+working dictionary directly.
+
 Expected automated result: 8 Python tests pass and the frontend smoke test
 passes. A second preprocessing run must produce byte-identical output.
 
@@ -168,6 +177,10 @@ Useful manual check:
 5. Open Forms and confirm it is labelled `Provisional`.
 6. Check the story and dictionary at mobile width.
 
+The Entry view should prioritise meanings, then the explicit structure and
+source relationships. Word family should show an interactive Base hierarchy;
+Inflection should show a simplified two-column provisional table.
+
 The in-app browser automation connection was unavailable during development, so
 the deterministic smoke harness was added instead. Do not claim comprehensive
 visual, browser, keyboard, or accessibility QA yet.
@@ -178,6 +191,8 @@ visual, browser, keyboard, or accessibility QA yet.
 - Source defects are preserved and reported, never silently fixed.
 - Static architecture remains until a concrete backend need exists.
 - Entry details are chunked; the search index is loaded initially.
+- Story and dictionary are separate static pages.
+- Visual diagrams use only explicit workbook relationships.
 - Morphology remains visible only behind a collapsed provisional disclosure.
 - Story claims are limited to the supplied manuscripts and remain provisional.
 - Review gates are fast-tracked until Valentin performs a major review.

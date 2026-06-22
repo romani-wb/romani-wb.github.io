@@ -1,5 +1,29 @@
 # Decision log
 
+## 2026-06-22 — Story and dictionary are separate surfaces
+
+`index.html` is the contextual story/home page. `dictionary.html` is the
+bookmarkable working dictionary and loads `app.js`; users returning to search do
+not pass through or scroll past the story. The two surfaces retain a shared Roman
+identity but deliberately use different layouts and navigation states.
+
+## 2026-06-22 — Entry hierarchy follows the professor's output structure
+
+The primary entry view prioritises lemma, square-bracketed lemma supplements,
+word class, meanings, and square-bracketed source information. Word family,
+inflection, and raw details are separate views. `Paradigm` and `Domain` remain in
+technical details because the structure PDF marks them as internal/not displayed.
+
+## 2026-06-22 — Visualise only explicit workbook relationships
+
+The entry overview uses a compact hierarchy for Base, Composition,
+Reconstruction, current lemma, and Variation. The Word family view uses the
+explicit `Base INT/DEU` relationship as a base-to-derived node graph. It does not
+infer semantic similarity, synonymy, etymology, or graph edges from spelling.
+The interaction pattern is informed by Visual Thesaurus, while the separation of
+dictionary, language help, paradigms, and word families is informed by the
+Ojibwe People's Dictionary. See `docs/dictionary-interface.md`.
+
 ## 2026-06-21 — Review gates temporarily fast-tracked
 
 Valentin asked development to continue without intermediate review and will do a

@@ -3,27 +3,29 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Roman Dictionary</title>
-    <meta name="description" content="Search the Roman dictionary in two Roman spellings with German and English meanings.">
+    <title>Roman — Language and Dictionary</title>
+    <meta name="description" content="Discover Roman, the language of the Burgenland Roma, and enter its German-English online dictionary.">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <a class="skip-link" href="#search-input">Skip to dictionary search</a>
+    <a class="skip-link" href="#story">Skip to the story</a>
+
     <header class="story-hero" id="introduction">
       <nav class="story-nav" aria-label="Primary navigation">
-        <a class="wordmark" href="#introduction" aria-label="Roman Dictionary home">Roman</a>
+        <a class="wordmark" href="index.html" aria-label="Roman home">Roman</a>
         <div>
           <a href="#story">Context</a>
-          <a href="#dictionary">Dictionary</a>
+          <a class="nav-dictionary" href="dictionary.html">Dictionary <span aria-hidden="true">↗</span></a>
         </div>
       </nav>
+
       <div class="hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">The language of the Burgenland Roma</p>
           <h1>Roman lives in words, memory, and use.</h1>
-          <p class="hero-intro">Explore a growing record of Roman across two spellings, with German and English meanings.</p>
-          <a class="primary-link" href="#dictionary">Open the dictionary <span aria-hidden="true">↓</span></a>
+          <p class="hero-intro">A documented language shaped across generations—and a dictionary built to make its words accessible again.</p>
+          <a class="primary-link" href="dictionary.html">Enter the dictionary <span aria-hidden="true">→</span></a>
         </div>
         <div class="hero-mark" aria-hidden="true">
           <span class="hero-r">R</span>
@@ -32,6 +34,7 @@
           <span class="orbit orbit-three">Wörter · words</span>
         </div>
       </div>
+
       <div class="hero-facts" aria-label="Dictionary facts">
         <p><strong>12,525</strong><span>entries</span></p>
         <p><strong>2</strong><span>Roman spellings</span></p>
@@ -39,72 +42,44 @@
       </div>
     </header>
 
-    <section class="story-section" id="story" aria-labelledby="story-title">
-      <div class="story-heading">
-        <p class="eyebrow">A short context</p>
-        <h2 id="story-title">A documented language with a living history</h2>
-      </div>
-      <div class="story-grid">
-        <article>
-          <span>01</span>
-          <h3>Place and contact</h3>
-          <p>Roman is the name Burgenland Roma use for their language. It is a Romani variety shaped in the former western Hungarian region and influenced over time by German and Croatian.</p>
-        </article>
-        <article>
-          <span>02</span>
-          <h3>Pressure and continuity</h3>
-          <p>Persecution, the Holocaust, persistent discrimination, and post-war language shift sharply reduced everyday use. Roman nevertheless remains an important marker of community and identity.</p>
-        </article>
-        <article>
-          <span>03</span>
-          <h3>Codification and access</h3>
-          <p>Community self-organisation led to codification work with linguists from the University of Graz. Teaching, media, Roma-Service activities, and this dictionary continue that work.</p>
-        </article>
-      </div>
-      <p class="heritage-note">Roman has been listed in the Austrian UNESCO Commission’s national inventory of intangible cultural heritage since 2011.</p>
-      <p class="story-source">Context condensed from the German and English project manuscripts supplied with the dictionary data. Copy and attribution remain provisional until the major review.</p>
-    </section>
-
-    <div class="app-shell" id="dictionary">
-      <header class="topbar">
-        <div>
-          <p class="dictionary-kicker">Search the collection</p>
-          <h2 class="dictionary-title">Roman Dictionary</h2>
-          <p id="data-status" role="status" aria-live="polite">Loading dictionary data...</p>
+    <main>
+      <section class="story-section" id="story" aria-labelledby="story-title">
+        <div class="story-heading">
+          <p class="eyebrow">A short context</p>
+          <h2 id="story-title">A documented language with a living history</h2>
         </div>
-        <div class="controls" aria-label="Display controls">
-          <fieldset class="segmented">
-            <legend>Spelling</legend>
-            <button type="button" class="active" data-spelling="int" aria-pressed="true">INT</button>
-            <button type="button" data-spelling="deu" aria-pressed="false">DEU</button>
-          </fieldset>
-          <fieldset class="segmented">
-            <legend>Meanings</legend>
-            <button type="button" class="active" data-language="de" aria-pressed="true">DE</button>
-            <button type="button" data-language="en" aria-pressed="false">EN</button>
-          </fieldset>
+        <div class="story-grid">
+          <article>
+            <span>01</span>
+            <h3>Place and contact</h3>
+            <p>Roman is the name Burgenland Roma use for their language. It is a Romani variety shaped in the former western Hungarian region and influenced over time by German and Croatian.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Pressure and continuity</h3>
+            <p>Persecution, the Holocaust, persistent discrimination, and post-war language shift sharply reduced everyday use. Roman nevertheless remains an important marker of community and identity.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Codification and access</h3>
+            <p>Community self-organisation led to codification work with linguists from the University of Graz. Teaching, media, Roma-Service activities, and this dictionary continue that work.</p>
+          </article>
         </div>
-      </header>
+        <p class="heritage-note">Roman has been listed in the Austrian UNESCO Commission’s national inventory of intangible cultural heritage since 2011.</p>
+        <p class="story-source">Context condensed from the German and English project manuscripts supplied with the dictionary data. Copy and attribution remain provisional until the major review.</p>
+      </section>
 
-      <main class="workspace">
-        <section class="search-pane" aria-label="Dictionary search">
-          <div class="search-wrap">
-            <label for="search-input">Search</label>
-            <input id="search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Roman, German, English" aria-describedby="result-meta">
-          </div>
-          <div class="result-meta" id="result-meta" role="status" aria-live="polite"></div>
-          <ol class="results" id="results"></ol>
-        </section>
+      <section class="dictionary-portal" aria-labelledby="portal-title">
+        <p class="eyebrow">12,525 ways in</p>
+        <h2 id="portal-title">Look up a word.<br>Then follow where it leads.</h2>
+        <p>The dictionary is a separate tool you can bookmark and return to directly. Search both Roman spellings, switch between German and English, and explore forms and word families.</p>
+        <a href="dictionary.html">Open Roman Dictionary <span aria-hidden="true">→</span></a>
+      </section>
+    </main>
 
-        <section class="entry-pane" id="entry-pane" aria-live="polite">
-          <div class="empty-state">
-            <h2>Select an entry</h2>
-            <p>Search results will appear on the left.</p>
-          </div>
-        </section>
-      </main>
-    </div>
-
-    <script src="app.js" type="module"></script>
+    <footer class="site-footer">
+      <a class="wordmark" href="index.html">Roman</a>
+      <a href="dictionary.html">Dictionary</a>
+    </footer>
   </body>
 </html>

@@ -12,6 +12,7 @@ const state = {
   entryManifest: {},
   searchEntries: [],
   wordFamilies: new Map(),
+  lemmasBySpelling: new Map(),
   references: {},
   paradigmModel: {},
   filteredEntries: [],
@@ -19,6 +20,8 @@ const state = {
   spelling: "int",
   language: "de",
   query: "",
+  entryView: "overview",
+  totalMatches: 0,
 };
 
 const els = {
@@ -27,6 +30,7 @@ const els = {
   results: document.querySelector("#results"),
   resultMeta: document.querySelector("#result-meta"),
   entryPane: document.querySelector("#entry-pane"),
+  randomEntry: document.querySelector("#random-entry"),
   spellingButtons: document.querySelectorAll("[data-spelling]"),
   languageButtons: document.querySelectorAll("[data-language]"),
 };
@@ -132,6 +136,16 @@ function entryMeanings(entry) {
     values: meanings[fallbackLanguage] || [],
     fallback: Boolean((meanings[fallbackLanguage] || []).length),
   };
+}
+
+function spellingValue(value) {
+  if (!value) return "";
+  return value[state.spelling] || value.int || value.deu || "";
+}
+
+function alternateSearchLemma(entry) {
+  const alternate = state.spelling === "deu" ? entry.roman_int : entry.roman_deu;
+  return alternate && alternate !== displayLemma(entry) ? alternate : "";
 }
 
 function buildSearchText(entry) {
@@ -278,12 +292,14 @@ function renderForms(entry) {
   const generated = generateForms(entry);
   const morphology = entry.morphology || {};
   if (!generated) {
-    if (!morphology.kind) return "";
+    if (!morphology.kind) {
+      return `<section class="panel-card forms-panel"><h3>No inflection table</h3><p class="panel-note">This word class has no generated paradigm in the current dictionary model.</p></section>`;
+    }
     return `
-      <details class="entry-section forms-disclosure">
-        <summary>Forms <span class="provisional-badge">Provisional</span></summary>
+      <section class="panel-card forms-panel">
+        <h3>Inflection</h3>
         <p class="fallback-note">No generated forms available for this entry yet. Paradigm: ${escapeHtml(morphology.source_paradigm || morphology.paradigm || "none")}.</p>
-      </details>
+      </section>
     `;
   }
 
@@ -295,35 +311,35 @@ function renderForms(entry) {
   }[generated.kind] || "Forms";
 
   return `
-    <details class="entry-section forms-disclosure">
-      <summary>${escapeHtml(title)} <span class="provisional-badge">Provisional</span></summary>
-      <p class="form-note">Generated from paradigm ${escapeHtml(generated.paradigm)} using the ${state.spelling.toUpperCase()} spelling. These forms have not yet passed linguistic review.</p>
-      ${renderGenerationExplanation(entry, generated)}
-      <div class="form-table-wrap">
-        <table class="form-table">
+    <section class="panel-card forms-panel">
+      <div class="panel-heading">
+        <h3>${escapeHtml(title)}</h3>
+        <p>${generated.rows.length} forms · ${state.spelling.toUpperCase()}</p>
+      </div>
+      <div class="provisional-banner"><strong>Provisional</strong><span>Generated from paradigm ${escapeHtml(generated.paradigm)}. These forms have not yet passed linguistic review.</span></div>
+      <div class="forms-table-wrap">
+        <table class="forms-table">
           <thead>
             <tr>
               <th>Form</th>
               <th>Grammar</th>
-              <th>Explanation</th>
-              <th>Code</th>
-              <th>Ending</th>
             </tr>
           </thead>
           <tbody>
             ${generated.rows.map((row) => `
               <tr>
                 <td>${escapeHtml(row.form)}</td>
-                <td>${escapeHtml(row.label || row.code)}</td>
-                <td>${escapeHtml(row.explanation)}</td>
-                <td>${escapeHtml(row.code)}</td>
-                <td>${escapeHtml(row.ending)}</td>
+                <td>${escapeHtml(row.label || row.code)}${row.explanation ? `<small>${escapeHtml(row.explanation)}</small>` : ""}</td>
               </tr>
             `).join("")}
           </tbody>
         </table>
       </div>
-    </details>
+      <details class="technical-details">
+        <summary>How these forms were generated</summary>
+        ${renderGenerationExplanation(entry, generated)}
+      </details>
+    </section>
   `;
 }
 
@@ -341,8 +357,6 @@ function renderGenerationExplanation(entry, generated) {
     : "";
 
   return `
-    <details class="generation-note">
-      <summary>How these forms were generated</summary>
       <ul>
         <li>The source lemma is <strong>${escapeHtml(raw || "unknown")}</strong>.</li>
         ${hasHyphen ? `<li>The internal hyphen marks the stem boundary. The displayed stem is <strong>${escapeHtml(stem)}</strong>.</li>` : `<li>No internal hyphen is present, so the displayed lemma is used as the stem.</li>`}
@@ -351,7 +365,6 @@ function renderGenerationExplanation(entry, generated) {
         ${aliasNote}
         ${irregularNote}
       </ul>
-    </details>
   `;
 }
 
@@ -376,32 +389,76 @@ function buildWordFamilies(entries) {
   return families;
 }
 
-function renderWordFamily(entry) {
-  const base = entry.details?.base || {};
-  const baseValue = base[state.spelling] || base.int || base.deu;
-  if (!baseValue) return "";
+function buildLemmaIndex(entries) {
+  const index = new Map();
+  for (const entry of entries) {
+    for (const spelling of ["int", "deu"]) {
+      const value = entry[`roman_${spelling}`];
+      if (!value) continue;
+      const key = normalizeSearch(`${spelling}:${value}`);
+      if (!index.has(key)) index.set(key, []);
+      index.get(key).push(entry.id);
+    }
+  }
+  return index;
+}
 
-  const baseSpelling = base[state.spelling] ? state.spelling : (base.int ? "int" : "deu");
+function familyData(entry) {
+  const base = entry.details?.base || {};
+  const ownLemma = entryDisplayLemma(entry);
+  const baseValue = base[state.spelling] || base.int || base.deu || ownLemma;
+  const baseSpelling = base[state.spelling]
+    ? state.spelling
+    : (base.int ? "int" : (base.deu ? "deu" : state.spelling));
   const key = normalizeSearch(`${baseSpelling}:${baseValue}`);
-  const related = (state.wordFamilies.get(key) || [])
+  const rootId = (state.lemmasBySpelling.get(key) || [])[0] || null;
+  const ids = [...new Set([rootId, ...(state.wordFamilies.get(key) || [])].filter(Boolean))];
+  const related = ids
     .map((id) => state.searchEntriesById.get(id))
     .filter(Boolean)
-    .filter((item) => item.id !== entry.id)
-    .slice(0, 60);
+    .filter((item) => item.id !== rootId);
 
-  if (!related.length) return "";
+  if (!related.length && !base.int && !base.deu) return null;
+  return { baseValue, rootId, related };
+}
+
+function renderFamilyNode(item, className = "") {
+  if (!item) return "";
+  return `
+    <button type="button" class="family-node ${className}" data-entry-id="${escapeHtml(item.id)}">
+      <strong>${escapeHtml(displayLemma(item))}</strong>
+      <small>${escapeHtml(labelOnly(item.word_class_label || item.word_class || "Entry"))}</small>
+    </button>
+  `;
+}
+
+function renderWordFamily(entry) {
+  const family = familyData(entry);
+  if (!family) {
+    return `<section class="panel-card family-panel"><h3>No linked word family</h3><p class="panel-note">This entry has no Base relationship in the current workbook.</p></section>`;
+  }
+
+  const rootEntry = family.rootId ? state.searchEntriesById.get(family.rootId) : null;
+  const visible = family.related.slice(0, 14);
+  const rootMarkup = rootEntry
+    ? renderFamilyNode(rootEntry, `root${rootEntry.id === entry.id ? " selected" : ""}`)
+    : `<div class="family-node root"><strong>${escapeHtml(family.baseValue)}</strong><small>Recorded base</small></div>`;
+
 
   return `
-    <section class="entry-section">
-      <h3>Word family</h3>
-      <p class="form-note">Base: ${escapeHtml(baseValue)}</p>
-      <div class="related-list">
-        ${related.map((item) => `
-          <button type="button" class="related-entry" data-entry-id="${escapeHtml(item.id)}">
-            <span>${escapeHtml(entryDisplayLemma(item))}</span>
-            <small>${escapeHtml(labelOnly(labelWithCode(item.grammar?.word_class_1)))}</small>
-          </button>
-        `).join("")}
+    <section class="panel-card family-panel">
+      <div class="panel-heading">
+        <h3>Word family</h3>
+        <p>${family.related.length} linked ${family.related.length === 1 ? "entry" : "entries"}</p>
+      </div>
+      <p class="family-intro">The workbook groups these entries under the recorded base <strong>${escapeHtml(family.baseValue)}</strong>. Select a node to move through the family.</p>
+      <div class="family-map" aria-label="Word family hierarchy">
+        <div class="family-root-wrap">${rootMarkup}</div>
+        <div class="family-trunk" aria-hidden="true"></div>
+        <div class="family-branches">
+          ${visible.map((item) => renderFamilyNode(item, item.id === entry.id ? "selected" : "")).join("")}
+        </div>
+        ${family.related.length > visible.length ? `<p class="family-overflow">Showing ${visible.length} of ${family.related.length} linked entries.</p>` : ""}
       </div>
     </section>
   `;
@@ -423,6 +480,7 @@ function rankEntry(entry, query) {
 function updateFilteredEntries() {
   const query = normalizeSearch(state.query);
   if (!query) {
+    state.totalMatches = state.searchEntries.length;
     state.filteredEntries = state.searchEntries.slice(0, MAX_RESULTS);
     const selected = state.searchEntriesById.get(state.selectedId);
     if (selected && !state.filteredEntries.some((entry) => entry.id === selected.id)) {
@@ -434,12 +492,12 @@ function updateFilteredEntries() {
     return;
   }
 
-  state.filteredEntries = state.searchEntries
+  const ranked = state.searchEntries
     .map((entry) => ({ entry, rank: rankEntry(entry, query) }))
     .filter((item) => item.rank > 0)
-    .sort((a, b) => b.rank - a.rank || displayLemma(a.entry).localeCompare(displayLemma(b.entry)))
-    .slice(0, MAX_RESULTS)
-    .map((item) => item.entry);
+    .sort((a, b) => b.rank - a.rank || displayLemma(a.entry).localeCompare(displayLemma(b.entry)));
+  state.totalMatches = ranked.length;
+  state.filteredEntries = ranked.slice(0, MAX_RESULTS).map((item) => item.entry);
 
   const selectedStillVisible = state.filteredEntries.some((entry) => entry.id === state.selectedId);
   if (!selectedStillVisible) {
@@ -448,19 +506,20 @@ function updateFilteredEntries() {
 }
 
 function renderResults() {
-  const total = state.filteredEntries.length;
   els.resultMeta.textContent = state.query
-    ? `${total} result${total === 1 ? "" : "s"} shown`
+    ? `${state.totalMatches.toLocaleString()} result${state.totalMatches === 1 ? "" : "s"}${state.totalMatches > MAX_RESULTS ? ` · first ${MAX_RESULTS} shown` : ""}`
     : `Showing first ${Math.min(MAX_RESULTS, state.searchEntries.length)} entries`;
 
   els.results.innerHTML = state.filteredEntries
     .map((entry) => {
       const active = entry.id === state.selectedId ? " active" : "";
+      const alternate = alternateSearchLemma(entry);
       return `
         <li>
           <button type="button" class="result-button${active}" data-entry-id="${escapeHtml(entry.id)}">
             <span class="result-lemma">${escapeHtml(displayLemma(entry))}</span>
             ${entry.word_class ? `<span class="result-class">${escapeHtml(entry.word_class)}</span>` : ""}
+            ${alternate ? `<span class="result-alternate">${state.spelling === "int" ? "DEU" : "INT"} · ${escapeHtml(alternate)}</span>` : ""}
             <span class="result-meaning">${escapeHtml(displayMeaning(entry))}</span>
           </button>
         </li>
@@ -505,36 +564,119 @@ function pairFields(label, value) {
   return parts.join("");
 }
 
-function renderEntry() {
-  const entry = state.entriesById.get(state.selectedId);
-  if (!entry) {
-    els.entryPane.innerHTML = `
-      <div class="empty-state">
-        <h2>Select an entry</h2>
-        <p>Search results will appear on the left.</p>
-      </div>
-    `;
-    return;
+function lemmaSupplements(details) {
+  const items = [
+    ["composition", spellingValue(details.composition)],
+    ["variation", spellingValue(details.variation)],
+    ["reconstruction", spellingValue(details.reconstruction)],
+  ].filter(([, value]) => value);
+  if (!items.length) return "";
+  return `[${items.map(([label, value]) => `${label}: ${value}`).join("; ")}]`;
+}
+
+function structureNode(label, value) {
+  if (!value) return "";
+  return `<div class="structure-node"><strong>${escapeHtml(label)}</strong><span>${escapeHtml(value)}</span></div>`;
+}
+
+function renderWordStructure(entry) {
+  const details = entry.details || {};
+  const title = entryDisplayLemma(entry);
+  const upstream = [
+    structureNode("Base", spellingValue(details.base)),
+    structureNode("Composition", spellingValue(details.composition)),
+    structureNode("Reconstructed form", spellingValue(details.reconstruction)),
+  ].filter(Boolean);
+  const variation = spellingValue(details.variation);
+
+  if (!upstream.length && !variation) {
+    return `<section class="panel-card structure-panel"><h3>Word structure</h3><p class="panel-note">No composition, variation, reconstruction, or base relationship is recorded for this entry.</p></section>`;
   }
 
+  return `
+    <section class="panel-card structure-panel">
+      <h3>Word structure</h3>
+      <p class="panel-note">Relationships recorded directly in the workbook.</p>
+      <div class="structure-map" aria-label="Word structure hierarchy">
+        ${upstream.join("")}
+        ${upstream.length ? `<div class="structure-connector" aria-hidden="true"></div>` : ""}
+        <div class="structure-node current"><strong>Current lemma</strong><span>${escapeHtml(title)}</span></div>
+        ${variation ? `<div class="structure-connector" aria-hidden="true"></div>${structureNode("Variation", variation)}` : ""}
+      </div>
+    </section>
+  `;
+}
+
+function sourceLink(value, url) {
+  if (!value) return "";
+  try {
+    const parsed = new URL(url);
+    if (["http:", "https:"].includes(parsed.protocol)) {
+      return `<a href="${escapeHtml(parsed.href)}" target="_blank" rel="noreferrer">${escapeHtml(value)}</a>`;
+    }
+  } catch {
+    // Source remains readable when no valid external link exists.
+  }
+  return escapeHtml(value);
+}
+
+function renderSource(entry) {
+  const source = entry.details?.source || {};
+  const sourceType = source.source_1 ? labelWithCode(source.source_1) : "";
+  const sourceValue = state.spelling === "deu"
+    ? (source.source_2_deu || source.source_2_int)
+    : (source.source_2_int || source.source_2_deu);
+  const sourceUrl = state.spelling === "deu"
+    ? (source.source_2_deu_url || source.source_2_int_url)
+    : (source.source_2_int_url || source.source_2_deu_url);
+
+  if (!sourceType && !sourceValue) {
+    return `<section class="panel-card source-panel"><h3>Source</h3><p class="panel-note">No source information is recorded for this entry.</p></section>`;
+  }
+  return `
+    <section class="panel-card source-panel">
+      <h3>Source</h3>
+      <div class="source-content">
+        <p class="source-bracket">[${sourceType ? `<strong>${escapeHtml(sourceType)}</strong>` : ""}${sourceType && sourceValue ? " · " : ""}${sourceLink(sourceValue, sourceUrl)}]</p>
+      </div>
+    </section>
+  `;
+}
+
+function renderOverview(entry) {
+  const meanings = entryMeanings(entry);
+  return `
+    <section class="panel-card meaning-panel">
+      <div class="panel-heading">
+        <h3>${state.language === "de" ? "German meanings" : "English meanings"}</h3>
+        <p>${meanings.values.length} ${meanings.values.length === 1 ? "sense" : "senses"}</p>
+      </div>
+      ${meanings.values.length
+        ? `<ol class="meaning-list">${meanings.values.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>`
+        : `<p class="panel-note">No meaning available.</p>`}
+      ${meanings.fallback ? `<p class="fallback-note">${state.language === "en" ? "German shown because English is missing." : "English shown because German is missing."}</p>` : ""}
+    </section>
+    <div class="overview-grid">
+      ${renderWordStructure(entry)}
+      ${renderSource(entry)}
+    </div>
+  `;
+}
+
+function renderDetails(entry) {
   const grammar = entry.grammar || {};
   const details = entry.details || {};
-  const meanings = entryMeanings(entry);
-  const title = entry.lemma?.[`display_${state.spelling}`] || rawLemma(entry) || "Untitled entry";
-  const alternate = state.spelling === "deu"
-    ? entry.lemma?.display_int || entry.lemma?.int
-    : entry.lemma?.display_deu || entry.lemma?.deu;
   const flexionLabels = grammarFieldLabels(grammar.word_class_1);
   const grammarFields = [
     field("Word class", labelWithCode(grammar.word_class_1)),
     field("Subclass", labelWithCode(grammar.word_class_2)),
     field(flexionLabels.flexion1, labelWithCode(grammar.flexion_1)),
-    field(flexionLabels.flexion2Int, grammar.flexion_2_int),
-    field(flexionLabels.flexion2Deu, grammar.flexion_2_deu),
-    field(flexionLabels.flexion3Int, grammar.flexion_3_int),
-    field(flexionLabels.flexion3Deu, grammar.flexion_3_deu),
+    field(flexionLabels.flexion2Int, grammar.flexion_2_int ? `[${grammar.flexion_2_int}]` : ""),
+    field(flexionLabels.flexion2Deu, grammar.flexion_2_deu ? `[${grammar.flexion_2_deu}]` : ""),
+    field(flexionLabels.flexion3Int, grammar.flexion_3_int ? `[${grammar.flexion_3_int}]` : ""),
+    field(flexionLabels.flexion3Deu, grammar.flexion_3_deu ? `[${grammar.flexion_3_deu}]` : ""),
   ].join("");
-  const detailFields = [
+  const editorialFields = [
     pairFields("Composition", details.composition),
     pairFields("Variation", details.variation),
     pairFields("Reconstruction", details.reconstruction),
@@ -542,56 +684,72 @@ function renderEntry() {
     field("Source type", labelWithCode(details.source?.source_1)),
     linkedField("Source 2 INT", details.source?.source_2_int, details.source?.source_2_int_url),
     linkedField("Source 2 DEU", details.source?.source_2_deu, details.source?.source_2_deu_url),
-    field("Paradigm", grammar.paradigm),
+    field("Paradigm (internal)", grammar.paradigm),
     field("Resolved paradigm", entry.morphology?.source_paradigm ? entry.morphology.paradigm : ""),
-    field("Domain", labelWithCode(grammar.domain)),
+    field("Domain (internal)", labelWithCode(grammar.domain)),
     field("Workbook row", entry.source?.row),
   ].join("");
 
+  return `
+    <section class="panel-card details-panel">
+      <div class="details-group"><h3>Grammar</h3><dl class="definition-grid">${grammarFields}</dl></div>
+      <div class="details-group"><h3>Editorial metadata</h3><dl class="definition-grid">${editorialFields}</dl></div>
+    </section>
+  `;
+}
+
+function availableEntryViews(entry) {
+  const views = [{ id: "overview", label: "Entry" }];
+  if (familyData(entry)) views.push({ id: "family", label: "Word family" });
+  if (entry.morphology?.kind) views.push({ id: "forms", label: "Inflection", provisional: true });
+  views.push({ id: "details", label: "Details" });
+  return views;
+}
+
+function renderEntryView(entry) {
+  if (state.entryView === "family") return renderWordFamily(entry);
+  if (state.entryView === "forms") return renderForms(entry);
+  if (state.entryView === "details") return renderDetails(entry);
+  return renderOverview(entry);
+}
+
+function renderEntry() {
+  const entry = state.entriesById.get(state.selectedId);
+  if (!entry) {
+    els.entryPane.innerHTML = `<div class="empty-state"><p class="section-label">Dictionary entry</p><h2>Select a word</h2><p>Search results appear on the left. Every entry can be linked directly and revisited without passing through the story.</p></div>`;
+    return;
+  }
+
+  const grammar = entry.grammar || {};
+  const details = entry.details || {};
+  const title = entry.lemma?.[`display_${state.spelling}`] || rawLemma(entry) || "Untitled entry";
+  const alternate = state.spelling === "deu"
+    ? entry.lemma?.display_int || entry.lemma?.int
+    : entry.lemma?.display_deu || entry.lemma?.deu;
+  const views = availableEntryViews(entry);
+  if (!views.some((view) => view.id === state.entryView)) state.entryView = "overview";
+  const supplements = lemmaSupplements(details);
+
   els.entryPane.innerHTML = `
-    <article>
-      <header class="entry-header">
+    <article class="entry-article">
+      <header class="entry-masthead">
         <div>
+          <p class="entry-overline">Roman entry · ${state.spelling.toUpperCase()} spelling</p>
           <h2 class="entry-title">${escapeHtml(title)}</h2>
-          ${alternate && alternate !== title ? `<p class="entry-subtitle">${escapeHtml(alternate)}</p>` : ""}
-          <p class="source-note">Workbook row ${escapeHtml(entry.source?.row || "")}</p>
+          ${alternate && alternate !== title ? `<p class="entry-alternate">${state.spelling === "int" ? "DEU" : "INT"} · ${escapeHtml(alternate)}</p>` : ""}
+          ${supplements ? `<p class="lemma-supplements">${escapeHtml(supplements)}</p>` : ""}
         </div>
-        <div class="entry-badges">
-          ${grammar.word_class_1 ? `<span class="badge">${escapeHtml(labelOnly(labelWithCode(grammar.word_class_1)))}</span>` : ""}
-          ${grammar.word_class_2 ? `<span class="badge">${escapeHtml(labelOnly(labelWithCode(grammar.word_class_2)))}</span>` : ""}
+        <div class="grammar-stack">
+          ${grammar.word_class_1 ? `<span class="grammar-pill">${escapeHtml(labelWithCode(grammar.word_class_1))}</span>` : ""}
+          ${grammar.word_class_2 ? `<span class="grammar-pill">${escapeHtml(labelWithCode(grammar.word_class_2))}</span>` : ""}
+          ${grammar.flexion_1 ? `<span class="grammar-pill">${escapeHtml(labelWithCode(grammar.flexion_1))}</span>` : ""}
         </div>
       </header>
 
-      <section class="entry-section">
-        <h3>Meanings</h3>
-        ${
-          meanings.values.length
-            ? `<ol class="meaning-list">${meanings.values.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>`
-            : `<p>No meaning available.</p>`
-        }
-        ${
-          meanings.fallback
-            ? `<p class="fallback-note">${state.language === "en" ? "German shown because English is missing." : "English shown because German is missing."}</p>`
-            : ""
-        }
-      </section>
-
-      ${renderForms(entry)}
-      ${renderWordFamily(entry)}
-
-      ${grammarFields ? `
-        <section class="entry-section">
-          <h3>Grammar</h3>
-          <dl class="definition-grid">${grammarFields}</dl>
-        </section>
-      ` : ""}
-
-      ${detailFields ? `
-        <details class="entry-section">
-          <summary>Details</summary>
-          <dl class="definition-grid">${detailFields}</dl>
-        </details>
-      ` : ""}
+      <nav class="entry-tabs" aria-label="Entry views">
+        ${views.map((view) => `<button type="button" class="entry-tab${view.id === state.entryView ? " active" : ""}" data-entry-view="${view.id}" aria-pressed="${view.id === state.entryView}">${escapeHtml(view.label)}${view.provisional ? ` <span class="provisional-dot" aria-label="provisional">●</span>` : ""}</button>`).join("")}
+      </nav>
+      <div class="entry-view">${renderEntryView(entry)}</div>
     </article>
   `;
 }
@@ -619,6 +777,9 @@ function applyUrlState() {
   state.spelling = ["int", "deu"].includes(spelling) ? spelling : "int";
   state.language = ["de", "en"].includes(language) ? language : "de";
   state.query = params.get("q") || "";
+  state.entryView = ["overview", "family", "forms", "details"].includes(params.get("view"))
+    ? params.get("view")
+    : "overview";
   state.selectedId = params.get("entry") || state.selectedId;
   if (state.selectedId && !state.searchEntriesById.has(state.selectedId)) {
     state.selectedId = null;
@@ -634,6 +795,7 @@ function syncUrl() {
   state.selectedId ? params.set("entry", state.selectedId) : params.delete("entry");
   params.set("spelling", state.spelling);
   params.set("meaning", state.language);
+  state.entryView === "overview" ? params.delete("view") : params.set("view", state.entryView);
   history.replaceState(null, "", url);
 }
 
@@ -713,8 +875,9 @@ function render({ updateUrl = true } = {}) {
   if (updateUrl) syncUrl();
 }
 
-function selectEntry(id) {
+function selectEntry(id, entryView = "overview") {
   state.selectedId = id;
+  state.entryView = entryView;
   render();
 }
 
@@ -735,6 +898,7 @@ async function loadData() {
   state.searchEntries = prepareSearchEntries(searchEntries);
   state.searchEntriesById = new Map(state.searchEntries.map((entry) => [entry.id, entry]));
   state.wordFamilies = buildWordFamilies(state.searchEntries);
+  state.lemmasBySpelling = buildLemmaIndex(state.searchEntries);
   state.references = references;
   state.paradigmModel = paradigmModel;
   applyUrlState();
@@ -750,12 +914,28 @@ els.search.addEventListener("input", (event) => {
 
 els.results.addEventListener("click", (event) => {
   const button = event.target.closest("[data-entry-id]");
-  if (button) selectEntry(button.dataset.entryId);
+  if (button) selectEntry(button.dataset.entryId, "overview");
 });
 
 els.entryPane.addEventListener("click", (event) => {
+  const viewButton = event.target.closest("[data-entry-view]");
+  if (viewButton) {
+    state.entryView = viewButton.dataset.entryView;
+    renderEntry();
+    syncUrl();
+    return;
+  }
   const button = event.target.closest("[data-entry-id]");
-  if (button) selectEntry(button.dataset.entryId);
+  if (button) selectEntry(button.dataset.entryId, state.entryView === "family" ? "family" : "overview");
+});
+
+els.randomEntry.addEventListener("click", () => {
+  const randomIndex = Math.floor(Math.random() * state.searchEntries.length);
+  const entry = state.searchEntries[randomIndex];
+  if (!entry) return;
+  state.query = "";
+  els.search.value = "";
+  selectEntry(entry.id, "overview");
 });
 
 els.spellingButtons.forEach((button) => {
