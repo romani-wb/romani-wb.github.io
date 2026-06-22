@@ -38,6 +38,7 @@ const elements = new Map([
   ["#entry-pane", new ElementStub()],
   ["#random-entry", new ElementStub()],
   ["#edition-select", new ElementStub()],
+  ["#word-class-filters", new ElementStub()],
 ]);
 const spellingButtons = [new ElementStub({ spelling: "int" }), new ElementStub({ spelling: "deu" })];
 const languageButtons = [new ElementStub({ language: "de" }), new ElementStub({ language: "en" })];
@@ -100,6 +101,8 @@ assert.match(elements.get("#entry-pane").innerHTML, /https:\/\/de\.langenscheidt
 assert.equal(elements.get("#search-input").value, "habrin");
 assert.match(window.location.href, /entry=g04363_b4e42bdd/);
 assert.equal(document.body.dataset.edition, "explorer");
+assert.match(elements.get("#results").innerHTML, /Verbs/);
+assert.match(elements.get("#results").innerHTML, />Verb</);
 
 elements.get("#entry-pane").listeners.get("click")({
   target: {
@@ -118,6 +121,20 @@ assert.match(elements.get("#entry-pane").innerHTML, /Grammar made practical/);
 assert.match(elements.get("#entry-pane").innerHTML, /Conjugation/);
 
 elements.get("#search-input").listeners.get("input")({ target: { value: "" } });
+assert.match(elements.get("#results").innerHTML, /Start anywhere/);
+assert.doesNotMatch(elements.get("#result-meta").textContent, /first 80/i);
+
+elements.get("#word-class-filters").listeners.get("click")({
+  target: {
+    closest(selector) {
+      return selector === "[data-word-class]" ? { dataset: { wordClass: "nouns" } } : null;
+    },
+  },
+});
+assert.match(elements.get("#result-meta").textContent, /nouns/);
+assert.match(elements.get("#results").innerHTML, /Nouns/);
+assert.match(window.location.href, /type=nouns/);
+
 elements.get("#results").listeners.get("click")({
   target: {
     closest(selector) {
@@ -146,10 +163,11 @@ assert.match(homeHtml, /href="dictionary\.html"/);
 assert(!homeHtml.includes("app.js"));
 assert.match(dictionaryHtml, /src="app\.js"/);
 assert.match(dictionaryHtml, /id="edition-select"/);
+assert.match(dictionaryHtml, />Focus</);
+assert.match(dictionaryHtml, />Browse</);
+assert.match(dictionaryHtml, />Split</);
+assert.doesNotMatch(dictionaryHtml, /Compare views/);
+assert.doesNotMatch(elements.get("#entry-pane").innerHTML, /New here/);
+await assert.rejects(readFile(resolve(root, "dictionary-lab.html"), "utf8"));
 
-const labHtml = await readFile(resolve(root, "dictionary-lab.html"), "utf8");
-assert.match(labHtml, /Try Learner/);
-assert.match(labHtml, /Try Compact/);
-assert.match(labHtml, /Try Explorer/);
-
-console.log("Frontend smoke test passed: page separation, editions, grammar views, deep links, and lazy loading are functional.");
+console.log("Frontend smoke test passed: search-first layouts, word-type navigation, grammar views, deep links, and lazy loading are functional.");

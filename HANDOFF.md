@@ -20,9 +20,9 @@ from this file only as needed.
 Recent checkpoints:
 
 ```text
+38d6b31 Make dictionary grammar practical
 00c73b3 Separate and redesign the Roman dictionary
 f826536 Add sourced Roman introduction and visual shell
-74c26d0 Add lazy dictionary loading and provisional UI state
 ```
 
 ## Product state
@@ -39,11 +39,15 @@ The current prototype is a static Roman dictionary with:
 - an entry hierarchy based on the professor's required output structure;
 - visual word-structure and interactive Base-to-derived family diagrams;
 - dedicated Entry, Word family, Inflection, and Details views;
-- three presentation modes over one data/state layer: Learner, Compact, Explorer;
-- a comparison surface at `dictionary-lab.html`;
+- three navigation layouts over one data/state layer: Focus, Browse, Split;
+- search results grouped into readable word types instead of an arbitrary first
+  page of 80 alphabetical entries;
+- word-type filters and a Browse catalogue with real entry counts;
+- source codes such as `PTCLV` translated into readable result labels such as
+  `Particle verb`; raw codes remain in Details;
 - grammar/details, source hyperlinks, and generated complete-word morphology;
 - learner-facing verb conjugation, noun case, and adjective agreement grids;
-- collapsed onboarding, plain-language grammar primers, and useful-form previews;
+- plain-language grammar primers and useful-form previews without onboarding;
 - technical morphology derivation collapsed and all generated forms clearly
   identified as awaiting linguistic review;
 - mobile layout, skip link, status announcements, and reduced-motion handling.
@@ -124,7 +128,6 @@ This intentionally remains a dependency-light static site:
 - `index.html` — contextual story/home and portal to the dictionary
 - `styles.css` — story/home visual system
 - `dictionary.html` — standalone dictionary shell and controls
-- `dictionary-lab.html` — explanation and entry points for three dictionary modes
 - `dictionary.css` — dictionary-specific responsive information design
 - `app.js` — search, URL state, lazy entry loading, rendering, word families,
   provisional morphology, and source links
@@ -150,7 +153,10 @@ URL parameters are:
 - `entry` — selected development entry ID
 - `spelling` — `int` or `deu`
 - `meaning` — `de` or `en`
-- `edition` — `learner`, `compact`, or `explorer`
+- `edition` — legacy-compatible layout values: `learner` = Focus, `compact` =
+  Browse, `explorer` = Split
+- `type` — word-type filter (`nouns`, `verbs`, `adjectives`, `adverbs`,
+  `phrases`, or `grammar`)
 
 Provisional defaults are English interface labels, `INT` spelling, and German
 meanings. They are documented in `docs/decisions.md`.
@@ -177,27 +183,32 @@ passes. A second preprocessing run must produce byte-identical output.
 
 Useful manual check:
 
-1. Open `dictionary-lab.html` and enter each dictionary mode.
-2. Open verb `g00005_236c444a` (`áčav`); confirm six present forms and five
+1. Open `dictionary.html` and switch among Focus, Browse, and Split.
+2. With no query, confirm Focus has no arbitrary entry list and Browse shows seven
+   word-type catalogue cards with counts.
+3. Search `stay`; confirm results are grouped under Nouns and Verbs and badges
+   read `Verb`, `Verb phrase`, or `Particle verb`, never bare source codes.
+4. Open verb `g00005_236c444a` (`áčav`); confirm six present forms and five
    aspect/tense groups in Conjugation.
-3. Open noun `g00003_b284cd5c` (`ablativ`); confirm seven case rows with singular
+5. Open noun `g00003_b284cd5c` (`ablativ`); confirm seven case rows with singular
    and plural columns.
-4. Open adjective `g00008_ffa2702b` (`ačálo/i`); confirm basic/oblique forms
+6. Open adjective `g00008_ffa2702b` (`ačálo/i`); confirm basic/oblique forms
    across gender and number.
-5. Toggle `INT/DEU`, `DE/EN`, and dictionary mode, then reload the explicit URL.
-6. Open Details and check a Source-2 link; check the site at mobile width.
-7. Click `Surprise me`; the entry and URL should change without losing settings.
+7. Toggle `INT/DEU`, `DE/EN`, layout, and type, then reload the explicit URL.
+8. Open Details and check a Source-2 link; check the site at mobile width.
+9. Click `Surprise me`; the entry and URL should change without losing settings.
 
-Learner should place meanings and practical grammar side by side on desktop;
-Compact should remove onboarding; Explorer should restore explicit word
-structure. Word family remains an interactive Base hierarchy. Grammar grids
+Focus should place navigation above the entry; Browse should add the word-type
+catalogue; Split should preserve the persistent sidebar for comparison. Word
+family remains an interactive Base hierarchy. Grammar grids
 must never create page-level horizontal overflow on mobile; wide matrices scroll
 inside their panel.
 
-On 22 June, in-app browser/Playwright QA covered the three editions, comparison
-page, representative verb/noun/adjective paradigms, mobile width (390×844), URL
-state, `Surprise me`, and console warnings/errors. It found no console errors or
-page-level mobile overflow. This is not a screen-reader or full keyboard audit.
+On 22 June, in-app browser/Playwright QA covered all three layouts, grouped search,
+word-type filtering, representative verb/noun/adjective paradigms, mobile width
+(390×844), URL state, `Surprise me`, and console warnings/errors. It found no
+console errors or page-level mobile overflow. This is not a screen-reader or
+full keyboard audit.
 
 ## Decisions already made
 
@@ -209,7 +220,7 @@ page-level mobile overflow. This is not a screen-reader or full keyboard audit.
 - Visual diagrams use only explicit workbook relationships.
 - Generated morphology is visible as practical grammar but remains marked as a
   generated preview; raw codes and derivation remain collapsed.
-- Dictionary editions are presentation modes, not separate codebases.
+- Dictionary layouts are presentation modes, not separate codebases.
 - Story claims are limited to the supplied manuscripts and remain provisional.
 - Review gates are fast-tracked until Valentin performs a major review.
 

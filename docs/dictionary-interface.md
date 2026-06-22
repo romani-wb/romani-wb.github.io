@@ -39,21 +39,23 @@ that hierarchy instead of presenting every workbook field as an equal card.
 | Specialist | paradigm derivation and raw codes | collapsed technical disclosure |
 | Audit | raw paired fields, paradigm, domain, workbook row | Details view |
 
-## Interface editions
+## Navigation layouts
 
-All editions use the same entry, search, lazy loading, and URL state. They are
+All layouts use the same entry, search, lazy loading, and URL state. They are
 presentation modes, not forks:
 
-- **Learner** is the default. Meaning and useful forms share the first screen;
-  a collapsed three-step hint and plain-language grammar primer explain how to
-  read the entry.
-- **Compact** removes onboarding and reduces the headword for a conventional,
-  faster reference layout.
-- **Explorer** retains the recorded structure hierarchy, word-family graph,
-  source terminology, and technical depth.
+- **Focus** is the default. Search, Surprise me, and word-type filters sit above
+  a full-width entry. No entries appear until the user searches or chooses a type.
+- **Browse** adds a catalogue of nouns, verbs, adjectives, adverbs, noun phrases,
+  grammar words, and an honest `Other` bucket with real corpus counts.
+- **Split** retains a persistent result sidebar for dense repeated lookup.
 
-`dictionary-lab.html` explains the trade-offs and links into each edition. The
-`edition` URL parameter and browser preference preserve the choice.
+The comparison page was removed; the layout selector is sufficient. The legacy
+`edition` URL values remain for link compatibility and browser preference storage.
+
+Search matches are grouped by broad word type. Individual badges use readable
+labels (`Particle verb`, `Noun phrase`) while source codes remain available in
+Details. The broad grouping is a navigation aid, not a change to the workbook.
 
 ## Grammar presentation
 

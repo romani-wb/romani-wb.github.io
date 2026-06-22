@@ -1,13 +1,26 @@
 # Decision log
 
+## 2026-06-22 — Search-first navigation replaces the comparison page
+
+The arbitrary first 80 alphabetical entries and dedicated comparison page were
+removed. Focus now starts with search, Surprise me, and word-type filters; Browse
+adds a corpus-count catalogue; Split keeps the old sidebar as an optional dense
+layout. Search results are grouped into broad navigation types and expose readable
+labels instead of unexplained workbook codes. The existing `edition` values are
+retained internally so development deep links do not break.
+
+Onboarding copy was removed. Useful grammar remains embedded directly in entries;
+the interface should demonstrate its structure rather than explain how to read it.
+
 ## 2026-06-22 — One dictionary, three reading modes
 
 The standalone dictionary now supports `Learner`, `Compact`, and `Explorer`
 editions over the same data, component code, and deep-link state. Learner is the
 provisional default; Compact is a quieter reference view; Explorer preserves
-the structure and relationship visualisations. `dictionary-lab.html` provides
-a stable comparison surface. Separate prototype codebases were rejected because
-they would drift while testing presentation rather than data behavior.
+the structure and relationship visualisations. Separate prototype codebases were
+rejected because they would drift while testing presentation rather than data
+behavior. The dedicated comparison surface was removed later the same day; the
+single in-dictionary selector remains.
 
 ## 2026-06-22 — Paradigms become practical grammar, not bare endings
 

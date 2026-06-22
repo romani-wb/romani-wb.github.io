@@ -30,12 +30,10 @@ Open `http://localhost:8000`.
 
 - Story/home: `http://localhost:8000/index.html`
 - Standalone dictionary: `http://localhost:8000/dictionary.html`
-- Dictionary-view comparison: `http://localhost:8000/dictionary-lab.html`
-
-The dictionary offers three views over the same data and URL state: `Learner`
-(default), `Compact`, and `Explorer`. Generated conjugations and declensions are
-useful previews derived from the professor's paradigm tables and remain marked
-for linguistic review.
+The dictionary offers three layouts over the same data and URL state: `Focus`
+(search-first), `Browse` (word-type catalogue), and `Split` (persistent result
+sidebar). Generated conjugations and declensions are useful previews derived
+from the professor's paradigm tables and remain marked for linguistic review.
 
 Read these before making structural changes:
 

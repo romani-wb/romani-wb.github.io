@@ -19,15 +19,14 @@
       <nav class="dictionary-nav" aria-label="Primary navigation">
         <a href="index.html">Story</a>
         <a class="active" href="dictionary.html" aria-current="page">Dictionary</a>
-        <a href="dictionary-lab.html">Compare views</a>
       </nav>
       <div class="header-controls" aria-label="Display controls">
         <label class="edition-select" for="edition-select">
-          <span>Dictionary view</span>
+          <span>Layout</span>
           <select id="edition-select">
-            <option value="learner">Learner</option>
-            <option value="compact">Compact</option>
-            <option value="explorer">Explorer</option>
+            <option value="learner">Focus</option>
+            <option value="compact">Browse</option>
+            <option value="explorer">Split</option>
           </select>
         </label>
         <fieldset class="compact-toggle">
@@ -50,15 +49,17 @@
             <p class="section-label">Roman · Deutsch · English</p>
             <h1>Find a word</h1>
           </div>
-          <button class="random-entry" id="random-entry" type="button" title="Open a random entry">Surprise me</button>
         </div>
-        <label class="search-box" for="search-input">
-          <span aria-hidden="true">⌕</span>
-          <input id="search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Type a word or meaning" aria-describedby="result-meta">
-        </label>
-        <p class="search-tip">Search a Roman word or a German/English meaning. Pick any result to open its full entry.</p>
+        <div class="search-command">
+          <label class="search-box" for="search-input">
+            <span aria-hidden="true">⌕</span>
+            <input id="search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Roman word, German or English meaning" aria-describedby="result-meta">
+          </label>
+          <button class="random-entry" id="random-entry" type="button" title="Open a random entry">Surprise me <span aria-hidden="true">↝</span></button>
+        </div>
+        <nav class="word-class-filters" id="word-class-filters" aria-label="Browse by word type"></nav>
         <div class="result-meta" id="result-meta" role="status" aria-live="polite"></div>
-        <ol class="results" id="results"></ol>
+        <div class="results" id="results"></div>
         <p class="data-status" id="data-status" role="status" aria-live="polite">Loading dictionary data…</p>
       </aside>
 
@@ -66,7 +67,7 @@
         <div class="empty-state">
           <p class="section-label">Dictionary entry</p>
           <h2>Select a word</h2>
-          <p>Search results appear on the left. Every entry can be linked directly and revisited without passing through the story.</p>
+          <p>Search a word or meaning, browse by word type, or use Surprise me.</p>
         </div>
       </section>
     </main>

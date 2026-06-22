@@ -22,6 +22,9 @@ const state = {
   query: "",
   entryView: "overview",
   edition: "learner",
+  wordClassFilter: "all",
+  wordTypeCounts: new Map(),
+  matchTypeCounts: new Map(),
   totalMatches: 0,
 };
 
@@ -33,11 +36,41 @@ const els = {
   entryPane: document.querySelector("#entry-pane"),
   randomEntry: document.querySelector("#random-entry"),
   editionSelect: document.querySelector("#edition-select"),
+  wordClassFilters: document.querySelector("#word-class-filters"),
   spellingButtons: document.querySelectorAll("[data-spelling]"),
   languageButtons: document.querySelectorAll("[data-language]"),
 };
 
-const MAX_RESULTS = 80;
+const MAX_RESULTS = 60;
+
+const WORD_CLASS_LABELS = {
+  N: "Noun",
+  ADJ: "Adjective",
+  V: "Verb",
+  NP: "Noun phrase",
+  PTCLV: "Particle verb",
+  ADV: "Adverb",
+  PREFV: "Prefix verb",
+  VP: "Verb phrase",
+  NUM: "Numeral",
+  PTCL: "Particle",
+  PRON: "Pronoun",
+  PREP: "Preposition",
+  CONJ: "Conjunction",
+  ART: "Article",
+  INTERJ: "Interjection",
+  PREF: "Prefix",
+};
+
+const WORD_TYPE_GROUPS = [
+  { key: "nouns", label: "Nouns", description: "People, places, things, and ideas", codes: ["N"] },
+  { key: "verbs", label: "Verbs", description: "Actions, states, and verb phrases", codes: ["V", "PTCLV", "PREFV", "VP"] },
+  { key: "adjectives", label: "Adjectives", description: "Words that describe nouns", codes: ["ADJ"] },
+  { key: "adverbs", label: "Adverbs", description: "Words that modify actions or descriptions", codes: ["ADV"] },
+  { key: "phrases", label: "Noun phrases", description: "Multi-word nominal expressions", codes: ["NP"] },
+  { key: "grammar", label: "Grammar words", description: "Pronouns, particles, prepositions, and more", codes: ["NUM", "PTCL", "PRON", "PREP", "CONJ", "ART", "INTERJ", "PREF"] },
+  { key: "other", label: "Other", description: "Unclassified source entries", codes: [] },
+];
 
 const PERSON_LABELS = {
   de: {
@@ -128,6 +161,26 @@ function grammarExplanation(code, language = currentLabelLanguage()) {
 function labelOnly(labelOrCode) {
   const value = String(labelOrCode || "");
   return value.includes("·") ? value.split("·").slice(1).join("·").trim() : value;
+}
+
+function wordClassLabel(entryOrCode) {
+  const code = typeof entryOrCode === "string" ? entryOrCode : entryOrCode?.word_class;
+  if (!code) return "Unclassified";
+  return WORD_CLASS_LABELS[code] || "Unclassified";
+}
+
+function wordTypeGroup(entryOrCode) {
+  const code = typeof entryOrCode === "string" ? entryOrCode : entryOrCode?.word_class;
+  return WORD_TYPE_GROUPS.find((group) => group.codes.includes(code)) || WORD_TYPE_GROUPS.at(-1);
+}
+
+function countWordTypes(entries) {
+  const counts = new Map(WORD_TYPE_GROUPS.map((group) => [group.key, 0]));
+  for (const entry of entries) {
+    const key = wordTypeGroup(entry).key;
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  return counts;
 }
 
 function stemFromLemma(value) {
@@ -623,53 +676,106 @@ function rankEntry(entry, query) {
 
 function updateFilteredEntries() {
   const query = normalizeSearch(state.query);
-  if (!query) {
+  const hasTypeFilter = state.wordClassFilter !== "all";
+  const eligible = hasTypeFilter
+    ? state.searchEntries.filter((entry) => wordTypeGroup(entry).key === state.wordClassFilter)
+    : state.searchEntries;
+
+  if (!query && !hasTypeFilter) {
     state.totalMatches = state.searchEntries.length;
-    state.filteredEntries = state.searchEntries.slice(0, MAX_RESULTS);
-    const selected = state.searchEntriesById.get(state.selectedId);
-    if (selected && !state.filteredEntries.some((entry) => entry.id === selected.id)) {
-      state.filteredEntries = [selected, ...state.filteredEntries.slice(0, MAX_RESULTS - 1)];
-    }
-    if (!state.selectedId && state.filteredEntries.length) {
-      state.selectedId = state.filteredEntries[0].id;
-    }
+    state.matchTypeCounts = state.wordTypeCounts;
+    state.filteredEntries = [];
     return;
   }
 
-  const ranked = state.searchEntries
+  const ranked = eligible
     .map((entry) => ({ entry, rank: rankEntry(entry, query) }))
     .filter((item) => item.rank > 0)
     .sort((a, b) => b.rank - a.rank || displayLemma(a.entry).localeCompare(displayLemma(b.entry)));
   state.totalMatches = ranked.length;
+  state.matchTypeCounts = countWordTypes(ranked.map((item) => item.entry));
   state.filteredEntries = ranked.slice(0, MAX_RESULTS).map((item) => item.entry);
+}
 
-  const selectedStillVisible = state.filteredEntries.some((entry) => entry.id === state.selectedId);
-  if (!selectedStillVisible) {
-    state.selectedId = state.filteredEntries[0]?.id || null;
-  }
+function renderWordClassFilters() {
+  const visibleGroups = WORD_TYPE_GROUPS.filter((group) => (state.wordTypeCounts.get(group.key) || 0) > 0);
+  els.wordClassFilters.innerHTML = [
+    { key: "all", label: "All types", count: state.searchEntries.length },
+    ...visibleGroups.map((group) => ({ ...group, count: state.wordTypeCounts.get(group.key) || 0 })),
+  ].map((item) => {
+    const active = item.key === state.wordClassFilter;
+    return `<button type="button" class="word-type-filter${active ? " active" : ""}" data-word-class="${escapeHtml(item.key)}" aria-pressed="${active}"><span>${escapeHtml(item.label)}</span><small>${item.count.toLocaleString()}</small></button>`;
+  }).join("");
+}
+
+function renderWordTypeIndex() {
+  return `
+    <section class="word-type-index" aria-labelledby="word-type-index-title">
+      <div class="word-type-index-heading">
+        <p class="eyebrow">Browse the dictionary</p>
+        <h2 id="word-type-index-title">Choose a kind of word</h2>
+      </div>
+      <div class="word-type-cards">
+        ${WORD_TYPE_GROUPS.filter((group) => (state.wordTypeCounts.get(group.key) || 0) > 0).map((group) => `
+          <button type="button" class="word-type-card" data-word-class="${escapeHtml(group.key)}">
+            <span><strong>${escapeHtml(group.label)}</strong><small>${escapeHtml(group.description)}</small></span>
+            <b>${(state.wordTypeCounts.get(group.key) || 0).toLocaleString()}</b>
+          </button>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderResultButton(entry) {
+  const active = entry.id === state.selectedId ? " active" : "";
+  const alternate = alternateSearchLemma(entry);
+  return `
+    <button type="button" class="result-button${active}" data-entry-id="${escapeHtml(entry.id)}">
+      <span class="result-lemma">${escapeHtml(displayLemma(entry))}</span>
+      <span class="result-class">${escapeHtml(wordClassLabel(entry))}</span>
+      ${alternate ? `<span class="result-alternate">${state.spelling === "int" ? "DEU" : "INT"} · ${escapeHtml(alternate)}</span>` : ""}
+      <span class="result-meaning">${escapeHtml(displayMeaning(entry))}</span>
+    </button>
+  `;
 }
 
 function renderResults() {
-  els.resultMeta.textContent = state.query
-    ? `${state.totalMatches.toLocaleString()} result${state.totalMatches === 1 ? "" : "s"}${state.totalMatches > MAX_RESULTS ? ` · first ${MAX_RESULTS} shown` : ""}`
-    : `Showing first ${Math.min(MAX_RESULTS, state.searchEntries.length)} entries`;
+  renderWordClassFilters();
+  const query = normalizeSearch(state.query);
+  const hasTypeFilter = state.wordClassFilter !== "all";
 
-  els.results.innerHTML = state.filteredEntries
-    .map((entry) => {
-      const active = entry.id === state.selectedId ? " active" : "";
-      const alternate = alternateSearchLemma(entry);
-      return `
-        <li>
-          <button type="button" class="result-button${active}" data-entry-id="${escapeHtml(entry.id)}">
-            <span class="result-lemma">${escapeHtml(displayLemma(entry))}</span>
-            ${entry.word_class ? `<span class="result-class">${escapeHtml(entry.word_class)}</span>` : ""}
-            ${alternate ? `<span class="result-alternate">${state.spelling === "int" ? "DEU" : "INT"} · ${escapeHtml(alternate)}</span>` : ""}
-            <span class="result-meaning">${escapeHtml(displayMeaning(entry))}</span>
-          </button>
-        </li>
-      `;
-    })
-    .join("");
+  if (!query && !hasTypeFilter) {
+    els.resultMeta.textContent = state.edition === "compact"
+      ? "Browse 12,525 entries by word type"
+      : "Search 12,525 entries or choose a word type";
+    els.results.innerHTML = state.edition === "compact"
+      ? renderWordTypeIndex()
+      : `<div class="result-empty"><strong>Start anywhere.</strong><span>Search for a word or meaning, choose a type, or use Surprise me.</span></div>`;
+    return;
+  }
+
+  const type = WORD_TYPE_GROUPS.find((group) => group.key === state.wordClassFilter);
+  els.resultMeta.textContent = query
+    ? `${state.totalMatches.toLocaleString()} match${state.totalMatches === 1 ? "" : "es"}${state.totalMatches > MAX_RESULTS ? ` · ${MAX_RESULTS} shown` : ""} · grouped by word type`
+    : `${state.totalMatches.toLocaleString()} ${type?.label.toLowerCase() || "entries"}${state.totalMatches > MAX_RESULTS ? ` · ${MAX_RESULTS} shown` : ""}`;
+
+  if (!state.filteredEntries.length) {
+    els.results.innerHTML = `<div class="result-empty"><strong>No matching entries.</strong><span>Try a broader spelling, meaning, or word type.</span></div>`;
+    return;
+  }
+
+  els.results.innerHTML = WORD_TYPE_GROUPS.map((group) => {
+    const entries = state.filteredEntries.filter((entry) => wordTypeGroup(entry).key === group.key);
+    if (!entries.length) return "";
+    const total = state.matchTypeCounts.get(group.key) || entries.length;
+    return `
+      <section class="result-group">
+        <div class="result-group-heading"><h2>${escapeHtml(group.label)}</h2><span>${total.toLocaleString()}</span></div>
+        <div class="result-grid">${entries.map(renderResultButton).join("")}</div>
+      </section>
+    `;
+  }).join("");
 }
 
 function field(label, value) {
@@ -875,26 +981,12 @@ function renderMeaningPanel(entry) {
   `;
 }
 
-function renderOnboarding(entry) {
-  const hasForms = Boolean(entry.morphology?.kind);
-  return `
-    <details class="entry-onboarding">
-      <summary>New here? Read this entry in three steps</summary>
-      <ol>
-        <li><strong>Meaning</strong><span>Start with the translation below.</span></li>
-        <li><strong>Grammar</strong><span>See what kind of word it is and ${hasForms ? "how its form changes" : "what the source records"}.</span></li>
-        <li><strong>Explore</strong><span>Open the word family or technical details only when you need them.</span></li>
-      </ol>
-    </details>
-  `;
-}
-
 function renderOverview(entry) {
   if (state.edition === "compact") {
     return `<div class="compact-overview">${renderMeaningPanel(entry)}${renderGrammarSnapshot(entry, { compact: true })}</div>`;
   }
   if (state.edition === "learner") {
-    return `${renderOnboarding(entry)}<div class="learner-overview">${renderMeaningPanel(entry)}${renderGrammarSnapshot(entry)}</div><div class="overview-grid">${renderSource(entry)}</div>`;
+    return `<div class="learner-overview">${renderMeaningPanel(entry)}${renderGrammarSnapshot(entry)}</div><div class="overview-grid">${renderSource(entry)}</div>`;
   }
   return `${renderMeaningPanel(entry)}<div class="overview-grid">${renderWordStructure(entry)}${renderSource(entry)}</div>`;
 }
@@ -952,7 +1044,7 @@ function renderEntryView(entry) {
 function renderEntry() {
   const entry = state.entriesById.get(state.selectedId);
   if (!entry) {
-    els.entryPane.innerHTML = `<div class="empty-state"><p class="section-label">Dictionary entry</p><h2>Select a word</h2><p>Search results appear on the left. Every entry can be linked directly and revisited without passing through the story.</p></div>`;
+    els.entryPane.innerHTML = `<div class="empty-state"><p class="section-label">12,525 Roman entries</p><h2>Find your way into the language.</h2><p>Search a Roman word, German or English meaning; browse by word type; or let the dictionary surprise you.</p></div>`;
     return;
   }
 
@@ -976,9 +1068,9 @@ function renderEntry() {
           ${supplements ? `<p class="lemma-supplements">${escapeHtml(supplements)}</p>` : ""}
         </div>
         <div class="grammar-stack">
-          ${grammar.word_class_1 ? `<span class="grammar-pill">${escapeHtml(state.edition === "explorer" ? labelWithCode(grammar.word_class_1) : labelOnly(labelWithCode(grammar.word_class_1)))}</span>` : ""}
-          ${grammar.word_class_2 ? `<span class="grammar-pill">${escapeHtml(state.edition === "explorer" ? labelWithCode(grammar.word_class_2) : labelOnly(labelWithCode(grammar.word_class_2)))}</span>` : ""}
-          ${grammar.flexion_1 ? `<span class="grammar-pill">${escapeHtml(state.edition === "explorer" ? labelWithCode(grammar.flexion_1) : labelOnly(labelWithCode(grammar.flexion_1)))}</span>` : ""}
+          ${grammar.word_class_1 ? `<span class="grammar-pill">${escapeHtml(WORD_CLASS_LABELS[grammar.word_class_1] || labelOnly(labelWithCode(grammar.word_class_1)))}</span>` : ""}
+          ${grammar.word_class_2 ? `<span class="grammar-pill">${escapeHtml(labelOnly(labelWithCode(grammar.word_class_2)))}</span>` : ""}
+          ${grammar.flexion_1 ? `<span class="grammar-pill">${escapeHtml(labelOnly(labelWithCode(grammar.flexion_1)))}</span>` : ""}
         </div>
       </header>
 
@@ -1015,6 +1107,10 @@ function applyUrlState() {
   state.language = ["de", "en"].includes(language) ? language : "de";
   state.edition = ["learner", "compact", "explorer"].includes(edition) ? edition : "learner";
   state.query = params.get("q") || "";
+  const wordClassFilter = params.get("type") || "all";
+  state.wordClassFilter = ["all", ...WORD_TYPE_GROUPS.map((group) => group.key)].includes(wordClassFilter)
+    ? wordClassFilter
+    : "all";
   state.entryView = ["overview", "family", "forms", "details"].includes(params.get("view"))
     ? params.get("view")
     : "overview";
@@ -1030,6 +1126,7 @@ function syncUrl() {
   const url = new URL(window.location.href);
   const params = url.searchParams;
   state.query ? params.set("q", state.query) : params.delete("q");
+  state.wordClassFilter === "all" ? params.delete("type") : params.set("type", state.wordClassFilter);
   state.selectedId ? params.set("entry", state.selectedId) : params.delete("entry");
   params.set("spelling", state.spelling);
   params.set("meaning", state.language);
@@ -1138,12 +1235,12 @@ async function loadData() {
   state.entryManifest = entryManifest;
   state.searchEntries = prepareSearchEntries(searchEntries);
   state.searchEntriesById = new Map(state.searchEntries.map((entry) => [entry.id, entry]));
+  state.wordTypeCounts = countWordTypes(state.searchEntries);
   state.wordFamilies = buildWordFamilies(state.searchEntries);
   state.lemmasBySpelling = buildLemmaIndex(state.searchEntries);
   state.references = references;
   state.paradigmModel = paradigmModel;
   applyUrlState();
-  state.selectedId ||= state.searchEntries[0]?.id || null;
   els.status.textContent = `${entryManifest.entry_count.toLocaleString()} entries indexed · details load on demand`;
   render();
 }
@@ -1154,8 +1251,21 @@ els.search.addEventListener("input", (event) => {
 });
 
 els.results.addEventListener("click", (event) => {
+  const wordClassButton = event.target.closest("[data-word-class]");
+  if (wordClassButton) {
+    state.wordClassFilter = wordClassButton.dataset.wordClass;
+    render();
+    return;
+  }
   const button = event.target.closest("[data-entry-id]");
   if (button) selectEntry(button.dataset.entryId, "overview");
+});
+
+els.wordClassFilters.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-word-class]");
+  if (!button) return;
+  state.wordClassFilter = button.dataset.wordClass;
+  render();
 });
 
 els.entryPane.addEventListener("click", (event) => {
@@ -1175,6 +1285,7 @@ els.randomEntry.addEventListener("click", () => {
   const entry = state.searchEntries[randomIndex];
   if (!entry) return;
   state.query = "";
+  state.wordClassFilter = "all";
   els.search.value = "";
   selectEntry(entry.id, "overview");
 });
