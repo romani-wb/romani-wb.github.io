@@ -20,9 +20,9 @@ from this file only as needed.
 Recent checkpoints:
 
 ```text
+95a9f50 Refocus dictionary navigation
 38d6b31 Make dictionary grammar practical
 00c73b3 Separate and redesign the Roman dictionary
-f826536 Add sourced Roman introduction and visual shell
 ```
 
 ## Product state
@@ -40,6 +40,8 @@ The current prototype is a static Roman dictionary with:
 - visual word-structure and interactive Base-to-derived family diagrams;
 - dedicated Entry, Word family, Inflection, and Details views;
 - three navigation layouts over one data/state layer: Focus, Browse, Split;
+- Browse as the default layout: search first, entry second, corpus exploration
+  at the bottom;
 - search results grouped into readable word types instead of an arbitrary first
   page of 80 alphabetical entries;
 - word-type filters and a Browse catalogue with real entry counts;
@@ -50,6 +52,8 @@ The current prototype is a static Roman dictionary with:
 - plain-language grammar primers and useful-form previews without onboarding;
 - technical morphology derivation collapsed and all generated forms clearly
   identified as awaiting linguistic review;
+- a progressively rendered alphabetical index of all entries at `word-list.html`;
+- a source-aligned grammar cheat-sheet surface at `grammar.html`;
 - mobile layout, skip link, status announcements, and reduced-motion handling.
 
 Valentin manually opened the current interface and responded positively. This was
@@ -129,6 +133,10 @@ This intentionally remains a dependency-light static site:
 - `styles.css` — story/home visual system
 - `dictionary.html` — standalone dictionary shell and controls
 - `dictionary.css` — dictionary-specific responsive information design
+- `word-list.html` / `word-list.js` — complete progressive alphabetical index
+- `grammar.html` — static practical grammar cheat sheets linked to live entries
+- `reference.css` — shared Word list and Grammar layout
+- `word-types.js` — shared readable word-class labels and broad type groups
 - `app.js` — search, URL state, lazy entry loading, rendering, word families,
   provisional morphology, and source links
 - `scripts/preprocess_data.py` — deterministic workbook-to-JSON build
@@ -159,7 +167,8 @@ URL parameters are:
   `phrases`, or `grammar`)
 
 Provisional defaults are English interface labels, `INT` spelling, and German
-meanings. They are documented in `docs/decisions.md`.
+meanings. Browse is the default layout. They are documented in
+`docs/decisions.md`.
 
 ## Run and verify
 
@@ -184,8 +193,8 @@ passes. A second preprocessing run must produce byte-identical output.
 Useful manual check:
 
 1. Open `dictionary.html` and switch among Focus, Browse, and Split.
-2. With no query, confirm Focus has no arbitrary entry list and Browse shows seven
-   word-type catalogue cards with counts.
+2. In Browse, confirm the search is above the entry and the nine exploration
+   cards (All words, Grammar guide, and seven types) are below it.
 3. Search `stay`; confirm results are grouped under Nouns and Verbs and badges
    read `Verb`, `Verb phrase`, or `Particle verb`, never bare source codes.
 4. Open verb `g00005_236c444a` (`áčav`); confirm six present forms and five
@@ -197,18 +206,22 @@ Useful manual check:
 7. Toggle `INT/DEU`, `DE/EN`, layout, and type, then reload the explicit URL.
 8. Open Details and check a Source-2 link; check the site at mobile width.
 9. Click `Surprise me`; the entry and URL should change without losing settings.
+10. Open `word-list.html`; confirm 240 of 12,525 rows render initially, then test
+    search, word type, letter, spelling, meaning language, and progressive loading.
+11. Open `grammar.html`; confirm seven noun cases, six verb persons, adjective
+    agreement, readable word-type codes, and three links to live paradigms.
 
-Focus should place navigation above the entry; Browse should add the word-type
-catalogue; Split should preserve the persistent sidebar for comparison. Word
+Focus should place navigation above the entry; Browse should place the word-type
+catalogue below the entry; Split should preserve the persistent sidebar. Word
 family remains an interactive Base hierarchy. Grammar grids
 must never create page-level horizontal overflow on mobile; wide matrices scroll
 inside their panel.
 
 On 22 June, in-app browser/Playwright QA covered all three layouts, grouped search,
-word-type filtering, representative verb/noun/adjective paradigms, mobile width
-(390×844), URL state, `Surprise me`, and console warnings/errors. It found no
-console errors or page-level mobile overflow. This is not a screen-reader or
-full keyboard audit.
+word-type filtering, the full Word list, grammar cheat sheets, representative
+verb/noun/adjective paradigms, mobile width (390×844), URL state, `Surprise me`,
+and console warnings/errors. It found no console errors or page-level mobile
+overflow. This is not a screen-reader or full keyboard audit.
 
 ## Decisions already made
 

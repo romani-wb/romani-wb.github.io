@@ -1,3 +1,5 @@
+import { WORD_CLASS_LABELS, WORD_TYPE_GROUPS, wordClassLabel, wordTypeGroup } from "./word-types.js";
+
 const DATA_URLS = {
   manifest: "data/processed/entries_manifest.json",
   search: "data/processed/entries_search.json",
@@ -21,7 +23,7 @@ const state = {
   language: "de",
   query: "",
   entryView: "overview",
-  edition: "learner",
+  edition: "compact",
   wordClassFilter: "all",
   wordTypeCounts: new Map(),
   matchTypeCounts: new Map(),
@@ -42,35 +44,6 @@ const els = {
 };
 
 const MAX_RESULTS = 60;
-
-const WORD_CLASS_LABELS = {
-  N: "Noun",
-  ADJ: "Adjective",
-  V: "Verb",
-  NP: "Noun phrase",
-  PTCLV: "Particle verb",
-  ADV: "Adverb",
-  PREFV: "Prefix verb",
-  VP: "Verb phrase",
-  NUM: "Numeral",
-  PTCL: "Particle",
-  PRON: "Pronoun",
-  PREP: "Preposition",
-  CONJ: "Conjunction",
-  ART: "Article",
-  INTERJ: "Interjection",
-  PREF: "Prefix",
-};
-
-const WORD_TYPE_GROUPS = [
-  { key: "nouns", label: "Nouns", description: "People, places, things, and ideas", codes: ["N"] },
-  { key: "verbs", label: "Verbs", description: "Actions, states, and verb phrases", codes: ["V", "PTCLV", "PREFV", "VP"] },
-  { key: "adjectives", label: "Adjectives", description: "Words that describe nouns", codes: ["ADJ"] },
-  { key: "adverbs", label: "Adverbs", description: "Words that modify actions or descriptions", codes: ["ADV"] },
-  { key: "phrases", label: "Noun phrases", description: "Multi-word nominal expressions", codes: ["NP"] },
-  { key: "grammar", label: "Grammar words", description: "Pronouns, particles, prepositions, and more", codes: ["NUM", "PTCL", "PRON", "PREP", "CONJ", "ART", "INTERJ", "PREF"] },
-  { key: "other", label: "Other", description: "Unclassified source entries", codes: [] },
-];
 
 const PERSON_LABELS = {
   de: {
@@ -161,17 +134,6 @@ function grammarExplanation(code, language = currentLabelLanguage()) {
 function labelOnly(labelOrCode) {
   const value = String(labelOrCode || "");
   return value.includes("·") ? value.split("·").slice(1).join("·").trim() : value;
-}
-
-function wordClassLabel(entryOrCode) {
-  const code = typeof entryOrCode === "string" ? entryOrCode : entryOrCode?.word_class;
-  if (!code) return "Unclassified";
-  return WORD_CLASS_LABELS[code] || "Unclassified";
-}
-
-function wordTypeGroup(entryOrCode) {
-  const code = typeof entryOrCode === "string" ? entryOrCode : entryOrCode?.word_class;
-  return WORD_TYPE_GROUPS.find((group) => group.codes.includes(code)) || WORD_TYPE_GROUPS.at(-1);
 }
 
 function countWordTypes(entries) {
@@ -709,18 +671,25 @@ function renderWordClassFilters() {
 }
 
 function renderWordTypeIndex() {
+  const items = [
+    { key: "all", label: "All words", description: "The complete alphabetical word list", count: state.searchEntries.length, href: `word-list.html?spelling=${encodeURIComponent(state.spelling)}&meaning=${encodeURIComponent(state.language)}` },
+    { key: "grammar-guide", label: "Grammar guide", description: "Cases, conjugation, agreement, and notation", count: "Guide", href: "grammar.html" },
+    ...WORD_TYPE_GROUPS.filter((group) => (state.wordTypeCounts.get(group.key) || 0) > 0)
+      .map((group) => ({ ...group, count: state.wordTypeCounts.get(group.key) || 0 })),
+  ];
   return `
-    <section class="word-type-index" aria-labelledby="word-type-index-title">
+    <section class="word-type-index entry-word-type-index" aria-labelledby="word-type-index-title">
       <div class="word-type-index-heading">
-        <p class="eyebrow">Browse the dictionary</p>
-        <h2 id="word-type-index-title">Choose a kind of word</h2>
+        <p class="eyebrow">Keep exploring</p>
+        <h2 id="word-type-index-title">Explore the whole dictionary</h2>
+        <p>Open the ordered word list, or start with a kind of word.</p>
       </div>
       <div class="word-type-cards">
-        ${WORD_TYPE_GROUPS.filter((group) => (state.wordTypeCounts.get(group.key) || 0) > 0).map((group) => `
-          <button type="button" class="word-type-card" data-word-class="${escapeHtml(group.key)}">
-            <span><strong>${escapeHtml(group.label)}</strong><small>${escapeHtml(group.description)}</small></span>
-            <b>${(state.wordTypeCounts.get(group.key) || 0).toLocaleString()}</b>
-          </button>
+        ${items.map((item) => `
+          <a class="word-type-card" href="${escapeHtml(item.href || `word-list.html?type=${encodeURIComponent(item.key)}&spelling=${encodeURIComponent(state.spelling)}&meaning=${encodeURIComponent(state.language)}`)}">
+            <span><strong>${escapeHtml(item.label)}</strong><small>${escapeHtml(item.description)}</small></span>
+            <b>${typeof item.count === "number" ? item.count.toLocaleString() : escapeHtml(item.count)}</b>
+          </a>
         `).join("")}
       </div>
     </section>
@@ -744,14 +713,11 @@ function renderResults() {
   renderWordClassFilters();
   const query = normalizeSearch(state.query);
   const hasTypeFilter = state.wordClassFilter !== "all";
+  if (document.body) document.body.dataset.searchState = query || hasTypeFilter ? "active" : "idle";
 
   if (!query && !hasTypeFilter) {
-    els.resultMeta.textContent = state.edition === "compact"
-      ? "Browse 12,525 entries by word type"
-      : "Search 12,525 entries or choose a word type";
-    els.results.innerHTML = state.edition === "compact"
-      ? renderWordTypeIndex()
-      : `<div class="result-empty"><strong>Start anywhere.</strong><span>Search for a word or meaning, choose a type, or use Surprise me.</span></div>`;
+    els.resultMeta.textContent = "Search 12,525 entries or choose a word type";
+    els.results.innerHTML = `<div class="result-empty"><strong>Start anywhere.</strong><span>Search for a word or meaning, choose a type, or use Surprise me.</span></div>`;
     return;
   }
 
@@ -1043,8 +1009,9 @@ function renderEntryView(entry) {
 
 function renderEntry() {
   const entry = state.entriesById.get(state.selectedId);
+  const browseFooter = state.edition === "compact" ? renderWordTypeIndex() : "";
   if (!entry) {
-    els.entryPane.innerHTML = `<div class="empty-state"><p class="section-label">12,525 Roman entries</p><h2>Find your way into the language.</h2><p>Search a Roman word, German or English meaning; browse by word type; or let the dictionary surprise you.</p></div>`;
+    els.entryPane.innerHTML = `<div class="empty-state"><p class="section-label">12,525 Roman entries</p><h2>Find your way into the language.</h2><p>Search a Roman word, German or English meaning; or let the dictionary surprise you.</p></div>${browseFooter}`;
     return;
   }
 
@@ -1079,6 +1046,7 @@ function renderEntry() {
       </nav>
       <div class="entry-view">${renderEntryView(entry)}</div>
     </article>
+    ${browseFooter}
   `;
 }
 
@@ -1102,10 +1070,10 @@ function applyUrlState() {
   const params = new URL(window.location.href).searchParams;
   const spelling = params.get("spelling") || storedPreference("roman-spelling", "int");
   const language = params.get("meaning") || storedPreference("roman-meaning", "de");
-  const edition = params.get("edition") || storedPreference("roman-edition", "learner");
+  const edition = params.get("edition") || storedPreference("roman-layout-v2", "compact");
   state.spelling = ["int", "deu"].includes(spelling) ? spelling : "int";
   state.language = ["de", "en"].includes(language) ? language : "de";
-  state.edition = ["learner", "compact", "explorer"].includes(edition) ? edition : "learner";
+  state.edition = ["learner", "compact", "explorer"].includes(edition) ? edition : "compact";
   state.query = params.get("q") || "";
   const wordClassFilter = params.get("type") || "all";
   state.wordClassFilter = ["all", ...WORD_TYPE_GROUPS.map((group) => group.key)].includes(wordClassFilter)
@@ -1292,7 +1260,8 @@ els.randomEntry.addEventListener("click", () => {
 
 els.editionSelect?.addEventListener("change", (event) => {
   state.edition = event.target.value;
-  savePreference("roman-edition", state.edition);
+  if (state.edition === "compact") state.wordClassFilter = "all";
+  savePreference("roman-layout-v2", state.edition);
   updateControlButtons();
   render();
 });

@@ -1,0 +1,131 @@
+.reference-body { min-height: 100%; overflow: auto; background: var(--paper); }
+
+.reference-header {
+  min-height: 74px;
+  display: grid;
+  grid-template-columns: 220px 1fr auto;
+  align-items: center;
+  gap: 24px;
+  padding: 8px clamp(16px, 2.6vw, 38px);
+  border-bottom: 1px solid var(--line);
+  background: rgba(249, 248, 244, .97);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.reference-nav { display: flex; justify-content: center; gap: 7px; }
+.reference-nav a { padding: 8px 11px; border-radius: 999px; color: var(--muted); font-size: 12px; font-weight: 800; text-decoration: none; }
+.reference-nav a:hover, .reference-nav a.active { background: var(--green-soft); color: var(--green); }
+.reference-toggles { display: flex; gap: 10px; }
+
+.word-list-page, .grammar-page { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding-bottom: 90px; }
+
+.reference-hero { padding: clamp(64px, 9vw, 116px) 0 42px; border-bottom: 1px solid var(--line); }
+.reference-hero h1 { max-width: 900px; font-family: Georgia, serif; font-size: clamp(46px, 7vw, 86px); font-weight: 500; letter-spacing: -.05em; line-height: .96; }
+.reference-hero > p:last-child { max-width: 680px; margin-top: 21px; color: var(--muted); font-size: 15px; line-height: 1.65; }
+
+.index-toolbar { padding: 24px 0 18px; border-bottom: 1px solid var(--line); background: rgba(249,248,244,.96); position: sticky; top: 74px; z-index: 12; }
+.index-search { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 9px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 11px; background: var(--paper-strong); }
+.index-search span { color: var(--muted); font-size: 22px; transform: rotate(-20deg); }
+.index-search input { min-width: 0; height: 50px; border: 0; outline: 0; background: transparent; font: inherit; }
+.index-type-filters, .alphabet-filter { display: flex; gap: 6px; overflow-x: auto; padding: 12px 0 1px; }
+.index-filter, .letter-filter { flex: 0 0 auto; min-height: 29px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper-strong); color: var(--muted); cursor: pointer; font-size: 10px; font-weight: 800; }
+.index-filter small { margin-left: 4px; color: #8c938f; font-size: 8px; }
+.index-filter.active, .letter-filter.active { border-color: var(--green); background: var(--green); color: #fff; }
+.index-filter.active small { color: rgba(255,255,255,.7); }
+.alphabet-filter { padding-top: 8px; }
+.letter-filter { min-width: 29px; padding-right: 8px; padding-left: 8px; }
+.index-status { margin-top: 12px; color: var(--muted); font-size: 10px; }
+
+.word-list { padding-top: 26px; }
+.word-list-group { display: grid; grid-template-columns: 62px minmax(0,1fr); gap: 20px; padding: 18px 0 34px; border-bottom: 1px solid var(--line); }
+.word-list-group > h2 { color: var(--gold); font-family: Georgia, serif; font-size: 40px; font-weight: 500; }
+.word-list-group > div { display: grid; }
+.word-index-row { display: grid; grid-template-columns: minmax(180px,.8fr) 125px minmax(240px,1.3fr) auto; gap: 18px; align-items: center; min-height: 70px; padding: 11px 13px; border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; }
+.word-index-row:hover { background: var(--green-pale); }
+.word-index-lemma strong { display: block; overflow-wrap: anywhere; font-family: Georgia, serif; font-size: 21px; }
+.word-index-lemma small { display: block; margin-top: 3px; color: var(--blue); font-size: 9px; }
+.word-index-type { width: fit-content; padding: 4px 7px; border-radius: 999px; background: var(--green-soft); color: var(--green); font-size: 9px; font-weight: 850; }
+.word-index-meaning { overflow: hidden; color: var(--muted); font-size: 12px; line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; }
+.word-index-arrow { color: var(--green); }
+.word-list-more { display: grid; place-items: center; padding: 30px 0; }
+.word-list-more button { padding: 11px 16px; border: 1px solid var(--green); border-radius: 999px; background: var(--paper-strong); color: var(--green); cursor: pointer; font-weight: 800; }
+.index-empty { display: grid; gap: 5px; padding: 50px 10px; color: var(--muted); text-align: center; }
+.index-empty strong { color: var(--ink); font-family: Georgia, serif; font-size: 25px; }
+
+.grammar-hero { padding-bottom: 54px; }
+.grammar-jump { display: flex; flex-wrap: wrap; gap: 7px; padding: 18px 0; border-bottom: 1px solid var(--line); position: sticky; top: 74px; z-index: 10; background: rgba(249,248,244,.96); }
+.grammar-jump a { padding: 7px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper-strong); color: var(--green); font-size: 10px; font-weight: 800; text-decoration: none; }
+.cheat-section { padding: clamp(54px, 8vw, 100px) 0; border-bottom: 1px solid var(--line); scroll-margin-top: 130px; }
+.cheat-heading { display: grid; grid-template-columns: 58px minmax(0,750px); gap: 22px; }
+.cheat-number { color: var(--gold); font-family: Georgia, serif; font-size: 28px; }
+.cheat-heading h2 { font-family: Georgia, serif; font-size: clamp(34px,5vw,58px); font-weight: 500; letter-spacing: -.035em; line-height: 1.03; }
+.cheat-heading div > p:last-child { max-width: 700px; margin-top: 14px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.cheat-layout { display: grid; grid-template-columns: minmax(250px,.62fr) minmax(500px,1.38fr); gap: 16px; align-items: start; margin-top: 34px; }
+.cheat-card { padding: 23px; border: 1px solid var(--line); border-radius: 13px; background: rgba(255,255,255,.8); box-shadow: var(--shadow); }
+.cheat-card h3 { font-family: Georgia, serif; font-size: 24px; font-weight: 500; }
+.cheat-card p, .cheat-card li { color: var(--muted); font-size: 12px; line-height: 1.55; }
+.cheat-card ul { margin: 16px 0 0; padding-left: 18px; }
+.cheat-card li + li { margin-top: 8px; }
+.rule-card dl { margin: 18px 0 22px; }
+.rule-card dl div + div { margin-top: 15px; }
+.rule-card dt { color: var(--green); font-size: 10px; font-weight: 850; text-transform: uppercase; }
+.rule-card dd { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.example-link { color: var(--green); font-size: 11px; font-weight: 850; text-underline-offset: 3px; }
+.cheat-table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 13px; }
+.cheat-table { width: 100%; min-width: 610px; border-collapse: collapse; background: var(--paper-strong); }
+.cheat-table th, .cheat-table td { padding: 13px 14px; border-bottom: 1px solid var(--line); text-align: left; }
+.cheat-table thead th { background: #f3f5f1; color: var(--muted); font-size: 9px; text-transform: uppercase; }
+.cheat-table tbody th { font-family: Georgia, serif; font-size: 16px; }
+.cheat-table tbody td { color: var(--muted); font-size: 11px; }
+.cheat-table tr:last-child th, .cheat-table tr:last-child td { border-bottom: 0; }
+.person-cheat { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin-top: 34px; }
+.person-cheat div { padding: 15px; border: 1px solid var(--line); border-radius: 10px; background: var(--green-pale); }
+.person-cheat small, .person-cheat strong, .person-cheat span { display: block; }
+.person-cheat small { color: var(--green); font-size: 9px; font-weight: 850; }
+.person-cheat strong { margin-top: 5px; font-family: Georgia, serif; font-size: 20px; }
+.person-cheat span { margin-top: 3px; color: var(--muted); font-size: 9px; }
+.concept-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin-top: 20px; }
+.concept-grid .cheat-card > p:not(.eyebrow) { margin-top: 10px; }
+.caution { padding-top: 12px; border-top: 1px solid var(--line); }
+.example-card { background: var(--green); color: #fff; }
+.example-card .eyebrow, .example-card p, .example-card .example-link { color: rgba(255,255,255,.78); }
+.example-card h3 { color: #fff; font-size: 38px; }
+.agreement-grid { display: grid; grid-template-columns: 180px repeat(4,minmax(130px,1fr)); margin-top: 34px; overflow: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--paper-strong); }
+.agreement-grid > * { min-width: 130px; padding: 14px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+.agreement-grid > div { background: #f3f5f1; font-weight: 800; }
+.agreement-grid > strong { color: var(--ink); font-family: Georgia, serif; font-size: 15px; }
+.standalone-link { display: inline-block; margin-top: 18px; }
+.word-type-cheat { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; margin-top: 32px; }
+.word-type-cheat div { display: grid; gap: 5px; padding: 15px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper-strong); }
+.word-type-cheat code { color: var(--gold); font-size: 10px; font-weight: 850; }
+.word-type-cheat strong { font-family: Georgia, serif; font-size: 17px; }
+.notation-section { border-bottom: 0; }
+
+@media (max-width: 900px) {
+  .reference-header { grid-template-columns: 1fr auto; }
+  .reference-nav { grid-column: 1 / -1; grid-row: 2; overflow-x: auto; justify-content: flex-start; }
+  .reference-toggles { grid-column: 2; grid-row: 1; }
+  .index-toolbar, .grammar-jump { top: 119px; }
+  .cheat-layout, .concept-grid { grid-template-columns: 1fr; }
+  .word-type-cheat { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+
+@media (max-width: 620px) {
+  .reference-header { grid-template-columns: 1fr; }
+  .reference-toggles { grid-column: 1; grid-row: 2; justify-content: flex-end; }
+  .reference-nav { grid-row: 3; }
+  .word-list-page, .grammar-page { width: min(100% - 28px,1180px); }
+  .index-toolbar, .grammar-jump { position: static; }
+  .word-list-group { grid-template-columns: 34px minmax(0,1fr); gap: 8px; }
+  .word-list-group > h2 { font-size: 28px; }
+  .word-index-row { grid-template-columns: minmax(0,1fr) auto; gap: 6px 10px; padding: 12px 8px; }
+  .word-index-type { grid-column: 2; grid-row: 1; }
+  .word-index-meaning { grid-column: 1 / -1; white-space: normal; }
+  .word-index-arrow { display: none; }
+  .cheat-heading { grid-template-columns: 38px minmax(0,1fr); gap: 10px; }
+  .person-cheat { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .word-type-cheat { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .agreement-grid { grid-template-columns: 150px repeat(4,130px); }
+}

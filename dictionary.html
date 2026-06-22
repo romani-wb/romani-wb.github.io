@@ -19,13 +19,15 @@
       <nav class="dictionary-nav" aria-label="Primary navigation">
         <a href="index.html">Story</a>
         <a class="active" href="dictionary.html" aria-current="page">Dictionary</a>
+        <a href="word-list.html">Word list</a>
+        <a href="grammar.html">Grammar</a>
       </nav>
       <div class="header-controls" aria-label="Display controls">
         <label class="edition-select" for="edition-select">
           <span>Layout</span>
           <select id="edition-select">
             <option value="learner">Focus</option>
-            <option value="compact">Browse</option>
+            <option value="compact" selected>Browse</option>
             <option value="explorer">Split</option>
           </select>
         </label>
@@ -55,7 +57,7 @@
             <span aria-hidden="true">⌕</span>
             <input id="search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Roman word, German or English meaning" aria-describedby="result-meta">
           </label>
-          <button class="random-entry" id="random-entry" type="button" title="Open a random entry">Surprise me <span aria-hidden="true">↝</span></button>
+          <button class="random-entry" id="random-entry" type="button" title="Open a random entry"><span class="surprise-icon" aria-hidden="true">✦</span><span>Surprise me</span></button>
         </div>
         <nav class="word-class-filters" id="word-class-filters" aria-label="Browse by word type"></nav>
         <div class="result-meta" id="result-meta" role="status" aria-live="polite"></div>

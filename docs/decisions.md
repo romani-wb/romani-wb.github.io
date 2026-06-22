@@ -1,5 +1,16 @@
 # Decision log
 
+## 2026-06-22 — Browse becomes the default reading flow
+
+Browse now keeps search and Surprise me at the top, presents the selected entry
+next, and places the word-type catalogue at the bottom. The catalogue links to a
+new progressive alphabetical Word list instead of expanding a second result area
+inside the entry page. This keeps lookup and corpus browsing distinct.
+
+A separate Grammar guide provides source-aligned cheat sheets for noun cases,
+verb person/tense/aspect, adjective agreement, word types, and dictionary notation.
+It links to live paradigms and does not add endings or silently correct source data.
+
 ## 2026-06-22 — Search-first navigation replaces the comparison page
 
 The arbitrary first 80 alphabetical entries and dedicated comparison page were
@@ -68,6 +79,7 @@ Current provisional defaults:
 - English interface labels;
 - `INT` Roman spelling on first visit;
 - German meanings on first visit;
+- Browse layout on first visit;
 - URL parameters override remembered browser preferences;
 - generated morphology is presented as a labelled preview; raw codes and
   derivation are collapsed;

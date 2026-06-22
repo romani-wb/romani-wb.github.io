@@ -44,10 +44,10 @@ that hierarchy instead of presenting every workbook field as an equal card.
 All layouts use the same entry, search, lazy loading, and URL state. They are
 presentation modes, not forks:
 
-- **Focus** is the default. Search, Surprise me, and word-type filters sit above
+- **Focus** keeps search, Surprise me, and word-type filters above
   a full-width entry. No entries appear until the user searches or chooses a type.
-- **Browse** adds a catalogue of nouns, verbs, adjectives, adverbs, noun phrases,
-  grammar words, and an honest `Other` bucket with real corpus counts.
+- **Browse** is the default. Search stays at the top, the entry occupies the main
+  reading flow, and the word-type catalogue sits below it as a continuation.
 - **Split** retains a persistent result sidebar for dense repeated lookup.
 
 The comparison page was removed; the layout selector is sufficient. The legacy
@@ -56,6 +56,15 @@ The comparison page was removed; the layout selector is sufficient. The legacy
 Search matches are grouped by broad word type. Individual badges use readable
 labels (`Particle verb`, `Noun phrase`) while source codes remain available in
 Details. The broad grouping is a navigation aid, not a change to the workbook.
+
+`word-list.html` is the deliberately plain second browsing surface: all 12,525
+entries sorted alphabetically, progressively rendered in batches, and filterable
+by spelling, meaning language, word type, first letter, or text.
+
+`grammar.html` turns the professor's paradigm dimensions into compact reference
+sheets for noun cases, verb person/tense/aspect, adjective agreement, word-class
+codes, spelling variants, and notation. It links to live generated paradigms
+rather than duplicating or extending the source rules.
 
 ## Grammar presentation
 

@@ -30,8 +30,11 @@ Open `http://localhost:8000`.
 
 - Story/home: `http://localhost:8000/index.html`
 - Standalone dictionary: `http://localhost:8000/dictionary.html`
+- Complete word list: `http://localhost:8000/word-list.html`
+- Grammar guide: `http://localhost:8000/grammar.html`
+
 The dictionary offers three layouts over the same data and URL state: `Focus`
-(search-first), `Browse` (word-type catalogue), and `Split` (persistent result
+(search-first), `Browse` (default), and `Split` (persistent result
 sidebar). Generated conjugations and declensions are useful previews derived
 from the professor's paradigm tables and remain marked for linguistic review.
 

@@ -80,6 +80,7 @@ globalThis.fetch = async (url) => {
 };
 
 await import(`${pathToFileURL(resolve(root, "app.js")).href}?smoke=1`);
+const wordTypes = await import(`${pathToFileURL(resolve(root, "word-types.js")).href}?smoke=1`);
 
 const deadline = Date.now() + 10_000;
 while (!elements.get("#data-status").textContent.includes("entries indexed")) {
@@ -156,18 +157,39 @@ elements.get("#entry-pane").listeners.get("click")({
 assert.match(elements.get("#entry-pane").innerHTML, /Singular masculine/);
 assert.match(elements.get("#entry-pane").innerHTML, /Singular feminine/);
 assert.match(elements.get("#entry-pane").innerHTML, /Plural feminine/);
+elements.get("#edition-select").listeners.get("change")({ target: { value: "compact" } });
+const footerDeadline = Date.now() + 2_000;
+while (!elements.get("#entry-pane").innerHTML.includes("Explore the whole dictionary")) {
+  if (Date.now() > footerDeadline) throw new Error("Browse footer render timed out.");
+  await new Promise((resolvePromise) => setTimeout(resolvePromise, 10));
+}
+assert.match(elements.get("#entry-pane").innerHTML, /Explore the whole dictionary/);
+assert.match(elements.get("#entry-pane").innerHTML, /word-list\.html\?type=nouns/);
+assert.match(elements.get("#entry-pane").innerHTML, /href="grammar\.html"/);
+assert.equal(wordTypes.wordClassLabel("PTCLV"), "Particle verb");
+assert.equal(wordTypes.wordTypeGroup("PTCLV").key, "verbs");
 
 const homeHtml = await readFile(resolve(root, "index.html"), "utf8");
 const dictionaryHtml = await readFile(resolve(root, "dictionary.html"), "utf8");
+const wordListHtml = await readFile(resolve(root, "word-list.html"), "utf8");
+const grammarHtml = await readFile(resolve(root, "grammar.html"), "utf8");
 assert.match(homeHtml, /href="dictionary\.html"/);
 assert(!homeHtml.includes("app.js"));
 assert.match(dictionaryHtml, /src="app\.js"/);
 assert.match(dictionaryHtml, /id="edition-select"/);
 assert.match(dictionaryHtml, />Focus</);
 assert.match(dictionaryHtml, />Browse</);
+assert.match(dictionaryHtml, /value="compact" selected/);
 assert.match(dictionaryHtml, />Split</);
+assert.match(dictionaryHtml, /href="word-list\.html"/);
+assert.match(dictionaryHtml, /href="grammar\.html"/);
 assert.doesNotMatch(dictionaryHtml, /Compare views/);
 assert.doesNotMatch(elements.get("#entry-pane").innerHTML, /New here/);
+assert.match(wordListHtml, /Every recorded word/);
+assert.match(wordListHtml, /src="word-list\.js"/);
+assert.match(grammarHtml, /Noun cases/);
+assert.match(grammarHtml, /Verb forms/);
+assert.match(grammarHtml, /Adjective agreement/);
 await assert.rejects(readFile(resolve(root, "dictionary-lab.html"), "utf8"));
 
-console.log("Frontend smoke test passed: search-first layouts, word-type navigation, grammar views, deep links, and lazy loading are functional.");
+console.log("Frontend smoke test passed: dictionary layouts, Word list, Grammar guide, deep links, and lazy loading are functional.");

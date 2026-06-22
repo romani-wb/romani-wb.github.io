@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Roman Word List</title>
+    <meta name="description" content="Browse all 12,525 Roman dictionary entries alphabetically or by word type.">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="dictionary.css">
+    <link rel="stylesheet" href="reference.css">
+  </head>
+  <body class="reference-body">
+    <header class="reference-header">
+      <a class="dictionary-brand" href="index.html" aria-label="Roman story home"><span>Roman</span><small>Word list</small></a>
+      <nav class="reference-nav" aria-label="Primary navigation">
+        <a href="index.html">Story</a>
+        <a href="dictionary.html">Dictionary</a>
+        <a class="active" href="word-list.html" aria-current="page">Word list</a>
+        <a href="grammar.html">Grammar</a>
+      </nav>
+      <div class="reference-toggles">
+        <fieldset class="compact-toggle">
+          <legend>Spelling</legend>
+          <button type="button" class="active" data-index-spelling="int" aria-pressed="true">INT</button>
+          <button type="button" data-index-spelling="deu" aria-pressed="false">DEU</button>
+        </fieldset>
+        <fieldset class="compact-toggle">
+          <legend>Meaning</legend>
+          <button type="button" data-index-language="de" aria-pressed="false">DE</button>
+          <button type="button" class="active" data-index-language="en" aria-pressed="true">EN</button>
+        </fieldset>
+      </div>
+    </header>
+
+    <main class="word-list-page">
+      <header class="reference-hero">
+        <p class="eyebrow">The complete index</p>
+        <h1>Every recorded word.</h1>
+        <p>Scroll through all 12,525 entries, narrow the list by type or letter, and open any word in the full dictionary.</p>
+      </header>
+
+      <section class="index-toolbar" aria-label="Word list controls">
+        <label class="index-search" for="word-list-search"><span aria-hidden="true">⌕</span><input id="word-list-search" type="search" autocomplete="off" spellcheck="false" placeholder="Filter the word list"></label>
+        <nav class="index-type-filters" id="index-type-filters" aria-label="Filter by word type"></nav>
+        <nav class="alphabet-filter" id="alphabet-filter" aria-label="Filter by first letter"></nav>
+        <p class="index-status" id="index-status" role="status" aria-live="polite">Loading the word list…</p>
+      </section>
+
+      <div class="word-list" id="word-list"></div>
+      <div class="word-list-more" id="word-list-sentinel">
+        <button id="load-more" type="button">Load more words</button>
+      </div>
+    </main>
+
+    <script src="word-list.js" type="module"></script>
+  </body>
+</html>
