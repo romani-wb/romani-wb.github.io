@@ -1,0 +1,23 @@
+# Safety net for GitHub's legacy branch-based Pages publisher.
+# The custom Actions workflow publishes an explicit allowlist instead.
+exclude:
+  - .github
+  - .gitignore
+  - AGENTS.md
+  - HANDOFF.md
+  - README.md
+  - requirements.txt
+  - backups
+  - docs
+  - roman-wb-valentin
+  - scripts
+  - tests
+  - romani-viewer-desktop.png
+  - romani-viewer-forms-desktop.png
+  - romani-viewer-forms-mobile.png
+  - romani-viewer-mobile.png
+  - data/processed/abbreviations.json
+  - data/processed/entries.json
+  - data/processed/paradigm_tables.json
+  - data/processed/reports
+  - data/processed/summary.json
