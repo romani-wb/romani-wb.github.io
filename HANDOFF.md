@@ -1,6 +1,6 @@
 # Roman Dictionary — Agent Handoff
 
-Last updated: 22 June 2026
+Last updated: 23 June 2026
 
 This is the primary restart document. Read `AGENTS.md` next, then follow links
 from this file only as needed.
@@ -11,7 +11,8 @@ from this file only as needed.
 - Active branch: `main`
 - Preservation tag: `prototype-before-june-data-refresh`
 - Valentin explicitly authorized direct commits and pushes to `main`, without a
-  PR, while the site is not in production. This does not authorize deployment.
+  PR, while the site is not in production. GitHub Pages deployment from `main`
+  is in scope for this prototype.
 - Valentin has authorized routine edits, generation, tests, and breaking changes
   inside this repository. Do not repeatedly ask for approval for those actions.
 - Intermediate review gates are temporarily fast-tracked. Make conservative,
@@ -31,8 +32,10 @@ The current prototype is a static Roman dictionary with:
 
 - a sourced story/home page at `index.html`;
 - a separate bookmarkable dictionary at `dictionary.html`;
+- a German-first site interface with an English toggle preserved in URL/storage;
 - client-side search across Roman `INT`, Roman `DEU`, German, and English;
-- independent Roman-spelling and meaning-language controls;
+- independent controls for interface language, Roman spelling, and translation
+  language; `INT/DEU` are Roman spelling systems, `DE/EN` are meaning languages;
 - URL-preserved query, selected entry, spelling, and meaning language;
 - remembered spelling and meaning preferences in browser storage;
 - lazy-loaded full entries in deterministic 500-entry chunks;
@@ -51,11 +54,13 @@ The current prototype is a static Roman dictionary with:
   `Particle verb`; raw codes remain in Details;
 - grammar/details, source hyperlinks, and generated complete-word morphology;
 - learner-facing verb conjugation, noun case, and adjective agreement grids;
-- plain-language grammar primers and useful-form previews without onboarding;
+- source-aligned generated grammar forms and useful-form previews without
+  onboarding or artificial grammar lessons;
 - technical morphology derivation collapsed and all generated forms clearly
   identified as awaiting linguistic review;
-- a progressively rendered alphabetical index of all entries at `word-list.html`;
-- a source-aligned grammar cheat-sheet surface at `grammar.html`;
+- a progressively rendered table-like alphabetical index at `word-list.html`,
+  with filters fixed to the bottom instead of a top sticky panel;
+- a minimal source-aligned grammar reference at `grammar.html`;
 - a five-view visualization lab at `explore.html`, built only from recorded base
   fields and word classes: Family atlas, refined Family web, Type ribbons,
   Family rings, and Size landscape; all share search, filters, URL state, entry
@@ -167,6 +172,7 @@ URL parameters are:
 
 - `q` — search query
 - `entry` — selected development entry ID
+- `ui` — interface language, `de` or `en`
 - `spelling` — `int` or `deu`
 - `meaning` — `de` or `en`
 - `edition` — legacy-compatible layout values: `learner` = Focus, `compact` =
@@ -174,7 +180,7 @@ URL parameters are:
 - `type` — word-type filter (`nouns`, `verbs`, `adjectives`, `adverbs`,
   `phrases`, or `grammar`)
 
-Provisional defaults are English interface labels, `INT` spelling, and German
+Provisional defaults are German interface labels, `INT` spelling, and German
 meanings. Browse is the default layout. They are documented in
 `docs/decisions.md`.
 
@@ -201,8 +207,9 @@ passes. A second preprocessing run must produce byte-identical output.
 Useful manual check:
 
 1. Open `dictionary.html` and switch among Focus, Browse, and Split.
-2. In Browse, confirm the search is above the entry and the ten exploration
-   cards (All words, Grammar guide, Family explorer, and seven types) are below it.
+2. In Browse, confirm search, Surprise me, spelling, translation, and view
+   controls sit above the entry. There should be no bottom "Keep exploring"
+   catalogue inside the dictionary entry.
 3. Search `stay`; confirm results are grouped under Nouns and Verbs and badges
    read `Verb`, `Verb phrase`, or `Particle verb`, never bare source codes.
 4. Search lowercase `essen`; confirm `háv` is the first result and
@@ -210,16 +217,18 @@ Useful manual check:
 5. Open verb `g00005_236c444a` (`áčav`); confirm six present forms and five
    aspect/tense groups in Conjugation.
 6. Open noun `g00003_b284cd5c` (`ablativ`); confirm seven case rows with singular
-   and plural columns.
+   and plural columns and no "Case and use" explanatory column.
 7. Open adjective `g00008_ffa2702b` (`ačálo/i`); confirm basic/oblique forms
    across gender and number.
 8. Toggle `INT/DEU`, `DE/EN`, layout, and type, then reload the explicit URL.
 9. Open Details and check a Source-2 link; check the site at mobile width.
 10. Click `Surprise me`; the entry and URL should change without losing settings.
-11. Open `word-list.html`; confirm 240 of 12,525 rows render initially, then test
-    search, word type, letter, spelling, meaning language, and progressive loading.
-12. Open `grammar.html`; confirm seven noun cases, six verb persons, adjective
-    agreement, readable word-type codes, and three links to live paradigms.
+11. Open `word-list.html`; confirm 240 of 12,525 rows render initially, filters
+    are fixed to the bottom, then test search, word type, letter, spelling,
+    meaning language, and progressive loading.
+12. Open `grammar.html`; confirm it is a compact source-derived inventory
+    (noun case codes, verb person/aspect/tense codes, adjective form dimensions,
+    word-type codes, and notation), not a beginner grammar lesson.
 13. Open `explore.html`; switch through Family atlas, Family web, Type ribbons,
     Family rings, and Size landscape. Hover and select marks, filter each view,
     toggle Family-web labels, search `kerav`, change spelling/meaning, zoom the
@@ -231,11 +240,11 @@ family remains an interactive Base hierarchy. Grammar grids
 must never create page-level horizontal overflow on mobile; wide matrices scroll
 inside their panel.
 
-On 22 June, in-app browser/Playwright QA covered all three layouts, grouped search,
-word-type filtering, the full Word list, grammar cheat sheets, representative
-verb/noun/adjective paradigms, mobile width (390×844), URL state, `Surprise me`,
-and console warnings/errors. It found no console errors or page-level mobile
-overflow. This is not a screen-reader or full keyboard audit.
+On 23 June, in-app browser QA covered the German-first dictionary, language
+toggle to English, bottom-fixed Word list filters, minimal Grammar reference,
+Explore page, representative noun forms, URL state, and console errors on the
+local static preview. It found no browser console errors. This is not a
+screen-reader, full keyboard, or linguistic correctness audit.
 
 ## Decisions already made
 

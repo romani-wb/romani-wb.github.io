@@ -1,34 +1,35 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Roman — Language and Dictionary</title>
+    <title data-i18n="home.title">Roman — Sprache und Wörterbuch</title>
     <meta name="description" content="Discover Roman, the language of the Burgenland Roma, and enter its German-English online dictionary.">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <a class="skip-link" href="#story">Skip to the story</a>
+    <a class="skip-link" href="#story" data-i18n="home.skip">Zur Geschichte springen</a>
 
     <header class="story-hero" id="introduction">
       <nav class="story-nav" aria-label="Primary navigation">
         <a class="wordmark" href="index.html" aria-label="Roman home">Roman</a>
         <div>
-          <a href="#story">Context</a>
-          <a href="word-list.html">Word list</a>
-          <a href="grammar.html">Grammar</a>
-          <a href="explore.html">Explore</a>
-          <a class="nav-dictionary" href="dictionary.html">Dictionary <span aria-hidden="true">↗</span></a>
+          <a href="#story" data-i18n="home.context">Kontext</a>
+          <a href="word-list.html" data-i18n="nav.wordList">Wortliste</a>
+          <a href="grammar.html" data-i18n="nav.grammar">Grammatik</a>
+          <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
+          <a class="nav-dictionary" href="dictionary.html"><span data-i18n="nav.dictionary">Wörterbuch</span> <span aria-hidden="true">↗</span></a>
+          <span class="ui-language-switch" data-i18n-aria-label="site.language" aria-label="Sprache"><button type="button" class="active" data-ui-language="de" aria-pressed="true">DE</button><button type="button" data-ui-language="en" aria-pressed="false">EN</button></span>
         </div>
       </nav>
 
       <div class="hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">The language of the Burgenland Roma</p>
-          <h1>Roman lives in words, memory, and use.</h1>
-          <p class="hero-intro">A documented language shaped across generations—and a dictionary built to make its words accessible again.</p>
-          <a class="primary-link" href="dictionary.html">Enter the dictionary <span aria-hidden="true">→</span></a>
+          <p class="eyebrow" data-i18n="home.eyebrow">Die Sprache der Burgenland-Roma</p>
+          <h1 data-i18n="home.heading">Roman lebt in Wörtern, Erinnerung und Gebrauch.</h1>
+          <p class="hero-intro" data-i18n="home.intro">Eine über Generationen geprägte und dokumentierte Sprache – und ein Wörterbuch, das ihre Wörter wieder zugänglich macht.</p>
+          <a class="primary-link" href="dictionary.html"><span data-i18n="home.enter">Zum Wörterbuch</span> <span aria-hidden="true">→</span></a>
         </div>
         <div class="hero-mark" aria-hidden="true">
           <span class="hero-r">R</span>
@@ -39,53 +40,54 @@
       </div>
 
       <div class="hero-facts" aria-label="Dictionary facts">
-        <p><strong>12,525</strong><span>entries</span></p>
-        <p><strong>2</strong><span>Roman spellings</span></p>
-        <p><strong>DE · EN</strong><span>meanings</span></p>
+        <p><strong>12.525</strong><span data-i18n="home.entries">Einträge</span></p>
+        <p><strong>2</strong><span data-i18n="home.spellings">Roman-Schreibweisen</span></p>
+        <p><strong>DE · EN</strong><span data-i18n="home.meanings">Bedeutungen</span></p>
       </div>
     </header>
 
     <main>
       <section class="story-section" id="story" aria-labelledby="story-title">
         <div class="story-heading">
-          <p class="eyebrow">A short context</p>
-          <h2 id="story-title">A documented language with a living history</h2>
+          <p class="eyebrow" data-i18n="home.shortContext">Kurzer Kontext</p>
+          <h2 id="story-title" data-i18n="home.storyHeading">Eine dokumentierte Sprache mit lebendiger Geschichte</h2>
         </div>
         <div class="story-grid">
           <article>
             <span>01</span>
-            <h3>Place and contact</h3>
-            <p>Roman is the name Burgenland Roma use for their language. It is a Romani variety shaped in the former western Hungarian region and influenced over time by German and Croatian.</p>
+            <h3 data-i18n="home.place">Ort und Kontakt</h3>
+            <p data-i18n="home.placeText">Roman ist die Eigenbezeichnung der Burgenland-Roma für ihre Sprache. Diese Romani-Varietät entstand im ehemals westungarischen Raum und wurde unter anderem von Deutsch und Kroatisch geprägt.</p>
           </article>
           <article>
             <span>02</span>
-            <h3>Pressure and continuity</h3>
-            <p>Persecution, the Holocaust, persistent discrimination, and post-war language shift sharply reduced everyday use. Roman nevertheless remains an important marker of community and identity.</p>
+            <h3 data-i18n="home.continuity">Druck und Kontinuität</h3>
+            <p data-i18n="home.continuityText">Verfolgung, Holocaust, anhaltende Diskriminierung und Sprachwechsel nach 1945 reduzierten den alltäglichen Gebrauch stark. Roman bleibt dennoch ein wichtiges Zeichen von Gemeinschaft und Identität.</p>
           </article>
           <article>
             <span>03</span>
-            <h3>Codification and access</h3>
-            <p>Community self-organisation led to codification work with linguists from the University of Graz. Teaching, media, Roma-Service activities, and this dictionary continue that work.</p>
+            <h3 data-i18n="home.codification">Kodifizierung und Zugang</h3>
+            <p data-i18n="home.codificationText">Die Selbstorganisation der Community führte zur Kodifizierungsarbeit mit Sprachwissenschaftlern der Universität Graz. Unterricht, Medien, Roma-Service und dieses Wörterbuch führen diese Arbeit fort.</p>
           </article>
         </div>
-        <p class="heritage-note">Roman has been listed in the Austrian UNESCO Commission’s national inventory of intangible cultural heritage since 2011.</p>
-        <p class="story-source">Context condensed from the German and English project manuscripts supplied with the dictionary data. Copy and attribution remain provisional until the major review.</p>
+        <p class="heritage-note" data-i18n="home.heritage">Roman steht seit 2011 im nationalen Verzeichnis des immateriellen Kulturerbes der Österreichischen UNESCO-Kommission.</p>
+        <p class="story-source" data-i18n="home.source">Der Kontext ist aus den bereitgestellten deutschen und englischen Projektmanuskripten zusammengefasst. Text und Zuschreibung bleiben bis zur Hauptprüfung vorläufig.</p>
       </section>
 
       <section class="dictionary-portal" aria-labelledby="portal-title">
-        <p class="eyebrow">12,525 ways in</p>
-        <h2 id="portal-title">Look up a word.<br>Then follow where it leads.</h2>
-        <p>The dictionary is a separate tool you can bookmark and return to directly. Search both Roman spellings, switch between German and English, and explore forms and word families.</p>
-        <a href="dictionary.html">Open Roman Dictionary <span aria-hidden="true">→</span></a>
+        <p class="eyebrow" data-i18n="home.portalEyebrow">12.525 Einstiege</p>
+        <h2 id="portal-title" data-i18n="home.portalHeading">Ein Wort nachschlagen. Dann seinen Verbindungen folgen.</h2>
+        <p data-i18n="home.portalText">Das Wörterbuch ist ein eigenständiges Werkzeug. Beide Roman-Schreibweisen, deutsche und englische Bedeutungen, Formen und Wortfamilien sind direkt zugänglich.</p>
+        <a href="dictionary.html"><span data-i18n="home.openDictionary">Roman Wörterbuch öffnen</span> <span aria-hidden="true">→</span></a>
       </section>
     </main>
 
     <footer class="site-footer">
       <a class="wordmark" href="index.html">Roman</a>
-      <a href="dictionary.html">Dictionary</a>
-      <a href="word-list.html">Word list</a>
-      <a href="grammar.html">Grammar</a>
-      <a href="explore.html">Explore</a>
+      <a href="dictionary.html" data-i18n="nav.dictionary">Wörterbuch</a>
+      <a href="word-list.html" data-i18n="nav.wordList">Wortliste</a>
+      <a href="grammar.html" data-i18n="nav.grammar">Grammatik</a>
+      <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
     </footer>
+    <script src="site-i18n.js" type="module"></script>
   </body>
 </html>

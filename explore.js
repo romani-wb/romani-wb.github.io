@@ -1,4 +1,5 @@
-import { WORD_TYPE_GROUPS, wordClassLabel, wordTypeGroup } from "./word-types.js";
+import { WORD_TYPE_GROUPS, wordClassLabel, wordTypeGroup, wordTypeLabel } from "./word-types.js";
+import { formatNumber, initI18n, uiLanguage } from "./site-i18n.js";
 
 const DATA_URL = "data/processed/entries_search.json";
 const VIEWBOX = { width: 1000, height: 650 };
@@ -12,6 +13,8 @@ const TYPE_COLORS = {
   grammar: "#925262",
   other: "#68736e",
 };
+
+const ui = (german, english) => uiLanguage() === "de" ? german : english;
 
 export function normalizeFamilyKey(value) {
   return String(value || "").normalize("NFKC").trim().toLocaleLowerCase().replace(/\s+/g, " ");
@@ -57,7 +60,7 @@ export function createNetworkLayout(family, activeType = "all") {
       id: `type:${group.key}`,
       kind: "type",
       group: group.key,
-      label: group.label,
+      label: wordTypeLabel(group, uiLanguage()),
       count: group.entries.length,
       x: root.x + Math.cos(centerAngle) * 128,
       y: root.y + Math.sin(centerAngle) * 128,
@@ -141,7 +144,7 @@ export function createAtlasLayout(atlasFamilies, width = 1000, height = 650) {
     };
     const center = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 + 8 };
     const placed = [];
-    clusters.push({ key: group.key, label: group.label, count: group.families.length, bounds, center });
+    clusters.push({ key: group.key, label: wordTypeLabel(group, uiLanguage()), count: group.families.length, bounds, center });
 
     group.families.forEach((item, familyIndex) => {
       let radius = Math.min(20, 3.8 + Math.sqrt(item.family.entries.length) * 1.72);
@@ -190,7 +193,7 @@ export function createRibbonLayout(family, activeType = "all", width = 1000, hei
 
   groups.forEach((group) => {
     const bandHeight = availableHeight * Math.max(3, group.entries.length) / weightTotal;
-    const hub = { id: `type:${group.key}`, kind: "type", group: group.key, label: group.label, count: group.entries.length, x: width * .42, y: cursor + bandHeight / 2, bandHeight };
+    const hub = { id: `type:${group.key}`, kind: "type", group: group.key, label: wordTypeLabel(group, uiLanguage()), count: group.entries.length, x: width * .42, y: cursor + bandHeight / 2, bandHeight };
     nodes.push(hub);
     edges.push({ from: root, to: hub, kind: "type", weight: group.entries.length });
     group.entries.forEach((entry, index) => {
@@ -218,7 +221,7 @@ export function createRingLayout(family, activeType = "all") {
   groups.forEach((group) => {
     const span = Math.PI * 2 * group.entries.length / total;
     const gap = Math.min(.025, span * .08);
-    const groupArc = { group: group.key, label: group.label, count: group.entries.length, start: cursor + gap, end: cursor + span - gap };
+    const groupArc = { group: group.key, label: wordTypeLabel(group, uiLanguage()), count: group.entries.length, start: cursor + gap, end: cursor + span - gap };
     groupArcs.push(groupArc);
     group.entries.forEach((entry, index) => {
       const entrySpan = span / group.entries.length;
@@ -258,7 +261,7 @@ export function createLandscapeLayout(families, width = 1000, height = 650, acti
 
   groups.forEach((group, index) => {
     const y = margin.top + laneHeight * (index + .5);
-    lanes.push({ key: group.key, label: group.label, count: group.families.length, y, height: laneHeight });
+    lanes.push({ key: group.key, label: wordTypeLabel(group, uiLanguage()), count: group.families.length, y, height: laneHeight });
     group.families.forEach((item) => {
       const jitter = (stableFraction(item.family.key) - .5) * laneHeight * .62;
       nodes.push({ ...item, group: group.key, x: xForSize(item.family.entries.length), y: y + jitter, radius: Math.min(7, 2.2 + Math.sqrt(item.family.entries.length) * .54) });
@@ -276,7 +279,7 @@ export function createComparisonModel(primary, secondary, activeType = "all") {
     .filter((group) => activeType === "all" ? primaryProfile.counts[group.key] || secondaryProfile.counts[group.key] : group.key === activeType)
     .map((group) => ({
       key: group.key,
-      label: group.label,
+      label: wordTypeLabel(group, uiLanguage()),
       primary: primaryProfile.counts[group.key] || 0,
       secondary: secondaryProfile.counts[group.key] || 0,
     }));
@@ -396,6 +399,7 @@ function initExplorer() {
     state.view === "compare" && state.compareFamily ? url.searchParams.set("compare", state.compareFamily.key) : url.searchParams.delete("compare");
     url.searchParams.set("spelling", state.spelling);
     url.searchParams.set("meaning", state.language);
+    url.searchParams.set("ui", uiLanguage());
     history.replaceState(null, "", url);
   }
 
@@ -418,13 +422,13 @@ function initExplorer() {
   function renderStats() {
     const multi = [...state.families.values()].filter((family) => family.entries.length > 1).length;
     const values = [state.entries.length, state.families.size, multi];
-    [...els.stats.querySelectorAll("dt")].forEach((element, index) => { element.textContent = values[index].toLocaleString(); });
+    [...els.stats.querySelectorAll("dt")].forEach((element, index) => { element.textContent = formatNumber(values[index]); });
   }
 
   function renderFeatured() {
     els.featured.innerHTML = state.featured.slice(0, 10).map((family) => `
       <button class="featured-family${family.key === state.family?.key ? " active" : ""}" type="button" data-family-key="${escapeHtml(family.key)}">
-        ${escapeHtml(displayBase(family))}<small>${family.entries.length} words</small>
+        ${escapeHtml(displayBase(family))}<small>${formatNumber(family.entries.length)} ${ui("Wörter", "words")}</small>
       </button>
     `).join("");
   }
@@ -455,9 +459,9 @@ function initExplorer() {
       const corpusFamilies = state.view === "landscape" ? state.landscapeFamilies : state.atlasFamilies;
       const atlasCounts = new Map(WORD_TYPE_GROUPS.map((group) => [group.key, 0]));
       corpusFamilies.forEach((item) => atlasCounts.set(item.dominantType, (atlasCounts.get(item.dominantType) || 0) + 1));
-      const filters = [{ key: "all", label: "All families", count: corpusFamilies.length }, ...WORD_TYPE_GROUPS
+      const filters = [{ key: "all", label: ui("Alle Familien", "All families"), count: corpusFamilies.length }, ...WORD_TYPE_GROUPS
         .filter((group) => atlasCounts.get(group.key))
-        .map((group) => ({ ...group, count: atlasCounts.get(group.key) }))];
+        .map((group) => ({ ...group, label: wordTypeLabel(group, uiLanguage()), count: atlasCounts.get(group.key) }))];
       els.typeFilters.innerHTML = filters.map((filter) => `
         <button class="type-filter${state.activeType === filter.key ? " active" : ""}" type="button" data-type-key="${filter.key}" aria-pressed="${state.activeType === filter.key}" style="--type-color:${TYPE_COLORS[filter.key] || "#17211e"}">
           ${filter.key === "all" ? "" : "<i aria-hidden=\"true\"></i>"}${escapeHtml(filter.label)} · ${filter.count}
@@ -467,7 +471,7 @@ function initExplorer() {
     }
     if (state.view === "compare") {
       const comparison = createComparisonModel(state.family, state.compareFamily);
-      const filters = [{ key: "all", label: "All types", count: `${comparison.primaryTotal} / ${comparison.secondaryTotal}` }, ...comparison.rows.map((row) => ({ key: row.key, label: row.label, count: `${row.primary} / ${row.secondary}` }))];
+      const filters = [{ key: "all", label: ui("Alle Wortarten", "All types"), count: `${comparison.primaryTotal} / ${comparison.secondaryTotal}` }, ...comparison.rows.map((row) => ({ key: row.key, label: row.label, count: `${row.primary} / ${row.secondary}` }))];
       els.typeFilters.innerHTML = filters.map((filter) => `
         <button class="type-filter${state.activeType === filter.key ? " active" : ""}" type="button" data-type-key="${filter.key}" aria-pressed="${state.activeType === filter.key}" style="--type-color:${TYPE_COLORS[filter.key] || "#17211e"}">
           ${filter.key === "all" ? "" : "<i aria-hidden=\"true\"></i>"}${escapeHtml(filter.label)} · ${escapeHtml(filter.count)}
@@ -476,9 +480,9 @@ function initExplorer() {
       return;
     }
     const counts = typeCounts();
-    const filters = [{ key: "all", label: "All", count: state.family.entries.length }, ...WORD_TYPE_GROUPS
+    const filters = [{ key: "all", label: ui("Alle", "All"), count: state.family.entries.length }, ...WORD_TYPE_GROUPS
       .filter((group) => counts.has(group.key))
-      .map((group) => ({ ...group, count: counts.get(group.key) }))];
+      .map((group) => ({ ...group, label: wordTypeLabel(group, uiLanguage()), count: counts.get(group.key) }))];
     els.typeFilters.innerHTML = filters.map((filter) => `
       <button class="type-filter${state.activeType === filter.key ? " active" : ""}" type="button" data-type-key="${filter.key}" aria-pressed="${state.activeType === filter.key}" style="--type-color:${TYPE_COLORS[filter.key] || "#17211e"}">
         ${filter.key === "all" ? "" : "<i aria-hidden=\"true\"></i>"}${escapeHtml(filter.label)} · ${filter.count}
@@ -490,20 +494,20 @@ function initExplorer() {
     const profile = familyTypeProfile(state.family);
     const dominant = WORD_TYPE_GROUPS.find((group) => group.key === profile.dominantType);
     const composition = WORD_TYPE_GROUPS.filter((group) => profile.counts[group.key]).map((group) => `
-      <span title="${escapeHtml(group.label)} · ${profile.counts[group.key]}" style="width:${(profile.counts[group.key] / state.family.entries.length) * 100}%;--type-color:${TYPE_COLORS[group.key]}"></span>
+      <span title="${escapeHtml(wordTypeLabel(group, uiLanguage()))} · ${profile.counts[group.key]}" style="width:${(profile.counts[group.key] / state.family.entries.length) * 100}%;--type-color:${TYPE_COLORS[group.key]}"></span>
     `).join("");
     els.inspector.innerHTML = `
-      <p class="eyebrow">Atlas selection</p>
+      <p class="eyebrow">${ui("Atlasauswahl", "Atlas selection")}</p>
       <h3 class="inspector-lemma">${escapeHtml(displayBase())}</h3>
-      <p class="atlas-family-size">${state.family.entries.length.toLocaleString()} recorded entr${state.family.entries.length === 1 ? "y" : "ies"}</p>
-      <div class="atlas-composition" aria-label="Family composition by word type">${composition}</div>
+      <p class="atlas-family-size">${formatNumber(state.family.entries.length)} ${ui("dokumentierte Einträge", "recorded entries")}</p>
+      <div class="atlas-composition" aria-label="${ui("Zusammensetzung nach Wortart", "Family composition by word type")}">${composition}</div>
       <dl class="inspector-meta">
-        <div><dt>Mostly</dt><dd>${escapeHtml(dominant?.label || "Other")}</dd></div>
-        <div><dt>Word types</dt><dd>${Object.values(profile.counts).filter(Boolean).length}</dd></div>
-        <div><dt>Atlas rule</dt><dd>Size = family entries</dd></div>
+        <div><dt>${ui("Mehrheitlich", "Mostly")}</dt><dd>${escapeHtml(dominant ? wordTypeLabel(dominant, uiLanguage()) : ui("Weitere", "Other"))}</dd></div>
+        <div><dt>${ui("Wortarten", "Word types")}</dt><dd>${Object.values(profile.counts).filter(Boolean).length}</dd></div>
+        <div><dt>${ui("Darstellung", "Atlas rule")}</dt><dd>${ui("Größe = Einträge", "Size = family entries")}</dd></div>
       </dl>
-      <button class="atlas-open-family" type="button" data-open-family-web>Open this family web <span aria-hidden="true">→</span></button>
-      <div class="atlas-reading-note"><strong>How to read the atlas</strong><span>Every bubble is a recorded base. Colour shows the most common word type in that family; larger bubbles contain more entries.</span></div>
+      <button class="atlas-open-family" type="button" data-open-family-web>${ui("Familiennetz öffnen", "Open this family web")} <span aria-hidden="true">→</span></button>
+      <div class="atlas-reading-note"><strong>${ui("Kodierung", "How to read the atlas")}</strong><span>${ui("Jeder Kreis ist eine dokumentierte Basis. Farbe zeigt die häufigste Wortart, Größe die Zahl der Einträge.", "Every bubble is a recorded base. Colour shows the most common word type; size shows entry count.")}</span></div>
     `;
   }
 
@@ -642,13 +646,13 @@ function initExplorer() {
     els.svg.setAttribute("hidden", "");
     els.networkTools.hidden = true;
     els.membersSection.hidden = true;
-    els.visualizationEyebrow.textContent = "Corpus overview";
+    els.visualizationEyebrow.textContent = ui("Korpusübersicht", "Corpus overview");
     const visibleCount = state.atlasFamilies.filter((item) => state.activeType === "all" || item.dominantType === state.activeType).length;
-    els.title.textContent = "Family atlas";
-    els.summary.textContent = `${visibleCount.toLocaleString()} large multi-word families · grouped by dominant word type`;
-    els.atlas.setAttribute("aria-label", `${visibleCount} large recorded word families. Bubble size represents entry count and colour represents dominant word type.`);
-    els.networkHelp.textContent = "Hover to read a base. Select a bubble to open its family web.";
-    els.networkLegend.innerHTML = `<span><i class="legend-atlas-size"></i> Size = family entries</span><span><i class="legend-type"></i> Colour = dominant word type</span><span><i class="legend-selected"></i> Current family</span>`;
+    els.title.textContent = ui("Familienatlas", "Family atlas");
+    els.summary.textContent = `${formatNumber(visibleCount)} ${ui("große mehrgliedrige Familien · nach häufigster Wortart gruppiert", "large multi-word families · grouped by dominant word type")}`;
+    els.atlas.setAttribute("aria-label", `${formatNumber(visibleCount)} ${ui("große dokumentierte Wortfamilien", "large recorded word families")}.`);
+    els.networkHelp.textContent = ui("Basis durch Zeigen lesen; Kreis auswählen, um das Familiennetz zu öffnen.", "Hover to read a base. Select a bubble to open its family web.");
+    els.networkLegend.innerHTML = `<span><i class="legend-atlas-size"></i> ${ui("Größe = Einträge", "Size = family entries")}</span><span><i class="legend-type"></i> ${ui("Farbe = häufigste Wortart", "Colour = dominant word type")}</span><span><i class="legend-selected"></i> ${ui("Aktuelle Familie", "Current family")}</span>`;
     renderAtlasInspector();
     drawCorpusChart();
   }
@@ -658,13 +662,13 @@ function initExplorer() {
     els.svg.setAttribute("hidden", "");
     els.networkTools.hidden = true;
     els.membersSection.hidden = true;
-    els.visualizationEyebrow.textContent = "Corpus distribution";
+    els.visualizationEyebrow.textContent = ui("Korpusverteilung", "Corpus distribution");
     const visibleCount = state.landscapeFamilies.filter((item) => state.activeType === "all" || item.dominantType === state.activeType).length;
-    els.title.textContent = "Size landscape";
-    els.summary.textContent = `${visibleCount.toLocaleString()} multi-word families · horizontal position shows family size`;
-    els.atlas.setAttribute("aria-label", `${visibleCount} multi-word families arranged in word-type lanes by entry count.`);
-    els.networkHelp.textContent = "Hover any dot to read the base. Select it to open the family web.";
-    els.networkLegend.innerHTML = `<span><i class="legend-entry"></i> Dot = recorded family</span><span><i class="legend-type"></i> Lane = dominant word type</span><span><i class="legend-selected"></i> Current family</span>`;
+    els.title.textContent = ui("Größenlandschaft", "Size landscape");
+    els.summary.textContent = `${formatNumber(visibleCount)} ${ui("mehrgliedrige Familien · horizontale Position = Familiengröße", "multi-word families · horizontal position shows family size")}`;
+    els.atlas.setAttribute("aria-label", `${formatNumber(visibleCount)} ${ui("mehrgliedrige Familien nach Wortart und Eintragszahl", "multi-word families arranged by word type and entry count")}.`);
+    els.networkHelp.textContent = ui("Punkt auswählen, um das Familiennetz zu öffnen.", "Select any dot to open its family web.");
+    els.networkLegend.innerHTML = `<span><i class="legend-entry"></i> ${ui("Punkt = dokumentierte Familie", "Dot = recorded family")}</span><span><i class="legend-type"></i> ${ui("Zeile = häufigste Wortart", "Lane = dominant word type")}</span><span><i class="legend-selected"></i> ${ui("Aktuelle Familie", "Current family")}</span>`;
     renderAtlasInspector();
     drawCorpusChart();
   }
@@ -737,9 +741,9 @@ function initExplorer() {
 
   function renderNetwork() {
     prepareFamilyChart({
-      eyebrow: "Recorded base",
-      help: "Select a dot to inspect a word. Select a type hub to isolate that branch.",
-      legend: `<span><i class="legend-base"></i> Recorded base</span><span><i class="legend-type"></i> Word type hub</span><span><i class="legend-entry"></i> Dictionary entry</span>`,
+      eyebrow: ui("Dokumentierte Basis", "Recorded base"),
+      help: ui("Punkt für einen Eintrag auswählen; Wortart wählen, um den Zweig zu filtern.", "Select a dot to inspect a word. Select a type hub to isolate that branch."),
+      legend: `<span><i class="legend-base"></i> ${ui("Dokumentierte Basis", "Recorded base")}</span><span><i class="legend-type"></i> ${ui("Wortart", "Word type hub")}</span><span><i class="legend-entry"></i> ${ui("Wörterbucheintrag", "Dictionary entry")}</span>`,
       labels: true,
     });
     const layout = createNetworkLayout(state.family, state.activeType);
@@ -770,26 +774,27 @@ function initExplorer() {
     const rootMarkup = `<g class="network-node base-node" transform="translate(${layout.root.x} ${layout.root.y})"><circle r="49"></circle><text text-anchor="middle" dominant-baseline="central">${escapeXml(truncate(base, 13))}</text></g>`;
     els.viewport.innerHTML = `${haloMarkup}${edgeMarkup}${rootMarkup}${nodeMarkup}`;
     bindSvgChartInteractions();
-    const typeLabel = state.activeType === "all" ? "all word types" : WORD_TYPE_GROUPS.find((group) => group.key === state.activeType)?.label.toLowerCase();
-    els.description.textContent = `${layout.entries.length} entries sharing the recorded base ${base}, arranged through ${layout.groups.length} word-type branches. Showing ${typeLabel}.`;
+    const typeDefinition = WORD_TYPE_GROUPS.find((group) => group.key === state.activeType);
+    const typeLabel = state.activeType === "all" ? ui("alle Wortarten", "all word types") : wordTypeLabel(typeDefinition, uiLanguage()).toLowerCase();
+    els.description.textContent = `${formatNumber(layout.entries.length)} ${ui("Einträge zur dokumentierten Basis", "entries sharing the recorded base")} ${base} · ${typeLabel}.`;
     els.title.textContent = base;
-    els.summary.textContent = `${state.family.entries.length.toLocaleString()} recorded entr${state.family.entries.length === 1 ? "y" : "ies"} · ${typeCounts().size} word type${typeCounts().size === 1 ? "" : "s"}`;
+    els.summary.textContent = `${formatNumber(state.family.entries.length)} ${ui("dokumentierte Einträge", "recorded entries")} · ${typeCounts().size} ${ui("Wortarten", "word types")}`;
     applyZoom();
     if (selected && !layout.entries.some((entry) => entry.id === selected.id)) renderInspector(selected);
   }
 
   function renderRibbons() {
     prepareFamilyChart({
-      eyebrow: "Formation flow",
-      help: "Read left to right: recorded base, broad word type, then individual entries.",
-      legend: `<span><i class="legend-base"></i> Recorded base</span><span><i class="legend-type"></i> Width = entries in type</span><span><i class="legend-entry"></i> Select an entry</span>`,
+      eyebrow: ui("Wortartfluss", "Formation flow"),
+      help: ui("Von links nach rechts: Basis, Wortart, Einträge.", "Read left to right: recorded base, broad word type, then individual entries."),
+      legend: `<span><i class="legend-base"></i> ${ui("Basis", "Recorded base")}</span><span><i class="legend-type"></i> ${ui("Breite = Einträge", "Width = entries in type")}</span><span><i class="legend-entry"></i> ${ui("Eintrag auswählen", "Select an entry")}</span>`,
       labels: true,
     });
     const layout = createRibbonLayout(state.family, state.activeType, VIEWBOX.width, VIEWBOX.height);
     const base = displayBase();
     const selected = state.family.entries.find((entry) => entry.id === state.selectedId);
     const selectedGroup = selected ? wordTypeGroup(selected).key : null;
-    const columns = `<g class="ribbon-columns"><text x="105" y="28" text-anchor="middle">BASE</text><text x="420" y="28" text-anchor="middle">WORD TYPE</text><text x="810" y="28" text-anchor="middle">DICTIONARY ENTRIES</text></g>`;
+    const columns = `<g class="ribbon-columns"><text x="105" y="28" text-anchor="middle">${ui("BASIS", "BASE")}</text><text x="420" y="28" text-anchor="middle">${ui("WORTART", "WORD TYPE")}</text><text x="810" y="28" text-anchor="middle">${ui("EINTRÄGE", "DICTIONARY ENTRIES")}</text></g>`;
     const flows = layout.edges.map((edge) => {
       const group = edge.kind === "type" ? edge.to.group : edge.from.group;
       const active = edge.kind === "entry" ? edge.to.id === state.selectedId : edge.to.group === selectedGroup;
@@ -807,16 +812,16 @@ function initExplorer() {
     els.viewport.innerHTML = `${columns}${flows}${root}${nodes}`;
     bindSvgChartInteractions();
     els.title.textContent = base;
-    els.summary.textContent = `${layout.entries.length} visible entries · ${layout.groups.length} type channel${layout.groups.length === 1 ? "" : "s"}`;
-    els.description.textContent = `A left-to-right flow from the recorded base ${base} through broad word types to ${layout.entries.length} entries.`;
+    els.summary.textContent = `${formatNumber(layout.entries.length)} ${ui("sichtbare Einträge", "visible entries")} · ${layout.groups.length} ${ui("Wortartkanäle", "type channels")}`;
+    els.description.textContent = `${ui("Fluss von der dokumentierten Basis", "Flow from the recorded base")} ${base} ${ui("über Wortarten zu Einträgen", "through word types to entries")}.`;
     applyZoom();
   }
 
   function renderRings() {
     prepareFamilyChart({
-      eyebrow: "Family fingerprint",
-      help: "The middle ring is word type; the outer ring is individual entries. Select any segment.",
-      legend: `<span><i class="legend-base"></i> Centre = recorded base</span><span><i class="legend-type"></i> Middle = word type share</span><span><i class="legend-entry"></i> Outer = entries</span>`,
+      eyebrow: ui("Familienprofil", "Family fingerprint"),
+      help: ui("Mittlerer Ring = Wortarten; äußerer Ring = Einträge.", "The middle ring is word type; the outer ring is individual entries."),
+      legend: `<span><i class="legend-base"></i> ${ui("Mitte = Basis", "Centre = recorded base")}</span><span><i class="legend-type"></i> ${ui("Mittelring = Wortarten", "Middle = word type share")}</span><span><i class="legend-entry"></i> ${ui("Außenring = Einträge", "Outer = entries")}</span>`,
       labels: false,
     });
     const layout = createRingLayout(state.family, state.activeType);
@@ -839,8 +844,8 @@ function initExplorer() {
     els.viewport.innerHTML = `${groupMarkup}${entryMarkup}${root}`;
     bindSvgChartInteractions();
     els.title.textContent = base;
-    els.summary.textContent = `${layout.total} visible entries · radial share by word type`;
-    els.description.textContent = `A radial composition chart for the recorded base ${base}, with broad word types in the middle ring and entries in the outer ring.`;
+    els.summary.textContent = `${formatNumber(layout.total)} ${ui("sichtbare Einträge · radialer Anteil nach Wortart", "visible entries · radial share by word type")}`;
+    els.description.textContent = `${ui("Radiale Zusammensetzung der dokumentierten Basis", "Radial composition of the recorded base")} ${base}.`;
     applyZoom();
   }
 
@@ -861,27 +866,27 @@ function initExplorer() {
 
   function renderComparisonInspector(model) {
     const difference = model.sizeDifference === 0
-      ? "Both families contain the same number of entries."
-      : `${displayBase(state.compareFamily)} has ${Math.abs(model.sizeDifference)} ${model.sizeDifference > 0 ? "more" : "fewer"} recorded entr${Math.abs(model.sizeDifference) === 1 ? "y" : "ies"}.`;
+      ? ui("Beide Familien enthalten gleich viele Einträge.", "Both families contain the same number of entries.")
+      : ui(`${displayBase(state.compareFamily)} hat ${Math.abs(model.sizeDifference)} ${model.sizeDifference > 0 ? "mehr" : "weniger"} dokumentierte Einträge.`, `${displayBase(state.compareFamily)} has ${Math.abs(model.sizeDifference)} ${model.sizeDifference > 0 ? "more" : "fewer"} recorded entries.`);
     const sample = state.compareFamily.entries.slice(0, 5).map((entry) => `<li><strong>${escapeHtml(displayLemma(entry))}</strong><span>${escapeHtml(displayMeaning(entry))}</span></li>`).join("");
     els.inspector.innerHTML = `
-      <p class="eyebrow">Compare with</p>
+      <p class="eyebrow">${ui("Vergleichen mit", "Compare with")}</p>
       <h3 class="inspector-lemma">${escapeHtml(displayBase(state.compareFamily))}</h3>
-      <label class="compare-search" for="compare-family-search"><span>Choose another recorded base</span><input id="compare-family-search" type="search" autocomplete="off" spellcheck="false" placeholder="Type a base…"></label>
+      <label class="compare-search" for="compare-family-search"><span>${ui("Andere dokumentierte Basis", "Choose another recorded base")}</span><input id="compare-family-search" type="search" autocomplete="off" spellcheck="false" placeholder="${ui("Basis eingeben …", "Type a base …")}"></label>
       <div class="compare-suggestions" id="compare-suggestions" hidden></div>
       <p class="comparison-finding">${escapeHtml(difference)}</p>
       <dl class="inspector-meta">
-        <div><dt>Entries</dt><dd>${model.primaryTotal} / ${model.secondaryTotal}</dd></div>
-        <div><dt>Type spread</dt><dd>${model.primaryDiversity} / ${model.secondaryDiversity}</dd></div>
+        <div><dt>${ui("Einträge", "Entries")}</dt><dd>${model.primaryTotal} / ${model.secondaryTotal}</dd></div>
+        <div><dt>${ui("Wortarten", "Type spread")}</dt><dd>${model.primaryDiversity} / ${model.secondaryDiversity}</dd></div>
       </dl>
-      <div class="compare-actions"><button type="button" data-compare-swap>Swap sides</button><button type="button" data-open-compare-web>Open ${escapeHtml(displayBase(state.compareFamily))} web</button></div>
-      <div class="compare-sample"><strong>Example entries</strong><ul>${sample}</ul></div>
+      <div class="compare-actions"><button type="button" data-compare-swap>${ui("Seiten tauschen", "Swap sides")}</button><button type="button" data-open-compare-web>${escapeHtml(displayBase(state.compareFamily))} ${ui("als Netz öffnen", "open web")}</button></div>
+      <div class="compare-sample"><strong>${ui("Beispieleinträge", "Example entries")}</strong><ul>${sample}</ul></div>
     `;
     const input = els.inspector.querySelector("#compare-family-search");
     const suggestions = els.inspector.querySelector("#compare-suggestions");
     const updateSuggestions = () => {
       const matches = comparisonFamilyMatches(input.value);
-      suggestions.innerHTML = matches.map((family) => `<button type="button" data-compare-family="${escapeHtml(family.key)}"><strong>${escapeHtml(displayBase(family))}</strong><span>${family.entries.length} entries</span></button>`).join("");
+      suggestions.innerHTML = matches.map((family) => `<button type="button" data-compare-family="${escapeHtml(family.key)}"><strong>${escapeHtml(displayBase(family))}</strong><span>${formatNumber(family.entries.length)} ${ui("Einträge", "entries")}</span></button>`).join("");
       suggestions.hidden = matches.length === 0;
     };
     input.addEventListener("input", updateSuggestions);
@@ -894,9 +899,9 @@ function initExplorer() {
 
   function renderCompare() {
     prepareFamilyChart({
-      eyebrow: "Practical comparison",
-      help: "Left and right bars show recorded entry counts by broad word type. Use the search panel to change the second base.",
-      legend: `<span><i class="legend-base"></i> Left = ${escapeHtml(displayBase())}</span><span><i class="legend-type"></i> Bar length = entry count</span><span><i class="legend-selected"></i> Right = ${escapeHtml(displayBase(state.compareFamily))}</span>`,
+      eyebrow: ui("Direkter Vergleich", "Practical comparison"),
+      help: ui("Die Balken vergleichen dokumentierte Einträge nach Wortart.", "Bars compare recorded entry counts by word type."),
+      legend: `<span><i class="legend-base"></i> ${ui("Links", "Left")} = ${escapeHtml(displayBase())}</span><span><i class="legend-type"></i> ${ui("Balkenlänge = Einträge", "Bar length = entry count")}</span><span><i class="legend-selected"></i> ${ui("Rechts", "Right")} = ${escapeHtml(displayBase(state.compareFamily))}</span>`,
       labels: false,
     });
     els.membersSection.hidden = true;
@@ -913,35 +918,35 @@ function initExplorer() {
       const color = TYPE_COLORS[row.key] || TYPE_COLORS.other;
       return `<g class="compare-row" style="--type-color:${color}"><text class="compare-row-label" x="${center}" y="${(y + 17).toFixed(1)}" text-anchor="middle">${escapeXml(row.label)}</text><rect class="compare-bar compare-bar-left" x="${(center - 34 - leftWidth).toFixed(1)}" y="${y.toFixed(1)}" width="${leftWidth.toFixed(1)}" height="28"></rect><rect class="compare-bar compare-bar-right" x="${center + 34}" y="${y.toFixed(1)}" width="${rightWidth.toFixed(1)}" height="28"></rect><text class="compare-count" x="${(center - 42 - leftWidth).toFixed(1)}" y="${(y + 18).toFixed(1)}" text-anchor="end">${row.primary}</text><text class="compare-count" x="${(center + 42 + rightWidth).toFixed(1)}" y="${(y + 18).toFixed(1)}">${row.secondary}</text></g>`;
     }).join("");
-    const headings = `<g class="compare-headings"><text x="${center - 190}" y="62" text-anchor="middle">${escapeXml(displayBase())}</text><text x="${center + 190}" y="62" text-anchor="middle">${escapeXml(displayBase(state.compareFamily))}</text><text class="compare-total" x="${center - 190}" y="88" text-anchor="middle">${model.primaryTotal} entries · ${model.primaryDiversity} types</text><text class="compare-total" x="${center + 190}" y="88" text-anchor="middle">${model.secondaryTotal} entries · ${model.secondaryDiversity} types</text></g>`;
+    const headings = `<g class="compare-headings"><text x="${center - 190}" y="62" text-anchor="middle">${escapeXml(displayBase())}</text><text x="${center + 190}" y="62" text-anchor="middle">${escapeXml(displayBase(state.compareFamily))}</text><text class="compare-total" x="${center - 190}" y="88" text-anchor="middle">${model.primaryTotal} ${ui("Einträge", "entries")} · ${model.primaryDiversity} ${ui("Wortarten", "types")}</text><text class="compare-total" x="${center + 190}" y="88" text-anchor="middle">${model.secondaryTotal} ${ui("Einträge", "entries")} · ${model.secondaryDiversity} ${ui("Wortarten", "types")}</text></g>`;
     els.viewport.innerHTML = `${headings}${rows}`;
     els.title.textContent = `${displayBase()} / ${displayBase(state.compareFamily)}`;
-    els.summary.textContent = `${model.primaryTotal} versus ${model.secondaryTotal} recorded entries · ${model.rows.length} visible type${model.rows.length === 1 ? "" : "s"}`;
-    els.description.textContent = `A mirrored comparison of ${displayBase()} and ${displayBase(state.compareFamily)} by broad word-type counts.`;
+    els.summary.textContent = `${model.primaryTotal} ${ui("zu", "versus")} ${model.secondaryTotal} ${ui("dokumentierte Einträge", "recorded entries")} · ${model.rows.length} ${ui("Wortarten", "visible types")}`;
+    els.description.textContent = `${ui("Gespiegelter Vergleich von", "Mirrored comparison of")} ${displayBase()} ${ui("und", "and")} ${displayBase(state.compareFamily)}.`;
     renderComparisonInspector(model);
     applyZoom();
   }
 
   function renderInspector(entry) {
     if (!entry) {
-      els.inspector.innerHTML = `<p class="eyebrow">Selected word</p><div class="inspector-empty">Select any entry in the network or list.</div>`;
+      els.inspector.innerHTML = `<p class="eyebrow">${ui("Ausgewähltes Wort", "Selected word")}</p><div class="inspector-empty">${ui("Eintrag im Netz oder in der Liste auswählen.", "Select any entry in the network or list.")}</div>`;
       return;
     }
     const group = wordTypeGroup(entry);
     const alternate = alternateLemma(entry);
-    const href = `dictionary.html?entry=${encodeURIComponent(entry.id)}&spelling=${state.spelling}&meaning=${state.language}&edition=compact`;
+    const href = `dictionary.html?entry=${encodeURIComponent(entry.id)}&spelling=${state.spelling}&meaning=${state.language}&edition=compact&ui=${uiLanguage()}`;
     els.inspector.innerHTML = `
-      <p class="eyebrow">Selected word</p>
+      <p class="eyebrow">${ui("Ausgewähltes Wort", "Selected word")}</p>
       <h3 class="inspector-lemma">${escapeHtml(displayLemma(entry))}</h3>
       ${alternate && alternate !== displayLemma(entry) ? `<p class="inspector-alt">${state.spelling === "int" ? "DEU" : "INT"} · ${escapeHtml(alternate)}</p>` : ""}
-      <p class="inspector-badge" style="--type-color:${TYPE_COLORS[group.key]}">${escapeHtml(wordClassLabel(entry))}</p>
-      <p class="inspector-meaning">${escapeHtml(displayMeaning(entry) || "No meaning supplied.")}</p>
+      <p class="inspector-badge" style="--type-color:${TYPE_COLORS[group.key]}">${escapeHtml(wordClassLabel(entry, uiLanguage()))}</p>
+      <p class="inspector-meaning">${escapeHtml(displayMeaning(entry) || ui("Keine Bedeutung angegeben.", "No meaning supplied."))}</p>
       <dl class="inspector-meta">
-        <div><dt>Base</dt><dd>${escapeHtml(displayBase())}</dd></div>
-        <div><dt>Family</dt><dd>${state.family.entries.length.toLocaleString()} entries</dd></div>
-        <div><dt>Source row</dt><dd>${entry.source_row?.toLocaleString() || "—"}</dd></div>
+        <div><dt>${ui("Basis", "Base")}</dt><dd>${escapeHtml(displayBase())}</dd></div>
+        <div><dt>${ui("Familie", "Family")}</dt><dd>${formatNumber(state.family.entries.length)} ${ui("Einträge", "entries")}</dd></div>
+        <div><dt>${ui("Quellenzeile", "Source row")}</dt><dd>${entry.source_row ? formatNumber(entry.source_row) : "—"}</dd></div>
       </dl>
-      <a class="inspector-link" href="${href}">Open full dictionary entry <span aria-hidden="true">→</span></a>
+      <a class="inspector-link" href="${href}">${ui("Vollständigen Wörterbucheintrag öffnen", "Open full dictionary entry")} <span aria-hidden="true">→</span></a>
     `;
   }
 
@@ -949,11 +954,11 @@ function initExplorer() {
     const entries = state.family.entries
       .filter((entry) => state.activeType === "all" || wordTypeGroup(entry).key === state.activeType)
       .sort((a, b) => collator.compare(displayLemma(a), displayLemma(b)));
-    els.memberStatus.textContent = `Showing ${entries.length.toLocaleString()} of ${state.family.entries.length.toLocaleString()} family entries`;
+    els.memberStatus.textContent = ui(`${formatNumber(entries.length)} von ${formatNumber(state.family.entries.length)} Familieneinträgen`, `${formatNumber(entries.length)} of ${formatNumber(state.family.entries.length)} family entries`);
     els.members.innerHTML = entries.map((entry) => {
       const group = wordTypeGroup(entry);
       return `<button class="member-card${entry.id === state.selectedId ? " selected" : ""}" type="button" data-member-entry="${entry.id}" style="--type-color:${TYPE_COLORS[group.key]}">
-        <strong>${escapeHtml(displayLemma(entry))}</strong><small>${escapeHtml(wordClassLabel(entry))}</small><span>${escapeHtml(displayMeaning(entry))}</span>
+        <strong>${escapeHtml(displayLemma(entry))}</strong><small>${escapeHtml(wordClassLabel(entry, uiLanguage()))}</small><span>${escapeHtml(displayMeaning(entry))}</span>
       </button>`;
     }).join("");
   }
@@ -1098,7 +1103,7 @@ function initExplorer() {
     els.suggestions.innerHTML = matches.map(({ entry }) => {
       const family = state.families.get(normalizeFamilyKey(entry.base_int || entry.roman_int));
       return `<button class="family-suggestion" type="button" role="option" data-suggestion-entry="${entry.id}" data-suggestion-family="${escapeHtml(family?.key || "")}">
-        <strong>${escapeHtml(displayLemma(entry))}</strong><small>${family?.entries.length || 1} in family</small><span>${escapeHtml(displayMeaning(entry))}</span>
+        <strong>${escapeHtml(displayLemma(entry))}</strong><small>${formatNumber(family?.entries.length || 1)} ${ui("in der Familie", "in family")}</small><span>${escapeHtml(displayMeaning(entry))}</span>
       </button>`;
     }).join("");
     els.suggestions.hidden = false;
@@ -1117,7 +1122,7 @@ function initExplorer() {
   }
 
   function showTooltip(entry, event) {
-    els.tooltip.innerHTML = `<strong>${escapeHtml(displayLemma(entry))}</strong><span>${escapeHtml(wordClassLabel(entry))} · ${escapeHtml(displayMeaning(entry))}</span>`;
+    els.tooltip.innerHTML = `<strong>${escapeHtml(displayLemma(entry))}</strong><span>${escapeHtml(wordClassLabel(entry, uiLanguage()))} · ${escapeHtml(displayMeaning(entry))}</span>`;
     const frame = els.frame.getBoundingClientRect();
     els.tooltip.style.left = `${Math.max(8, Math.min(frame.width - 270, event.clientX - frame.left + 12))}px`;
     els.tooltip.style.top = `${Math.max(8, Math.min(frame.height - 90, event.clientY - frame.top + 12))}px`;
@@ -1134,7 +1139,7 @@ function initExplorer() {
 
   function showAtlasTooltip(node, event) {
     const group = WORD_TYPE_GROUPS.find((definition) => definition.key === node.dominantType);
-    els.tooltip.innerHTML = `<strong>${escapeHtml(displayBase(node.family))}</strong><span>${node.family.entries.length.toLocaleString()} entries · mostly ${escapeHtml(group?.label || "Other")}</span>`;
+    els.tooltip.innerHTML = `<strong>${escapeHtml(displayBase(node.family))}</strong><span>${formatNumber(node.family.entries.length)} ${ui("Einträge · mehrheitlich", "entries · mostly")} ${escapeHtml(group ? wordTypeLabel(group, uiLanguage()) : ui("Weitere", "Other"))}</span>`;
     const frame = els.frame.getBoundingClientRect();
     els.tooltip.style.left = `${Math.max(8, Math.min(frame.width - 270, event.clientX - frame.left + 12))}px`;
     els.tooltip.style.top = `${Math.max(8, Math.min(frame.height - 90, event.clientY - frame.top + 12))}px`;
@@ -1228,9 +1233,11 @@ function initExplorer() {
     }).observe(els.frame);
   }
 
+  initI18n({ onChange: () => { renderStats(); renderAll(); } });
+
   fetch(DATA_URL)
     .then((response) => {
-      if (!response.ok) throw new Error("Could not load dictionary relationships.");
+      if (!response.ok) throw new Error(ui("Wörterbuchbeziehungen konnten nicht geladen werden.", "Could not load dictionary relationships."));
       return response.json();
     })
     .then((entries) => {
@@ -1242,11 +1249,11 @@ function initExplorer() {
       applyUrlState();
       renderStats();
       renderAll();
-      els.status.textContent = "Connections use the source workbook’s recorded base fields. Generated morphology and inferred semantic similarity are not used here.";
+      els.status.textContent = ui("Die Verbindungen verwenden nur die dokumentierten Basisfelder des Quellenarbeitsblatts.", "Connections use only the recorded base fields in the source workbook.");
     })
     .catch((error) => {
       els.status.textContent = error.message;
-      els.title.textContent = "The family map could not be loaded";
+      els.title.textContent = ui("Familienkarte konnte nicht geladen werden", "The family map could not be loaded");
     });
 }
 

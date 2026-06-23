@@ -75,6 +75,10 @@ a { color: inherit; }
 
 .story-nav > div a:hover { color: #fff; }
 
+.story-nav .ui-language-switch { display: inline-flex; gap: 2px; padding: 2px; border: 1px solid rgba(255,255,255,.24); border-radius: 7px; }
+.story-nav .ui-language-switch button { width: 30px; height: 25px; border: 0; border-radius: 5px; background: transparent; color: rgba(255,255,255,.68); cursor: pointer; font-size: 9px; font-weight: 850; }
+.story-nav .ui-language-switch button.active { background: #f5f0e4; color: var(--forest); }
+
 .nav-dictionary {
   display: inline-flex;
   gap: 6px;
@@ -327,7 +331,8 @@ a { color: inherit; }
 
 @media (max-width: 820px) {
   .story-hero { min-height: auto; }
-  .story-nav > div { gap: 14px; }
+  .story-nav { align-items: flex-start; }
+  .story-nav > div { max-width: 78%; flex-wrap: wrap; justify-content: flex-end; gap: 10px 14px; }
   .hero-grid { grid-template-columns: 1fr; padding: 72px 0 52px; }
   .hero-mark { width: min(76vw, 390px); margin-top: 16px; }
   .hero-facts { gap: 10px; }

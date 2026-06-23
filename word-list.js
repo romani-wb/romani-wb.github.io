@@ -1,4 +1,5 @@
-import { WORD_TYPE_GROUPS, wordClassLabel, wordTypeGroup } from "./word-types.js";
+import { WORD_TYPE_GROUPS, wordClassLabel, wordTypeGroup, wordTypeLabel } from "./word-types.js";
+import { formatNumber, initI18n, uiLanguage } from "./site-i18n.js";
 
 const DATA_URL = "data/processed/entries_search.json";
 const PAGE_SIZE = 240;
@@ -11,7 +12,7 @@ const state = {
   type: "all",
   letter: "all",
   spelling: "int",
-  language: "en",
+  language: "de",
   rendered: 0,
 };
 
@@ -36,7 +37,7 @@ function escapeHtml(value) {
 }
 
 function displayLemma(entry) {
-  return entry[`roman_${state.spelling}`] || entry.roman_int || entry.roman_deu || "Untitled entry";
+  return entry[`roman_${state.spelling}`] || entry.roman_int || entry.roman_deu || (uiLanguage() === "de" ? "Eintrag ohne Titel" : "Untitled entry");
 }
 
 function alternateLemma(entry) {
@@ -61,7 +62,8 @@ function entrySearch(entry) {
     entry.roman_deu,
     ...(entry.de || []),
     ...(entry.en || []),
-    wordClassLabel(entry),
+    wordClassLabel(entry, "de"),
+    wordClassLabel(entry, "en"),
   ].join(" "));
 }
 
@@ -71,7 +73,7 @@ function applyUrlState() {
   state.type = ["all", ...WORD_TYPE_GROUPS.map((group) => group.key)].includes(params.get("type")) ? params.get("type") : "all";
   state.letter = /^[A-Z]$/.test(params.get("letter") || "") ? params.get("letter") : "all";
   state.spelling = ["int", "deu"].includes(params.get("spelling")) ? params.get("spelling") : "int";
-  state.language = ["de", "en"].includes(params.get("meaning")) ? params.get("meaning") : "en";
+  state.language = ["de", "en"].includes(params.get("meaning")) ? params.get("meaning") : "de";
   els.search.value = state.query;
 }
 
@@ -92,9 +94,12 @@ function renderControls() {
     const key = wordTypeGroup(entry).key;
     counts.set(key, (counts.get(key) || 0) + 1);
   });
-  const types = [{ key: "all", label: "All", count: state.entries.length }, ...WORD_TYPE_GROUPS.map((group) => ({ ...group, count: counts.get(group.key) || 0 }))];
-  els.typeFilters.innerHTML = types.map((type) => `<button type="button" data-index-type="${escapeHtml(type.key)}" class="index-filter${type.key === state.type ? " active" : ""}" aria-pressed="${type.key === state.type}">${escapeHtml(type.label)} <small>${type.count.toLocaleString()}</small></button>`).join("");
-  els.alphabet.innerHTML = ["all", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].map((letter) => `<button type="button" data-index-letter="${letter}" class="letter-filter${letter === state.letter ? " active" : ""}" aria-pressed="${letter === state.letter}">${letter === "all" ? "All letters" : letter}</button>`).join("");
+  const types = [{ key: "all", count: state.entries.length }, ...WORD_TYPE_GROUPS.map((group) => ({ ...group, count: counts.get(group.key) || 0 }))];
+  els.typeFilters.innerHTML = types.map((type) => {
+    const label = type.key === "all" ? (uiLanguage() === "de" ? "Alle" : "All") : wordTypeLabel(type, uiLanguage());
+    return `<button type="button" data-index-type="${escapeHtml(type.key)}" class="index-filter${type.key === state.type ? " active" : ""}" aria-pressed="${type.key === state.type}">${escapeHtml(label)} <small>${formatNumber(type.count)}</small></button>`;
+  }).join("");
+  els.alphabet.innerHTML = ["all", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].map((letter) => `<button type="button" data-index-letter="${letter}" class="letter-filter${letter === state.letter ? " active" : ""}" aria-pressed="${letter === state.letter}">${letter === "all" ? (uiLanguage() === "de" ? "Alle Buchstaben" : "All letters") : letter}</button>`).join("");
   els.spellingButtons.forEach((button) => {
     const active = button.dataset.indexSpelling === state.spelling;
     button.classList.toggle("active", active);
@@ -121,8 +126,8 @@ function applyFilters() {
 
 function entryMarkup(entry) {
   const alternate = alternateLemma(entry);
-  const href = `dictionary.html?entry=${encodeURIComponent(entry.id)}&spelling=${encodeURIComponent(state.spelling)}&meaning=${encodeURIComponent(state.language)}&edition=compact`;
-  return `<a class="word-index-row" href="${href}"><span class="word-index-lemma"><strong>${escapeHtml(displayLemma(entry))}</strong>${alternate ? `<small>${state.spelling === "int" ? "DEU" : "INT"} · ${escapeHtml(alternate)}</small>` : ""}</span><span class="word-index-type">${escapeHtml(wordClassLabel(entry))}</span><span class="word-index-meaning">${escapeHtml(displayMeaning(entry))}</span><span class="word-index-arrow" aria-hidden="true">→</span></a>`;
+  const href = `dictionary.html?entry=${encodeURIComponent(entry.id)}&spelling=${encodeURIComponent(state.spelling)}&meaning=${encodeURIComponent(state.language)}&edition=compact&ui=${uiLanguage()}`;
+  return `<a class="word-index-row" href="${href}"><span class="word-index-lemma"><strong>${escapeHtml(displayLemma(entry))}</strong>${alternate ? `<small>${state.spelling === "int" ? "DEU" : "INT"} · ${escapeHtml(alternate)}</small>` : ""}</span><span class="word-index-type">${escapeHtml(wordClassLabel(entry, uiLanguage()))}</span><span class="word-index-meaning">${escapeHtml(displayMeaning(entry))}</span><span class="word-index-arrow" aria-hidden="true">→</span></a>`;
 }
 
 function renderList(reset = false) {
@@ -143,12 +148,14 @@ function renderList(reset = false) {
   state.rendered += batch.length;
   const remaining = state.filtered.length - state.rendered;
   els.status.textContent = state.filtered.length
-    ? `Showing ${state.rendered.toLocaleString()} of ${state.filtered.length.toLocaleString()} matching entries`
-    : "No entries match these filters";
+    ? (uiLanguage() === "de" ? `${formatNumber(state.rendered)} von ${formatNumber(state.filtered.length)} Einträgen` : `${formatNumber(state.rendered)} of ${formatNumber(state.filtered.length)} entries`)
+    : (uiLanguage() === "de" ? "Keine passenden Einträge" : "No matching entries");
   els.more.hidden = remaining <= 0;
-  els.more.textContent = remaining > 0 ? `Load ${Math.min(PAGE_SIZE, remaining).toLocaleString()} more words` : "All matching words loaded";
+  els.more.textContent = remaining > 0
+    ? (uiLanguage() === "de" ? `${formatNumber(Math.min(PAGE_SIZE, remaining))} weitere laden` : `Load ${formatNumber(Math.min(PAGE_SIZE, remaining))} more`)
+    : (uiLanguage() === "de" ? "Alle passenden Wörter geladen" : "All matching words loaded");
   els.sentinel.hidden = state.filtered.length === 0;
-  if (!state.filtered.length) els.list.innerHTML = `<div class="index-empty"><strong>No matching words.</strong><span>Try another spelling, meaning, letter, or word type.</span></div>`;
+  if (!state.filtered.length) els.list.innerHTML = `<div class="index-empty"><strong>${uiLanguage() === "de" ? "Keine passenden Wörter." : "No matching words."}</strong><span>${uiLanguage() === "de" ? "Andere Schreibweise, Bedeutung, Wortart oder Buchstaben wählen." : "Choose another spelling, meaning, word type, or letter."}</span></div>`;
 }
 
 els.search.addEventListener("input", (event) => { state.query = event.target.value; applyFilters(); });
@@ -178,7 +185,7 @@ if ("IntersectionObserver" in window) {
 
 fetch(DATA_URL)
   .then((response) => {
-    if (!response.ok) throw new Error("Could not load the word list.");
+    if (!response.ok) throw new Error(uiLanguage() === "de" ? "Die Wortliste konnte nicht geladen werden." : "Could not load the word list.");
     return response.json();
   })
   .then((entries) => {
@@ -188,5 +195,7 @@ fetch(DATA_URL)
   })
   .catch((error) => {
     els.status.textContent = error.message;
-    els.list.innerHTML = `<div class="index-empty"><strong>The word list could not be loaded.</strong></div>`;
+    els.list.innerHTML = `<div class="index-empty"><strong>${uiLanguage() === "de" ? "Die Wortliste konnte nicht geladen werden." : "The word list could not be loaded."}</strong></div>`;
   });
+
+initI18n({ onChange: () => applyFilters() });

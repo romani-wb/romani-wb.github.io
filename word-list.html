@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Roman Word List</title>
+    <title data-i18n="wordList.title">Roman Wortliste</title>
     <meta name="description" content="Browse all 12,525 Roman dictionary entries alphabetically or by word type.">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="dictionary.css">
@@ -11,43 +11,56 @@
   </head>
   <body class="reference-body">
     <header class="reference-header">
-      <a class="dictionary-brand" href="index.html" aria-label="Roman story home"><span>Roman</span><small>Word list</small></a>
+      <a class="dictionary-brand" href="index.html" aria-label="Roman"><span>Roman</span><small data-i18n="wordList.brand">Wortliste</small></a>
       <nav class="reference-nav" aria-label="Primary navigation">
-        <a href="index.html">Story</a>
-        <a href="dictionary.html">Dictionary</a>
-        <a class="active" href="word-list.html" aria-current="page">Word list</a>
-        <a href="grammar.html">Grammar</a>
-        <a href="explore.html">Explore</a>
+        <a href="index.html" data-i18n="nav.story">Geschichte</a>
+        <a href="dictionary.html" data-i18n="nav.dictionary">Wörterbuch</a>
+        <a class="active" href="word-list.html" aria-current="page" data-i18n="nav.wordList">Wortliste</a>
+        <a href="grammar.html" data-i18n="nav.grammar">Grammatik</a>
+        <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
       </nav>
-      <div class="reference-toggles">
-        <fieldset class="compact-toggle">
-          <legend>Spelling</legend>
-          <button type="button" class="active" data-index-spelling="int" aria-pressed="true">INT</button>
-          <button type="button" data-index-spelling="deu" aria-pressed="false">DEU</button>
-        </fieldset>
-        <fieldset class="compact-toggle">
-          <legend>Meaning</legend>
-          <button type="button" data-index-language="de" aria-pressed="false">DE</button>
-          <button type="button" class="active" data-index-language="en" aria-pressed="true">EN</button>
-        </fieldset>
+      <div class="ui-language-switch" data-i18n-aria-label="site.language" aria-label="Sprache">
+        <span data-i18n="site.language">Sprache</span>
+        <button type="button" class="active" data-ui-language="de" aria-pressed="true">DE</button>
+        <button type="button" data-ui-language="en" aria-pressed="false">EN</button>
       </div>
     </header>
 
     <main class="word-list-page">
-      <header class="reference-hero">
-        <p class="eyebrow">The complete index</p>
-        <h1>Every recorded word.</h1>
-        <p>Scroll through all 12,525 entries, narrow the list by type or letter, and open any word in the full dictionary.</p>
+      <header class="reference-hero word-list-hero">
+        <h1 data-i18n="wordList.heading">Wortliste</h1>
       </header>
 
-      <section class="index-toolbar" aria-label="Word list controls">
-        <label class="index-search" for="word-list-search"><span aria-hidden="true">⌕</span><input id="word-list-search" type="search" autocomplete="off" spellcheck="false" placeholder="Filter the word list"></label>
-        <nav class="index-type-filters" id="index-type-filters" aria-label="Filter by word type"></nav>
-        <nav class="alphabet-filter" id="alphabet-filter" aria-label="Filter by first letter"></nav>
+      <section class="index-toolbar" aria-label="Wortliste filtern" data-i18n-aria-label="wordList.controls">
+        <div class="index-toolbar-main">
+          <label class="index-search" for="word-list-search"><span aria-hidden="true">⌕</span><input id="word-list-search" type="search" autocomplete="off" spellcheck="false" placeholder="Wortliste filtern" data-i18n-placeholder="wordList.searchPlaceholder"></label>
+          <div class="index-display-controls">
+            <fieldset class="index-choice">
+              <legend data-i18n="dictionary.romanSpelling">Roman-Schreibweise</legend>
+              <button type="button" class="active" data-index-spelling="int" aria-pressed="true">INT</button>
+              <button type="button" data-index-spelling="deu" aria-pressed="false">DEU</button>
+            </fieldset>
+            <fieldset class="index-choice">
+              <legend data-i18n="dictionary.translation">Übersetzung</legend>
+              <button type="button" class="active" data-index-language="de" aria-pressed="true">DE</button>
+              <button type="button" data-index-language="en" aria-pressed="false">EN</button>
+            </fieldset>
+          </div>
+        </div>
+        <nav class="index-type-filters" id="index-type-filters" aria-label="Wortart" data-i18n-aria-label="wordList.typeFilter"></nav>
+        <nav class="alphabet-filter" id="alphabet-filter" aria-label="Anfangsbuchstabe" data-i18n-aria-label="wordList.letterFilter"></nav>
         <p class="index-status" id="index-status" role="status" aria-live="polite">Loading the word list…</p>
       </section>
 
-      <div class="word-list" id="word-list"></div>
+      <div class="word-list-table">
+        <div class="word-list-table-head" aria-hidden="true">
+          <span data-i18n="wordList.columnWord">Roman</span>
+          <span data-i18n="wordList.columnType">Wortart</span>
+          <span data-i18n="wordList.columnMeaning">Bedeutung</span>
+          <span></span>
+        </div>
+        <div class="word-list" id="word-list"></div>
+      </div>
       <div class="word-list-more" id="word-list-sentinel">
         <button id="load-more" type="button">Load more words</button>
       </div>

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Explore Roman Word Families</title>
+    <title data-i18n="explore.title">Roman Wortfamilien erkunden</title>
     <meta name="description" content="Explore connections between Roman dictionary entries through their recorded base words and word types.">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="dictionary.css">
@@ -11,25 +11,26 @@
     <link rel="stylesheet" href="explore.css">
   </head>
   <body class="reference-body explore-body">
-    <a class="skip-link" href="#family-search">Skip to family search</a>
+    <a class="skip-link" href="#family-search" data-i18n="explore.skip">Zur Familiensuche springen</a>
 
     <header class="reference-header">
-      <a class="dictionary-brand" href="index.html" aria-label="Roman story home"><span>Roman</span><small>Explore</small></a>
+      <a class="dictionary-brand" href="index.html" aria-label="Roman"><span>Roman</span><small data-i18n="explore.brand">Erkunden</small></a>
       <nav class="reference-nav" aria-label="Primary navigation">
-        <a href="index.html">Story</a>
-        <a href="dictionary.html">Dictionary</a>
-        <a href="word-list.html">Word list</a>
-        <a href="grammar.html">Grammar</a>
-        <a class="active" href="explore.html" aria-current="page">Explore</a>
+        <a href="index.html" data-i18n="nav.story">Geschichte</a>
+        <a href="dictionary.html" data-i18n="nav.dictionary">Wörterbuch</a>
+        <a href="word-list.html" data-i18n="nav.wordList">Wortliste</a>
+        <a href="grammar.html" data-i18n="nav.grammar">Grammatik</a>
+        <a class="active" href="explore.html" aria-current="page" data-i18n="nav.explore">Erkunden</a>
       </nav>
       <div class="reference-toggles" aria-label="Display controls">
+        <div class="ui-language-switch" data-i18n-aria-label="site.language" aria-label="Sprache"><span data-i18n="site.language">Sprache</span><button type="button" class="active" data-ui-language="de" aria-pressed="true">DE</button><button type="button" data-ui-language="en" aria-pressed="false">EN</button></div>
         <fieldset class="compact-toggle">
-          <legend>Spelling</legend>
+          <legend data-i18n="dictionary.romanSpelling">Roman-Schreibweise</legend>
           <button type="button" class="active" data-explore-spelling="int" aria-pressed="true">INT</button>
           <button type="button" data-explore-spelling="deu" aria-pressed="false">DEU</button>
         </fieldset>
         <fieldset class="compact-toggle">
-          <legend>Meaning</legend>
+          <legend data-i18n="dictionary.translation">Übersetzung</legend>
           <button type="button" data-explore-language="de" aria-pressed="true">DE</button>
           <button type="button" data-explore-language="en" aria-pressed="false">EN</button>
         </fieldset>
@@ -39,15 +40,15 @@
     <main class="explore-page">
       <header class="explore-hero">
         <div>
-          <p class="eyebrow">Data experiment · recorded relationships only</p>
-          <h1>The dictionary,<br><em>connected.</em></h1>
+          <p class="eyebrow" data-i18n="explore.eyebrow">Datenexperiment · nur dokumentierte Beziehungen</p>
+          <h1 data-i18n="explore.heading">Das Wörterbuch, verbunden.</h1>
         </div>
         <div class="explore-intro">
-          <p>Begin with the atlas to compare large word families, then open one to see every entry sharing its recorded base. The views use supplied structure; they do not infer meanings or invent linguistic links.</p>
+          <p data-i18n="explore.intro">Große Familien finden, eine dokumentierte Basis verfolgen oder zwei Basen vergleichen. Es werden keine Bedeutungen oder sprachwissenschaftlichen Beziehungen erfunden.</p>
           <dl class="explore-stats" id="explore-stats" aria-label="Dictionary network summary">
-            <div><dt>—</dt><dd>entries</dd></div>
-            <div><dt>—</dt><dd>recorded bases</dd></div>
-            <div><dt>—</dt><dd>multi-word families</dd></div>
+            <div><dt>—</dt><dd data-i18n="common.entries">Einträge</dd></div>
+            <div><dt>—</dt><dd data-i18n="explore.recordedBases">dokumentierte Basen</dd></div>
+            <div><dt>—</dt><dd data-i18n="explore.multiFamilies">mehrgliedrige Familien</dd></div>
           </dl>
         </div>
       </header>
@@ -56,29 +57,29 @@
         <div class="family-search-wrap">
           <label class="family-search" for="family-search">
             <span aria-hidden="true">⌕</span>
-            <span class="family-search-copy"><small id="explore-command-title">Find a word or base</small><input id="family-search" type="search" autocomplete="off" spellcheck="false" placeholder="Try kerav, kher, wash…" aria-controls="family-suggestions" aria-expanded="false"></span>
+            <span class="family-search-copy"><small id="explore-command-title" data-i18n="explore.find">Wort oder Basis suchen</small><input id="family-search" type="search" autocomplete="off" spellcheck="false" placeholder="kerav, kher …" aria-controls="family-suggestions" aria-expanded="false"></span>
           </label>
           <div class="family-suggestions" id="family-suggestions" role="listbox" hidden></div>
         </div>
-        <button class="random-family" id="random-family" type="button"><span aria-hidden="true">✦</span> Random family</button>
+        <button class="random-family" id="random-family" type="button"><span aria-hidden="true">✦</span> <span data-i18n="explore.random">Zufällige Familie</span></button>
       </section>
 
       <nav class="featured-families" id="featured-families" aria-label="Large word families"></nav>
 
       <section class="use-case-bar" id="use-case-bar" aria-labelledby="use-case-title">
-        <h2 id="use-case-title">What do you want to find out?</h2>
-        <button type="button" data-use-view="landscape"><strong>Find broad families</strong><span>See which recorded bases contain many entries.</span></button>
-        <button type="button" data-use-view="ribbons"><strong>Trace one base</strong><span>Follow a base through word types to entries.</span></button>
-        <button type="button" data-use-view="compare"><strong>Compare two bases</strong><span>Measure family size and word-type composition.</span></button>
+        <h2 id="use-case-title" data-i18n="explore.question">Was möchten Sie herausfinden?</h2>
+        <button type="button" data-use-view="landscape"><strong data-i18n="explore.findBroad">Große Familien finden</strong><span data-i18n="explore.findBroadHelp">Basen mit vielen dokumentierten Einträgen erkennen.</span></button>
+        <button type="button" data-use-view="ribbons"><strong data-i18n="explore.trace">Eine Basis verfolgen</strong><span data-i18n="explore.traceHelp">Von der Basis über Wortarten zu Einträgen gehen.</span></button>
+        <button type="button" data-use-view="compare"><strong data-i18n="explore.compare">Zwei Basen vergleichen</strong><span data-i18n="explore.compareHelp">Umfang und Wortartverteilung gegenüberstellen.</span></button>
       </section>
 
-      <nav class="visualization-switch" id="visualization-switch" aria-label="Choose a visualization">
-        <button type="button" data-explore-view="atlas" aria-pressed="true"><small>01 · Overview</small><span>Family atlas</span><b>Compare the largest recorded families</b></button>
-        <button type="button" data-explore-view="family" aria-pressed="false"><small>02 · Drill down</small><span>Family web</span><b>Inspect one base and every connected entry</b></button>
-        <button type="button" data-explore-view="ribbons" aria-pressed="false"><small>03 · Flow</small><span>Type ribbons</span><b>Follow a base through types to entries</b></button>
-        <button type="button" data-explore-view="rings" aria-pressed="false"><small>04 · Shape</small><span>Family rings</span><b>Read composition as a radial fingerprint</b></button>
-        <button type="button" data-explore-view="landscape" aria-pressed="false"><small>05 · Distribution</small><span>Size landscape</span><b>Compare every multi-word family by size</b></button>
-        <button type="button" data-explore-view="compare" aria-pressed="false"><small>06 · Use case</small><span>Compare families</span><b>Measure two recorded bases side by side</b></button>
+      <nav class="visualization-switch" id="visualization-switch" aria-label="Visualisierung wählen" data-i18n-aria-label="explore.chooseView">
+        <button type="button" data-explore-view="atlas" aria-pressed="true"><small>01</small><span data-i18n="explore.atlas">Familienatlas</span><b data-i18n="explore.findBroadHelp">Basen mit vielen dokumentierten Einträgen erkennen.</b></button>
+        <button type="button" data-explore-view="family" aria-pressed="false"><small>02</small><span data-i18n="explore.familyWeb">Familiennetz</span><b data-i18n="explore.traceHelp">Von der Basis über Wortarten zu Einträgen gehen.</b></button>
+        <button type="button" data-explore-view="ribbons" aria-pressed="false"><small>03</small><span data-i18n="explore.ribbons">Wortartfluss</span><b data-i18n="explore.traceHelp">Von der Basis über Wortarten zu Einträgen gehen.</b></button>
+        <button type="button" data-explore-view="rings" aria-pressed="false"><small>04</small><span data-i18n="explore.rings">Familienringe</span><b data-i18n="explore.compareHelp">Umfang und Wortartverteilung gegenüberstellen.</b></button>
+        <button type="button" data-explore-view="landscape" aria-pressed="false"><small>05</small><span data-i18n="explore.landscape">Größenlandschaft</span><b data-i18n="explore.findBroadHelp">Basen mit vielen dokumentierten Einträgen erkennen.</b></button>
+        <button type="button" data-explore-view="compare" aria-pressed="false"><small>06</small><span data-i18n="explore.compareFamilies">Familien vergleichen</span><b data-i18n="explore.compareHelp">Umfang und Wortartverteilung gegenüberstellen.</b></button>
       </nav>
 
       <section class="explore-workspace" aria-label="Dictionary data explorer">
@@ -90,10 +91,10 @@
               <p id="family-summary">Preparing the family map.</p>
             </div>
             <div class="network-tools" id="network-tools" aria-label="Chart controls">
-              <button type="button" data-network-zoom="out" aria-label="Zoom out">−</button>
-              <button type="button" data-network-zoom="reset">Reset</button>
-              <button type="button" data-network-zoom="in" aria-label="Zoom in">+</button>
-              <button type="button" class="label-toggle" data-network-labels aria-pressed="false">Labels</button>
+              <button type="button" data-network-zoom="out" aria-label="Verkleinern" data-i18n-aria-label="explore.zoomOut">−</button>
+              <button type="button" data-network-zoom="reset" data-i18n="explore.reset">Zurücksetzen</button>
+              <button type="button" data-network-zoom="in" aria-label="Vergrößern" data-i18n-aria-label="explore.zoomIn">+</button>
+              <button type="button" class="label-toggle" data-network-labels aria-pressed="false" data-i18n="explore.labels">Beschriftungen</button>
             </div>
           </header>
 
@@ -134,7 +135,7 @@
         <div class="member-grid" id="member-grid"></div>
       </section>
 
-      <p class="explore-status" id="explore-status" role="status" aria-live="polite">Loading dictionary relationships…</p>
+      <p class="explore-status" id="explore-status" role="status" aria-live="polite" data-i18n="explore.status">Die Verbindungen verwenden nur die im Quellenarbeitsblatt dokumentierten Basisfelder.</p>
     </main>
 
     <script src="explore.js" type="module"></script>

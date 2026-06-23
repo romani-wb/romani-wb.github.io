@@ -1,47 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Roman Dictionary</title>
+    <title data-i18n="dictionary.title">Roman Wörterbuch</title>
     <meta name="description" content="Search 12,525 Roman dictionary entries in two Roman spellings with German and English meanings.">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="dictionary.css">
   </head>
   <body>
-    <a class="skip-link" href="#search-input">Skip to dictionary search</a>
+    <a class="skip-link" href="#search-input" data-i18n="dictionary.skip">Zur Wörterbuchsuche springen</a>
 
     <header class="dictionary-header">
       <a class="dictionary-brand" href="index.html" aria-label="Roman story home">
         <span>Roman</span>
-        <small>Dictionary</small>
+        <small data-i18n="dictionary.brand">Wörterbuch</small>
       </a>
       <nav class="dictionary-nav" aria-label="Primary navigation">
-        <a href="index.html">Story</a>
-        <a class="active" href="dictionary.html" aria-current="page">Dictionary</a>
-        <a href="word-list.html">Word list</a>
-        <a href="grammar.html">Grammar</a>
-        <a href="explore.html">Explore</a>
+        <a href="index.html" data-i18n="nav.story">Geschichte</a>
+        <a class="active" href="dictionary.html" aria-current="page" data-i18n="nav.dictionary">Wörterbuch</a>
+        <a href="word-list.html" data-i18n="nav.wordList">Wortliste</a>
+        <a href="grammar.html" data-i18n="nav.grammar">Grammatik</a>
+        <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
       </nav>
-      <div class="header-controls" aria-label="Display controls">
-        <label class="edition-select" for="edition-select">
-          <span>Layout</span>
-          <select id="edition-select">
-            <option value="learner">Focus</option>
-            <option value="compact" selected>Browse</option>
-            <option value="explorer">Split</option>
-          </select>
-        </label>
-        <fieldset class="compact-toggle">
-          <legend>Spelling</legend>
-          <button type="button" class="active" data-spelling="int" aria-pressed="true">INT</button>
-          <button type="button" data-spelling="deu" aria-pressed="false">DEU</button>
-        </fieldset>
-        <fieldset class="compact-toggle">
-          <legend>Meaning</legend>
-          <button type="button" class="active" data-language="de" aria-pressed="true">DE</button>
-          <button type="button" data-language="en" aria-pressed="false">EN</button>
-        </fieldset>
+      <div class="ui-language-switch" data-i18n-aria-label="site.language" aria-label="Sprache">
+        <span data-i18n="site.language">Sprache</span>
+        <button type="button" class="active" data-ui-language="de" aria-pressed="true">DE</button>
+        <button type="button" data-ui-language="en" aria-pressed="false">EN</button>
       </div>
     </header>
 
@@ -49,28 +34,48 @@
       <aside class="search-pane" aria-label="Dictionary search">
         <div class="search-head">
           <div>
-            <p class="section-label">Roman · Deutsch · English</p>
-            <h1>Find a word</h1>
+            <p class="section-label" data-i18n="dictionary.searchLabel">Roman · Deutsch · Englisch</p>
+            <h1 data-i18n="dictionary.findWord">Wort suchen</h1>
           </div>
         </div>
         <div class="search-command">
           <label class="search-box" for="search-input">
             <span aria-hidden="true">⌕</span>
-            <input id="search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Roman word, German or English meaning" aria-describedby="result-meta">
+            <input id="search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Roman-Wort oder deutsche/englische Bedeutung" data-i18n-placeholder="dictionary.searchPlaceholder" aria-describedby="result-meta">
           </label>
-          <button class="random-entry" id="random-entry" type="button" title="Open a random entry"><span class="surprise-icon" aria-hidden="true">✦</span><span>Surprise me</span></button>
+          <button class="random-entry" id="random-entry" type="button" title="Zufälligen Eintrag öffnen" data-i18n-title="dictionary.randomTitle"><span class="surprise-icon" aria-hidden="true">✦</span><span data-i18n="dictionary.surprise">Überrasche mich</span></button>
         </div>
-        <nav class="word-class-filters" id="word-class-filters" aria-label="Browse by word type"></nav>
+        <section class="dictionary-preferences" aria-label="Wörterbuchanzeige">
+          <fieldset class="preference-group spelling-preference">
+            <legend data-i18n="dictionary.romanSpelling">Roman-Schreibweise</legend>
+            <button type="button" class="active" data-spelling="int" aria-pressed="true"><span data-i18n="dictionary.spellingInt">International</span><small>INT</small></button>
+            <button type="button" data-spelling="deu" aria-pressed="false"><span data-i18n="dictionary.spellingDeu">Deutsch orientiert</span><small>DEU</small></button>
+          </fieldset>
+          <fieldset class="preference-group meaning-preference">
+            <legend data-i18n="dictionary.translation">Übersetzung</legend>
+            <button type="button" class="active" data-language="de" aria-pressed="true"><span data-i18n="common.german">Deutsch</span><small>DE</small></button>
+            <button type="button" data-language="en" aria-pressed="false"><span data-i18n="common.english">Englisch</span><small>EN</small></button>
+          </fieldset>
+          <label class="edition-select" for="edition-select">
+            <span data-i18n="dictionary.layout">Ansicht</span>
+            <select id="edition-select">
+              <option value="learner" data-i18n="dictionary.layoutFocus">Fokus</option>
+              <option value="compact" selected data-i18n="dictionary.layoutBrowse">Nachschlagen</option>
+              <option value="explorer" data-i18n="dictionary.layoutSplit">Geteilt</option>
+            </select>
+          </label>
+        </section>
+        <nav class="word-class-filters" id="word-class-filters" aria-label="Nach Wortart filtern" data-i18n-aria-label="dictionary.browseTypes"></nav>
         <div class="result-meta" id="result-meta" role="status" aria-live="polite"></div>
         <div class="results" id="results"></div>
-        <p class="data-status" id="data-status" role="status" aria-live="polite">Loading dictionary data…</p>
+        <p class="data-status" id="data-status" role="status" aria-live="polite" data-i18n="dictionary.loading">Wörterbuchdaten werden geladen …</p>
       </aside>
 
       <section class="entry-pane" id="entry-pane" aria-live="polite">
         <div class="empty-state">
-          <p class="section-label">Dictionary entry</p>
-          <h2>Select a word</h2>
-          <p>Search a word or meaning, browse by word type, or use Surprise me.</p>
+          <p class="section-label" data-i18n="dictionary.entry">Wörterbucheintrag</p>
+          <h2 data-i18n="dictionary.selectWord">Wort auswählen</h2>
+          <p data-i18n="dictionary.selectHelp">Nach einem Wort oder einer Bedeutung suchen oder einen zufälligen Eintrag öffnen.</p>
         </div>
       </section>
     </main>

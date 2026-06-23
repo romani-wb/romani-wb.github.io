@@ -1,4 +1,5 @@
-import { WORD_CLASS_LABELS, WORD_TYPE_GROUPS, wordClassLabel, wordTypeGroup } from "./word-types.js";
+import { WORD_CLASS_LABELS, WORD_TYPE_GROUPS, wordClassLabel, wordTypeGroup, wordTypeLabel } from "./word-types.js";
+import { formatNumber, initI18n, uiLanguage } from "./site-i18n.js";
 
 const DATA_URLS = {
   manifest: "data/processed/entries_manifest.json",
@@ -45,6 +46,7 @@ const els = {
 };
 
 const MAX_RESULTS = 60;
+const ui = (german, english) => uiLanguage() === "de" ? german : english;
 
 const PERSON_LABELS = {
   de: {
@@ -113,7 +115,7 @@ function joinMeanings(values) {
 }
 
 function currentLabelLanguage() {
-  return state.language === "de" ? "de" : "en";
+  return uiLanguage();
 }
 
 function referenceLabel(code, language = currentLabelLanguage()) {
@@ -185,7 +187,7 @@ function displayMeaning(searchEntry) {
     return joinMeanings(preferred);
   }
   const fallback = state.language === "en" ? searchEntry.de || [] : searchEntry.en || [];
-  return fallback.length ? joinMeanings(fallback) : "No meaning available";
+  return fallback.length ? joinMeanings(fallback) : ui("Keine Bedeutung verfügbar", "No meaning available");
 }
 
 function entryMeanings(entry) {
@@ -354,20 +356,18 @@ function generateForms(entry) {
 }
 
 function personGuide(code) {
-  return PERSON_LABELS[state.language]?.[code] || PERSON_LABELS.en[code] || [code, code];
+  return PERSON_LABELS[uiLanguage()]?.[code] || PERSON_LABELS.en[code] || [code, code];
 }
 
 function caseGuide(code) {
-  return CASE_GUIDES[code] || [referenceLabel(code), grammarExplanation(code)];
+  return [referenceLabel(code), grammarExplanation(code)];
 }
 
 function tenseGuide(code) {
-  return TENSE_GUIDES[code] || [referenceLabel(code), grammarExplanation(code)];
+  return [referenceLabel(code), grammarExplanation(code)];
 }
 
 function aspectGuide(code) {
-  if (code === "NPFV") return ["Non-perfective", "the action is viewed as ongoing, repeated, or open-ended"];
-  if (code === "PFV") return ["Perfective", "the action is viewed as a completed whole"];
   return [referenceLabel(code), grammarExplanation(code)];
 }
 
@@ -386,12 +386,13 @@ function renderVerbForms(generated) {
     const first = rows[0];
     const [tense, tenseHelp] = tenseGuide(first.tense);
     const [aspect, aspectHelp] = first.aspect ? aspectGuide(first.aspect) : ["", ""];
-    const title = [aspect, tense, first.polarity === "NEG" ? "Negative" : ""].filter(Boolean).join(" · ");
+    const title = [aspect, tense, first.polarity === "NEG" ? ui("Negativ", "Negative") : ""].filter(Boolean).join(" · ");
+    const note = [aspectHelp, tenseHelp].filter(Boolean).join("; ");
     return `
       <section class="form-group${index === 0 ? " featured" : ""}">
         <div class="form-group-heading">
           <h4>${escapeHtml(title)}</h4>
-          <p>${escapeHtml([aspectHelp, tenseHelp].filter(Boolean).join("; "))}</p>
+          ${note ? `<p>${escapeHtml(note)}</p>` : ""}
         </div>
         <div class="person-grid">
           ${rows.map((row) => {
@@ -408,16 +409,16 @@ function renderNounForms(generated) {
   const order = ["NOM", "ACC", "DAT", "ABL", "LOC", "INS/SOC", "GEN"];
   const hasGenderForms = generated.rows.some((row) => row.gender);
   const columns = hasGenderForms
-    ? [["SG", "M", "Singular masculine"], ["SG", "F", "Singular feminine"], ["PL", "M", "Plural masculine"], ["PL", "F", "Plural feminine"]]
-    : [["SG", "", "Singular"], ["PL", "", "Plural"]];
+    ? [["SG", "M", ui("Singular maskulin", "Singular masculine")], ["SG", "F", ui("Singular feminin", "Singular feminine")], ["PL", "M", ui("Plural maskulin", "Plural masculine")], ["PL", "F", ui("Plural feminin", "Plural feminine")]]
+    : [["SG", "", ui("Singular", "Singular")], ["PL", "", ui("Plural", "Plural")]];
   const rowsByKey = new Map(generated.rows.map((row) => [`${row.case}|${row.number}|${row.gender || ""}`, row]));
   return `
     <div class="grammar-matrix-wrap">
       <table class="grammar-matrix noun-matrix">
-        <thead><tr><th>Case and use</th>${columns.map(([, , label]) => `<th>${escapeHtml(label)}</th>`).join("")}</tr></thead>
+        <thead><tr><th>${ui("Kasus", "Case")}</th>${columns.map(([, , label]) => `<th>${escapeHtml(label)}</th>`).join("")}</tr></thead>
         <tbody>${order.map((code) => {
-          const [label, help] = caseGuide(code);
-          return `<tr><th><strong>${escapeHtml(label)}</strong><small>${escapeHtml(help)}</small></th>${columns.map(([number, gender]) => `<td>${formCell(rowsByKey.get(`${code}|${number}|${gender}`))}</td>`).join("")}</tr>`;
+          const [label] = caseGuide(code);
+          return `<tr><th><strong>${escapeHtml(label)}</strong><small>${escapeHtml(code)}</small></th>${columns.map(([number, gender]) => `<td>${formCell(rowsByKey.get(`${code}|${number}|${gender}`))}</td>`).join("")}</tr>`;
         }).join("")}</tbody>
       </table>
     </div>
@@ -426,44 +427,18 @@ function renderNounForms(generated) {
 
 function renderAdjectiveForms(generated) {
   const rowsByKey = new Map(generated.rows.map((row) => [`${row.case}|${row.number}|${row.gender}`, row]));
-  const rows = [["NOM", "Basic / nominative", "the basic form"], ["OBL", "Oblique", "used outside the basic case form"]];
-  const columns = [["SG", "M", "Singular masculine"], ["SG", "F", "Singular feminine"], ["PL", "M", "Plural masculine"], ["PL", "F", "Plural feminine"]];
+  const rows = [["NOM", ui("Grundform / Nominativ", "Basic / nominative")], ["OBL", ui("Oblique Form", "Oblique")]];
+  const columns = [["SG", "M", ui("Singular maskulin", "Singular masculine")], ["SG", "F", ui("Singular feminin", "Singular feminine")], ["PL", "M", ui("Plural maskulin", "Plural masculine")], ["PL", "F", ui("Plural feminin", "Plural feminine")]];
   return `
     <div class="grammar-matrix-wrap">
       <table class="grammar-matrix adjective-matrix">
-        <thead><tr><th>Use</th>${columns.map(([, , label]) => `<th>${escapeHtml(label)}</th>`).join("")}</tr></thead>
-        <tbody>${rows.map(([code, label, help]) => {
-          return `<tr><th><strong>${escapeHtml(label)}</strong><small>${escapeHtml(help)}</small></th>${columns.map(([number, gender]) => `<td>${formCell(rowsByKey.get(`${code}|${number}|${gender}`))}</td>`).join("")}</tr>`;
+        <thead><tr><th>${ui("Form", "Form")}</th>${columns.map(([, , label]) => `<th>${escapeHtml(label)}</th>`).join("")}</tr></thead>
+        <tbody>${rows.map(([code, label]) => {
+          return `<tr><th><strong>${escapeHtml(label)}</strong><small>${escapeHtml(code)}</small></th>${columns.map(([number, gender]) => `<td>${formCell(rowsByKey.get(`${code}|${number}|${gender}`))}</td>`).join("")}</tr>`;
         }).join("")}</tbody>
       </table>
     </div>
   `;
-}
-
-function renderGrammarPrimer(kind) {
-  const content = {
-    verb_conjugation: [
-      ["Person", "I, you, we, and they select different verb forms."],
-      ["Tense", "Present, future, and past locate the action in time."],
-      ["Aspect", "Non-perfective and perfective present different views of the action."],
-    ],
-    verb_exist: [
-      ["Person", "The verb ‘to be’ changes with the person."],
-      ["Positive / negative", "Some third-person negative forms are recorded separately."],
-      ["Tense", "The table records present and past forms."],
-    ],
-    noun_declension: [
-      ["Number", "Singular means one; plural means more than one."],
-      ["Case", "A noun’s form changes according to its role in the sentence."],
-      ["Gender / class", "The workbook’s noun class determines which endings are used."],
-    ],
-    adjective_declension: [
-      ["Agreement", "An adjective changes to match the noun it describes."],
-      ["Gender & number", "Masculine/feminine and singular/plural select the form."],
-      ["Basic / oblique", "The oblique form is used beyond the basic subject form."],
-    ],
-  }[kind] || [];
-  return `<div class="grammar-primer">${content.map(([title, text]) => `<div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(text)}</span></div>`).join("")}</div>`;
 }
 
 function renderForms(entry) {
@@ -471,17 +446,17 @@ function renderForms(entry) {
   const morphology = entry.morphology || {};
   if (!generated) {
     if (!morphology.kind) {
-      return `<section class="panel-card forms-panel"><h3>No grammar table</h3><p class="panel-note">This word class has no generated paradigm in the current dictionary model.</p></section>`;
+      return `<section class="panel-card forms-panel"><h3>${ui("Keine Grammatiktabelle", "No grammar table")}</h3><p class="panel-note">${ui("Für diese Wortart gibt es im aktuellen Modell kein generiertes Paradigma.", "This word class has no generated paradigm in the current dictionary model.")}</p></section>`;
     }
-    return `<section class="panel-card forms-panel"><h3>Grammar</h3><p class="fallback-note">No generated forms are available yet. Paradigm: ${escapeHtml(morphology.source_paradigm || morphology.paradigm || "none")}.</p></section>`;
+    return `<section class="panel-card forms-panel"><h3>${ui("Grammatik", "Grammar")}</h3><p class="fallback-note">${ui("Noch keine generierten Formen verfügbar.", "No generated forms are available yet.")} ${ui("Paradigma", "Paradigm")}: ${escapeHtml(morphology.source_paradigm || morphology.paradigm || "none")}.</p></section>`;
   }
 
   const title = {
-    adjective_declension: "How this adjective changes",
-    noun_declension: "How this noun changes",
-    verb_conjugation: "Conjugation",
-    verb_exist: "Conjugation",
-  }[generated.kind] || "Forms";
+    adjective_declension: ui("Adjektivdeklination", "Adjective declension"),
+    noun_declension: ui("Deklination", "Declension"),
+    verb_conjugation: ui("Konjugation", "Conjugation"),
+    verb_exist: ui("Konjugation", "Conjugation"),
+  }[generated.kind] || ui("Formen", "Forms");
   const table = generated.kind === "noun_declension"
     ? renderNounForms(generated)
     : generated.kind === "adjective_declension"
@@ -491,17 +466,16 @@ function renderForms(entry) {
   return `
     <section class="panel-card forms-panel learner-grammar">
       <div class="panel-heading">
-        <div><p class="eyebrow">Grammar made practical</p><h3>${escapeHtml(title)}</h3></div>
-        <p>${generated.rows.length} forms · ${state.spelling.toUpperCase()}</p>
+        <div><p class="eyebrow">${ui("Generierte Formen", "Generated forms")}</p><h3>${escapeHtml(title)}</h3></div>
+        <p>${formatNumber(generated.rows.length)} ${ui("Formen", "forms")} · ${state.spelling.toUpperCase()}</p>
       </div>
-      ${renderGrammarPrimer(generated.kind)}
       ${table}
-      <div class="provisional-banner"><strong>Generated preview</strong><span>Built from Professor Halwachs’s paradigm ${escapeHtml(generated.paradigm)}. The structure comes from the source workbook; the assembled words still need linguistic review.</span></div>
+      <div class="provisional-banner"><strong>${ui("Generierte Vorschau", "Generated preview")}</strong><span>${ui("Aus Paradigma", "Built from paradigm")} ${escapeHtml(generated.paradigm)}. ${ui("Die Struktur kommt aus der Quelltabelle; die zusammengesetzten Formen brauchen noch fachliche Prüfung.", "The structure comes from the source workbook; the assembled words still need linguistic review.")}</span></div>
       <details class="technical-details">
-        <summary>Technical derivation and raw paradigm</summary>
+        <summary>${ui("Technische Herleitung und Rohparadigma", "Technical derivation and raw paradigm")}</summary>
         ${renderGenerationExplanation(entry, generated)}
         <div class="forms-table-wrap">
-          <table class="forms-table"><thead><tr><th>Form</th><th>Grammar codes</th></tr></thead><tbody>
+          <table class="forms-table"><thead><tr><th>${ui("Form", "Form")}</th><th>${ui("Grammatikkürzel", "Grammar codes")}</th></tr></thead><tbody>
             ${generated.rows.map((row) => `<tr><td>${escapeHtml(row.form)}</td><td>${escapeHtml(row.code)}</td></tr>`).join("")}
           </tbody></table>
         </div>
@@ -689,39 +663,12 @@ function updateFilteredEntries() {
 function renderWordClassFilters() {
   const visibleGroups = WORD_TYPE_GROUPS.filter((group) => (state.wordTypeCounts.get(group.key) || 0) > 0);
   els.wordClassFilters.innerHTML = [
-    { key: "all", label: "All types", count: state.searchEntries.length },
-    ...visibleGroups.map((group) => ({ ...group, count: state.wordTypeCounts.get(group.key) || 0 })),
+    { key: "all", label: ui("Alle Wortarten", "All types"), count: state.searchEntries.length },
+    ...visibleGroups.map((group) => ({ ...group, label: wordTypeLabel(group, uiLanguage()), count: state.wordTypeCounts.get(group.key) || 0 })),
   ].map((item) => {
     const active = item.key === state.wordClassFilter;
-    return `<button type="button" class="word-type-filter${active ? " active" : ""}" data-word-class="${escapeHtml(item.key)}" aria-pressed="${active}"><span>${escapeHtml(item.label)}</span><small>${item.count.toLocaleString()}</small></button>`;
+    return `<button type="button" class="word-type-filter${active ? " active" : ""}" data-word-class="${escapeHtml(item.key)}" aria-pressed="${active}"><span>${escapeHtml(item.label)}</span><small>${formatNumber(item.count)}</small></button>`;
   }).join("");
-}
-
-function renderWordTypeIndex() {
-  const items = [
-    { key: "all", label: "All words", description: "The complete alphabetical word list", count: state.searchEntries.length, href: `word-list.html?spelling=${encodeURIComponent(state.spelling)}&meaning=${encodeURIComponent(state.language)}` },
-    { key: "grammar-guide", label: "Grammar guide", description: "Cases, conjugation, agreement, and notation", count: "Guide", href: "grammar.html" },
-    { key: "family-explorer", label: "Family explorer", description: "Map words that share a recorded base", count: "Map", href: `explore.html?spelling=${encodeURIComponent(state.spelling)}&meaning=${encodeURIComponent(state.language)}` },
-    ...WORD_TYPE_GROUPS.filter((group) => (state.wordTypeCounts.get(group.key) || 0) > 0)
-      .map((group) => ({ ...group, count: state.wordTypeCounts.get(group.key) || 0 })),
-  ];
-  return `
-    <section class="word-type-index entry-word-type-index" aria-labelledby="word-type-index-title">
-      <div class="word-type-index-heading">
-        <p class="eyebrow">Keep exploring</p>
-        <h2 id="word-type-index-title">Explore the whole dictionary</h2>
-        <p>Open the ordered list, map a word family, or start with a kind of word.</p>
-      </div>
-      <div class="word-type-cards">
-        ${items.map((item) => `
-          <a class="word-type-card" href="${escapeHtml(item.href || `word-list.html?type=${encodeURIComponent(item.key)}&spelling=${encodeURIComponent(state.spelling)}&meaning=${encodeURIComponent(state.language)}`)}">
-            <span><strong>${escapeHtml(item.label)}</strong><small>${escapeHtml(item.description)}</small></span>
-            <b>${typeof item.count === "number" ? item.count.toLocaleString() : escapeHtml(item.count)}</b>
-          </a>
-        `).join("")}
-      </div>
-    </section>
-  `;
 }
 
 function renderResultButton(entry) {
@@ -730,7 +677,7 @@ function renderResultButton(entry) {
   return `
     <button type="button" class="result-button${active}" data-entry-id="${escapeHtml(entry.id)}">
       <span class="result-lemma">${escapeHtml(displayLemma(entry))}</span>
-      <span class="result-class">${escapeHtml(wordClassLabel(entry))}</span>
+      <span class="result-class">${escapeHtml(wordClassLabel(entry, uiLanguage()))}</span>
       ${alternate ? `<span class="result-alternate">${state.spelling === "int" ? "DEU" : "INT"} · ${escapeHtml(alternate)}</span>` : ""}
       <span class="result-meaning">${escapeHtml(displayMeaning(entry))}</span>
     </button>
@@ -744,18 +691,18 @@ function renderResults() {
   if (document.body) document.body.dataset.searchState = query || hasTypeFilter ? "active" : "idle";
 
   if (!query && !hasTypeFilter) {
-    els.resultMeta.textContent = "Search 12,525 entries or choose a word type";
-    els.results.innerHTML = `<div class="result-empty"><strong>Start anywhere.</strong><span>Search for a word or meaning, choose a type, or use Surprise me.</span></div>`;
+    els.resultMeta.textContent = ui("12.525 Einträge durchsuchen oder Wortart wählen", "Search 12,525 entries or choose a word type");
+    els.results.innerHTML = `<div class="result-empty"><strong>${ui("Suche starten", "Start searching")}</strong><span>${ui("Roman-Wort, deutsche oder englische Bedeutung eingeben.", "Enter a Roman word or German/English meaning.")}</span></div>`;
     return;
   }
 
   const type = WORD_TYPE_GROUPS.find((group) => group.key === state.wordClassFilter);
   els.resultMeta.textContent = query
-    ? `${state.totalMatches.toLocaleString()} match${state.totalMatches === 1 ? "" : "es"}${state.totalMatches > MAX_RESULTS ? ` · ${MAX_RESULTS} shown` : ""} · ordered by relevance`
-    : `${state.totalMatches.toLocaleString()} ${type?.label.toLowerCase() || "entries"}${state.totalMatches > MAX_RESULTS ? ` · ${MAX_RESULTS} shown` : ""}`;
+    ? ui(`${formatNumber(state.totalMatches)} Treffer${state.totalMatches > MAX_RESULTS ? ` · ${MAX_RESULTS} angezeigt` : ""} · nach Relevanz`, `${formatNumber(state.totalMatches)} matches${state.totalMatches > MAX_RESULTS ? ` · ${MAX_RESULTS} shown` : ""} · ordered by relevance`)
+    : `${formatNumber(state.totalMatches)} ${type ? wordTypeLabel(type, uiLanguage()).toLowerCase() : ui("Einträge", "entries")}${state.totalMatches > MAX_RESULTS ? ui(` · ${MAX_RESULTS} angezeigt`, ` · ${MAX_RESULTS} shown`) : ""}`;
 
   if (!state.filteredEntries.length) {
-    els.results.innerHTML = `<div class="result-empty"><strong>No matching entries.</strong><span>Try a broader spelling, meaning, or word type.</span></div>`;
+    els.results.innerHTML = `<div class="result-empty"><strong>${ui("Keine passenden Einträge.", "No matching entries.")}</strong><span>${ui("Andere Schreibweise, Bedeutung oder Wortart versuchen.", "Try another spelling, meaning, or word type.")}</span></div>`;
     return;
   }
 
@@ -773,7 +720,7 @@ function renderResults() {
     const total = state.matchTypeCounts.get(group.key) || entries.length;
     return `
       <section class="result-group">
-        <div class="result-group-heading"><h2>${escapeHtml(group.label)}</h2><span>${total.toLocaleString()}</span></div>
+        <div class="result-group-heading"><h2>${escapeHtml(wordTypeLabel(group, uiLanguage()))}</h2><span>${formatNumber(total)}</span></div>
         <div class="result-grid">${entries.map(renderResultButton).join("")}</div>
       </section>
     `;
@@ -836,25 +783,25 @@ function renderWordStructure(entry) {
   const details = entry.details || {};
   const title = entryDisplayLemma(entry);
   const upstream = [
-    structureNode("Base", spellingValue(details.base)),
-    structureNode("Composition", spellingValue(details.composition)),
-    structureNode("Reconstructed form", spellingValue(details.reconstruction)),
+    structureNode(ui("Basis", "Base"), spellingValue(details.base)),
+    structureNode(ui("Zusammensetzung", "Composition"), spellingValue(details.composition)),
+    structureNode(ui("Rekonstruktion", "Reconstructed form"), spellingValue(details.reconstruction)),
   ].filter(Boolean);
   const variation = spellingValue(details.variation);
 
   if (!upstream.length && !variation) {
-    return `<section class="panel-card structure-panel"><h3>Word structure</h3><p class="panel-note">No composition, variation, reconstruction, or base relationship is recorded for this entry.</p></section>`;
+    return `<section class="panel-card structure-panel"><h3>${ui("Wortstruktur", "Word structure")}</h3><p class="panel-note">${ui("Keine Zusammensetzung, Variation, Rekonstruktion oder Basisbeziehung für diesen Eintrag erfasst.", "No composition, variation, reconstruction, or base relationship is recorded for this entry.")}</p></section>`;
   }
 
   return `
     <section class="panel-card structure-panel">
-      <h3>Word structure</h3>
-      <p class="panel-note">Relationships recorded directly in the workbook.</p>
-      <div class="structure-map" aria-label="Word structure hierarchy">
+      <h3>${ui("Wortstruktur", "Word structure")}</h3>
+      <p class="panel-note">${ui("Direkt in der Quelltabelle erfasste Beziehungen.", "Relationships recorded directly in the workbook.")}</p>
+      <div class="structure-map" aria-label="${ui("Hierarchie der Wortstruktur", "Word structure hierarchy")}">
         ${upstream.join("")}
         ${upstream.length ? `<div class="structure-connector" aria-hidden="true"></div>` : ""}
-        <div class="structure-node current"><strong>Current lemma</strong><span>${escapeHtml(title)}</span></div>
-        ${variation ? `<div class="structure-connector" aria-hidden="true"></div>${structureNode("Variation", variation)}` : ""}
+        <div class="structure-node current"><strong>${ui("Lemma", "Current lemma")}</strong><span>${escapeHtml(title)}</span></div>
+        ${variation ? `<div class="structure-connector" aria-hidden="true"></div>${structureNode(ui("Variation", "Variation"), variation)}` : ""}
       </div>
     </section>
   `;
@@ -884,11 +831,11 @@ function renderSource(entry) {
     : (source.source_2_int_url || source.source_2_deu_url);
 
   if (!sourceType && !sourceValue) {
-    return `<section class="panel-card source-panel"><h3>Source</h3><p class="panel-note">No source information is recorded for this entry.</p></section>`;
+    return `<section class="panel-card source-panel"><h3>${ui("Quelle", "Source")}</h3><p class="panel-note">${ui("Keine Quelleninformation für diesen Eintrag erfasst.", "No source information is recorded for this entry.")}</p></section>`;
   }
   return `
     <section class="panel-card source-panel">
-      <h3>Source</h3>
+      <h3>${ui("Quelle", "Source")}</h3>
       <div class="source-content">
         <p class="source-bracket">[${sourceType ? `<strong>${escapeHtml(sourceType)}</strong>` : ""}${sourceType && sourceValue ? " · " : ""}${sourceLink(sourceValue, sourceUrl)}]</p>
       </div>
@@ -899,17 +846,12 @@ function renderSource(entry) {
 function wordClassGuide(entry) {
   const grammar = entry.grammar || {};
   const code = grammar.word_class_1;
-  const base = {
-    V: ["Verb", "describes an action, event, or state"],
-    N: ["Noun", "names a person, place, thing, or idea"],
-    ADJ: ["Adjective", "describes a noun and changes to agree with it"],
-  }[code] || [labelOnly(labelWithCode(code)) || "Entry", "this word class has no learner summary yet"];
   const detail = code === "N" && grammar.flexion_1
-    ? `${labelOnly(labelWithCode(grammar.flexion_1))} noun class`
+    ? `${labelOnly(labelWithCode(grammar.flexion_1))} ${ui("Substantivklasse", "noun class")}`
     : grammar.word_class_2
       ? labelOnly(labelWithCode(grammar.word_class_2))
       : "";
-  return { code, title: base[0], description: base[1], detail };
+  return { code, title: wordClassLabel(code, uiLanguage()) || labelOnly(labelWithCode(code)) || ui("Eintrag", "Entry"), detail };
 }
 
 function keyFormRows(generated) {
@@ -925,7 +867,7 @@ function keyFormRows(generated) {
     return generated.rows
       .filter((row) => row.case === "NOM")
       .map((row) => ({
-        label: `${row.number === "SG" ? "one · singular" : "many · plural"}${row.gender ? ` · ${row.gender === "M" ? "masculine" : "feminine"}` : ""}`,
+        label: `${row.number === "SG" ? ui("Singular", "singular") : ui("Plural", "plural")}${row.gender ? ` · ${row.gender === "M" ? ui("maskulin", "masculine") : ui("feminin", "feminine")}` : ""}`,
         form: row.form,
       }));
   }
@@ -933,7 +875,7 @@ function keyFormRows(generated) {
     return generated.rows
       .filter((row) => row.case === "NOM")
       .map((row) => ({
-        label: `${row.number === "SG" ? "singular" : "plural"} · ${row.gender === "M" ? "masculine" : "feminine"}`,
+        label: `${row.number === "SG" ? ui("Singular", "singular") : ui("Plural", "plural")} · ${row.gender === "M" ? ui("maskulin", "masculine") : ui("feminin", "feminine")}`,
         form: row.form,
       }));
   }
@@ -942,9 +884,9 @@ function keyFormRows(generated) {
 
 function grammarViewLabel(entry) {
   const kind = entry.morphology?.kind;
-  if (["verb_conjugation", "verb_exist"].includes(kind)) return "Conjugation";
-  if (["noun_declension", "adjective_declension"].includes(kind)) return "Declension";
-  return "Grammar";
+  if (["verb_conjugation", "verb_exist"].includes(kind)) return ui("Konjugation", "Conjugation");
+  if (["noun_declension", "adjective_declension"].includes(kind)) return ui("Deklination", "Declension");
+  return ui("Grammatik", "Grammar");
 }
 
 function renderGrammarSnapshot(entry, { compact = false } = {}) {
@@ -954,16 +896,16 @@ function renderGrammarSnapshot(entry, { compact = false } = {}) {
   return `
     <section class="panel-card grammar-snapshot${compact ? " compact" : ""}">
       <div class="grammar-summary">
-        <p class="eyebrow">Grammar at a glance</p>
+        <p class="eyebrow">${ui("Grammatik", "Grammar")}</p>
         <h3>${escapeHtml(guide.title)}</h3>
-        <p>${escapeHtml(guide.description)}${guide.detail ? ` · <strong>${escapeHtml(guide.detail)}</strong>` : ""}</p>
+        ${guide.detail ? `<p><strong>${escapeHtml(guide.detail)}</strong></p>` : ""}
       </div>
       ${forms.length ? `
-        <div class="key-forms" aria-label="Useful forms">
+        <div class="key-forms" aria-label="${ui("Wichtige Formen", "Useful forms")}">
           ${forms.map((item) => `<div><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.form)}</strong></div>`).join("")}
         </div>
-        <button type="button" class="text-action" data-entry-view="forms">See the full ${escapeHtml(grammarViewLabel(entry).toLowerCase())} →</button>
-      ` : `<p class="panel-note">No generated grammar forms are available for this word.</p>`}
+        <button type="button" class="text-action" data-entry-view="forms">${ui("Vollständige Ansicht öffnen", "Open full view")} →</button>
+      ` : `<p class="panel-note">${ui("Keine generierten Formen für dieses Wort.", "No generated forms for this word.")}</p>`}
     </section>
   `;
 }
@@ -973,13 +915,13 @@ function renderMeaningPanel(entry) {
   return `
     <section class="panel-card meaning-panel">
       <div class="panel-heading">
-        <h3>${state.language === "de" ? "German meanings" : "English meanings"}</h3>
-        <p>${meanings.values.length} ${meanings.values.length === 1 ? "sense" : "senses"}</p>
+        <h3>${state.language === "de" ? ui("Deutsche Bedeutungen", "German meanings") : ui("Englische Bedeutungen", "English meanings")}</h3>
+        <p>${meanings.values.length} ${ui(meanings.values.length === 1 ? "Bedeutung" : "Bedeutungen", meanings.values.length === 1 ? "sense" : "senses")}</p>
       </div>
       ${meanings.values.length
         ? `<ol class="meaning-list">${meanings.values.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>`
-        : `<p class="panel-note">No meaning available.</p>`}
-      ${meanings.fallback ? `<p class="fallback-note">${state.language === "en" ? "German shown because English is missing." : "English shown because German is missing."}</p>` : ""}
+        : `<p class="panel-note">${ui("Keine Bedeutung verfügbar.", "No meaning available.")}</p>`}
+      ${meanings.fallback ? `<p class="fallback-note">${state.language === "en" ? ui("Deutsch angezeigt, weil Englisch fehlt.", "German shown because English is missing.") : ui("Englisch angezeigt, weil Deutsch fehlt.", "English shown because German is missing.")}</p>` : ""}
     </section>
   `;
 }
@@ -999,8 +941,8 @@ function renderDetails(entry) {
   const details = entry.details || {};
   const flexionLabels = grammarFieldLabels(grammar.word_class_1);
   const grammarFields = [
-    field("Word class", labelWithCode(grammar.word_class_1)),
-    field("Subclass", labelWithCode(grammar.word_class_2)),
+    field(ui("Wortart", "Word class"), labelWithCode(grammar.word_class_1)),
+    field(ui("Unterklasse", "Subclass"), labelWithCode(grammar.word_class_2)),
     field(flexionLabels.flexion1, labelWithCode(grammar.flexion_1)),
     field(flexionLabels.flexion2Int, grammar.flexion_2_int ? `[${grammar.flexion_2_int}]` : ""),
     field(flexionLabels.flexion2Deu, grammar.flexion_2_deu ? `[${grammar.flexion_2_deu}]` : ""),
@@ -1008,32 +950,32 @@ function renderDetails(entry) {
     field(flexionLabels.flexion3Deu, grammar.flexion_3_deu ? `[${grammar.flexion_3_deu}]` : ""),
   ].join("");
   const editorialFields = [
-    pairFields("Composition", details.composition),
-    pairFields("Variation", details.variation),
-    pairFields("Reconstruction", details.reconstruction),
-    pairFields("Base", details.base),
-    field("Source type", labelWithCode(details.source?.source_1)),
+    pairFields(ui("Zusammensetzung", "Composition"), details.composition),
+    pairFields(ui("Variation", "Variation"), details.variation),
+    pairFields(ui("Rekonstruktion", "Reconstruction"), details.reconstruction),
+    pairFields(ui("Basis", "Base"), details.base),
+    field(ui("Quellentyp", "Source type"), labelWithCode(details.source?.source_1)),
     linkedField("Source 2 INT", details.source?.source_2_int, details.source?.source_2_int_url),
     linkedField("Source 2 DEU", details.source?.source_2_deu, details.source?.source_2_deu_url),
-    field("Paradigm (internal)", grammar.paradigm),
-    field("Resolved paradigm", entry.morphology?.source_paradigm ? entry.morphology.paradigm : ""),
-    field("Domain (internal)", labelWithCode(grammar.domain)),
-    field("Workbook row", entry.source?.row),
+    field(ui("Paradigma (intern)", "Paradigm (internal)"), grammar.paradigm),
+    field(ui("Aufgelöstes Paradigma", "Resolved paradigm"), entry.morphology?.source_paradigm ? entry.morphology.paradigm : ""),
+    field(ui("Bereich (intern)", "Domain (internal)"), labelWithCode(grammar.domain)),
+    field(ui("Tabellenzeile", "Workbook row"), entry.source?.row),
   ].join("");
 
   return `
     <section class="panel-card details-panel">
-      <div class="details-group"><h3>Grammar</h3><dl class="definition-grid">${grammarFields}</dl></div>
-      <div class="details-group"><h3>Editorial metadata</h3><dl class="definition-grid">${editorialFields}</dl></div>
+      <div class="details-group"><h3>${ui("Grammatik", "Grammar")}</h3><dl class="definition-grid">${grammarFields}</dl></div>
+      <div class="details-group"><h3>${ui("Redaktionelle Metadaten", "Editorial metadata")}</h3><dl class="definition-grid">${editorialFields}</dl></div>
     </section>
   `;
 }
 
 function availableEntryViews(entry) {
-  const views = [{ id: "overview", label: "Entry" }];
+  const views = [{ id: "overview", label: ui("Eintrag", "Entry") }];
   if (entry.morphology?.kind) views.push({ id: "forms", label: grammarViewLabel(entry), provisional: true });
-  if (familyData(entry)) views.push({ id: "family", label: "Word family" });
-  views.push({ id: "details", label: "Details" });
+  if (familyData(entry)) views.push({ id: "family", label: ui("Wortfamilie", "Word family") });
+  views.push({ id: "details", label: ui("Details", "Details") });
   return views;
 }
 
@@ -1046,15 +988,14 @@ function renderEntryView(entry) {
 
 function renderEntry() {
   const entry = state.entriesById.get(state.selectedId);
-  const browseFooter = state.edition === "compact" ? renderWordTypeIndex() : "";
   if (!entry) {
-    els.entryPane.innerHTML = `<div class="empty-state"><p class="section-label">12,525 Roman entries</p><h2>Find your way into the language.</h2><p>Search a Roman word, German or English meaning; or let the dictionary surprise you.</p></div>${browseFooter}`;
+    els.entryPane.innerHTML = `<div class="empty-state"><p class="section-label">12.525 Roman ${ui("Einträge", "entries")}</p><h2>${ui("Wort auswählen", "Select a word")}</h2><p>${ui("Nach einem Roman-Wort oder einer Bedeutung suchen.", "Search for a Roman word or meaning.")}</p></div>`;
     return;
   }
 
   const grammar = entry.grammar || {};
   const details = entry.details || {};
-  const title = entry.lemma?.[`display_${state.spelling}`] || rawLemma(entry) || "Untitled entry";
+  const title = entry.lemma?.[`display_${state.spelling}`] || rawLemma(entry) || ui("Eintrag ohne Titel", "Untitled entry");
   const alternate = state.spelling === "deu"
     ? entry.lemma?.display_int || entry.lemma?.int
     : entry.lemma?.display_deu || entry.lemma?.deu;
@@ -1066,24 +1007,23 @@ function renderEntry() {
     <article class="entry-article">
       <header class="entry-masthead">
         <div>
-          <p class="entry-overline">Roman entry · ${state.spelling.toUpperCase()} spelling</p>
+          <p class="entry-overline">Roman ${ui("Eintrag", "entry")} · ${state.spelling.toUpperCase()} ${ui("Schreibweise", "spelling")}</p>
           <h2 class="entry-title">${escapeHtml(title)}</h2>
           ${alternate && alternate !== title ? `<p class="entry-alternate">${state.spelling === "int" ? "DEU" : "INT"} · ${escapeHtml(alternate)}</p>` : ""}
           ${supplements ? `<p class="lemma-supplements">${escapeHtml(supplements)}</p>` : ""}
         </div>
         <div class="grammar-stack">
-          ${grammar.word_class_1 ? `<span class="grammar-pill">${escapeHtml(WORD_CLASS_LABELS[grammar.word_class_1] || labelOnly(labelWithCode(grammar.word_class_1)))}</span>` : ""}
+          ${grammar.word_class_1 ? `<span class="grammar-pill">${escapeHtml(wordClassLabel(grammar.word_class_1, uiLanguage()) || WORD_CLASS_LABELS[grammar.word_class_1] || labelOnly(labelWithCode(grammar.word_class_1)))}</span>` : ""}
           ${grammar.word_class_2 ? `<span class="grammar-pill">${escapeHtml(labelOnly(labelWithCode(grammar.word_class_2)))}</span>` : ""}
           ${grammar.flexion_1 ? `<span class="grammar-pill">${escapeHtml(labelOnly(labelWithCode(grammar.flexion_1)))}</span>` : ""}
         </div>
       </header>
 
-      <nav class="entry-tabs" aria-label="Entry views">
-        ${views.map((view) => `<button type="button" class="entry-tab${view.id === state.entryView ? " active" : ""}" data-entry-view="${view.id}" aria-pressed="${view.id === state.entryView}">${escapeHtml(view.label)}${view.provisional ? ` <span class="provisional-dot" aria-label="provisional">●</span>` : ""}</button>`).join("")}
+      <nav class="entry-tabs" aria-label="${ui("Eintragsansichten", "Entry views")}">
+        ${views.map((view) => `<button type="button" class="entry-tab${view.id === state.entryView ? " active" : ""}" data-entry-view="${view.id}" aria-pressed="${view.id === state.entryView}">${escapeHtml(view.label)}${view.provisional ? ` <span class="provisional-dot" aria-label="${ui("vorläufig", "provisional")}">●</span>` : ""}</button>`).join("")}
       </nav>
       <div class="entry-view">${renderEntryView(entry)}</div>
     </article>
-    ${browseFooter}
   `;
 }
 
@@ -1136,6 +1076,7 @@ function syncUrl() {
   params.set("spelling", state.spelling);
   params.set("meaning", state.language);
   params.set("edition", state.edition);
+  params.set("ui", uiLanguage());
   state.entryView === "overview" ? params.delete("view") : params.set("view", state.entryView);
   history.replaceState(null, "", url);
 }
@@ -1193,7 +1134,7 @@ async function renderSelectedEntry() {
     els.entryPane.setAttribute("aria-busy", "true");
     els.entryPane.innerHTML = `
       <div class="empty-state loading-state">
-        <h2>Loading entry…</h2>
+        <h2>${ui("Eintrag wird geladen …", "Loading entry…")}</h2>
       </div>
     `;
   }
@@ -1246,7 +1187,7 @@ async function loadData() {
   state.references = references;
   state.paradigmModel = paradigmModel;
   applyUrlState();
-  els.status.textContent = `${entryManifest.entry_count.toLocaleString()} entries indexed · details load on demand`;
+  els.status.textContent = ui(`${formatNumber(entryManifest.entry_count)} Einträge indexiert · Details werden bei Bedarf geladen`, `${formatNumber(entryManifest.entry_count)} entries indexed · details load on demand`);
   render();
 }
 
@@ -1326,8 +1267,10 @@ window.addEventListener("popstate", () => {
   render({ updateUrl: false });
 });
 
+initI18n({ onChange: () => render() });
+
 loadData().catch((error) => {
-  els.status.textContent = "Data could not be loaded";
+  els.status.textContent = ui("Daten konnten nicht geladen werden", "Data could not be loaded");
   els.entryPane.innerHTML = `
     <div class="error-state">
       ${escapeHtml(error.message)}

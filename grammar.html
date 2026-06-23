@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Roman Grammar Guide</title>
+    <title data-i18n="grammar.title">Roman Grammatik</title>
     <meta name="description" content="Practical Roman grammar cheat sheets for noun cases, verb conjugation, adjective agreement, and dictionary notation.">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="dictionary.css">
@@ -11,75 +11,71 @@
   </head>
   <body class="reference-body grammar-body">
     <header class="reference-header">
-      <a class="dictionary-brand" href="index.html" aria-label="Roman story home"><span>Roman</span><small>Grammar</small></a>
+      <a class="dictionary-brand" href="index.html" aria-label="Roman"><span>Roman</span><small data-i18n="grammar.brand">Grammatik</small></a>
       <nav class="reference-nav" aria-label="Primary navigation">
-        <a href="index.html">Story</a>
-        <a href="dictionary.html">Dictionary</a>
-        <a href="word-list.html">Word list</a>
-        <a class="active" href="grammar.html" aria-current="page">Grammar</a>
-        <a href="explore.html">Explore</a>
+        <a href="index.html" data-i18n="nav.story">Geschichte</a>
+        <a href="dictionary.html" data-i18n="nav.dictionary">Wörterbuch</a>
+        <a href="word-list.html" data-i18n="nav.wordList">Wortliste</a>
+        <a class="active" href="grammar.html" aria-current="page" data-i18n="nav.grammar">Grammatik</a>
+        <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
       </nav>
+      <div class="ui-language-switch" data-i18n-aria-label="site.language" aria-label="Sprache">
+        <span data-i18n="site.language">Sprache</span>
+        <button type="button" class="active" data-ui-language="de" aria-pressed="true">DE</button>
+        <button type="button" data-ui-language="en" aria-pressed="false">EN</button>
+      </div>
     </header>
 
     <main class="grammar-page">
       <header class="reference-hero grammar-hero">
-        <p class="eyebrow">Practical reference</p>
-        <h1>Grammar without the code wall.</h1>
-        <p>Use these sheets to understand what changes in a dictionary entry, then open a real word to inspect every generated form.</p>
+        <h1 data-i18n="grammar.heading">Grammatik</h1>
+        <p data-i18n="grammar.sourceNote">Strukturen aus den Paradigmentabellen des Wörterbuchs.</p>
       </header>
 
-      <nav class="grammar-jump" aria-label="Grammar sections">
-        <a href="#nouns">Noun cases</a><a href="#verbs">Verb forms</a><a href="#adjectives">Adjective agreement</a><a href="#word-types">Word types</a><a href="#notation">Dictionary notation</a>
+      <nav class="grammar-jump" aria-label="Grammatikbereiche" data-i18n-aria-label="grammar.sections">
+        <a href="#nouns" data-i18n="grammar.nouns">Substantive</a><a href="#verbs" data-i18n="grammar.verbs">Verben</a><a href="#adjectives" data-i18n="grammar.adjectives">Adjektive</a><a href="#word-types" data-i18n="grammar.wordTypes">Wortarten</a><a href="#notation" data-i18n="grammar.notation">Notation</a>
       </nav>
 
       <section class="cheat-section" id="nouns">
-        <div class="cheat-heading"><p class="cheat-number">01</p><div><p class="eyebrow">Nouns</p><h2>Case tells you the noun's job.</h2><p>Nouns change for number and case. The workbook also assigns a feminine, masculine, or mixed gender/class pattern, which selects the endings.</p></div></div>
-        <div class="cheat-layout">
-          <div class="cheat-card rule-card"><h3>Two dimensions</h3><dl><div><dt>Number</dt><dd>Singular for one; plural for more than one.</dd></div><div><dt>Case</dt><dd>The noun's role: subject, object, recipient, origin, place, means, or possession.</dd></div></dl><a class="example-link" href="dictionary.html?entry=g00003_b284cd5c&meaning=en&edition=compact&view=forms">Open a full noun declension →</a></div>
-          <div class="cheat-table-wrap"><table class="cheat-table"><thead><tr><th>Case</th><th>Use it for</th><th>Ask</th></tr></thead><tbody>
-            <tr><th>Nominative</th><td>The subject</td><td>Who or what acts?</td></tr>
-            <tr><th>Accusative</th><td>The direct object</td><td>Whom or what?</td></tr>
-            <tr><th>Dative</th><td>The recipient</td><td>To or for whom?</td></tr>
-            <tr><th>Ablative</th><td>Origin or separation</td><td>From where?</td></tr>
-            <tr><th>Locative</th><td>Place or direction</td><td>Where?</td></tr>
-            <tr><th>Instrumental / sociative</th><td>Means or company</td><td>With whom or by what?</td></tr>
-            <tr><th>Genitive</th><td>Possession or relation</td><td>Whose?</td></tr>
-          </tbody></table></div>
+        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.nouns">Substantive</p><h2 data-i18n="grammar.nounHeading">Deklination</h2><p data-i18n="grammar.nounDimensions">Kasus × Numerus; die Substantivklasse bestimmt die Endungstabelle.</p></div></div>
+        <div class="grammar-inventory grammar-inventory-nouns">
+          <div><h3 data-i18n="grammar.case">Kasus</h3><p><code>NOM</code> <span data-i18n="grammar.caseNom">Nominativ</span></p><p><code>ACC</code> <span data-i18n="grammar.caseAcc">Akkusativ</span></p><p><code>DAT</code> <span data-i18n="grammar.caseDat">Dativ</span></p><p><code>ABL</code> <span data-i18n="grammar.caseAbl">Ablativ</span></p><p><code>LOC</code> <span data-i18n="grammar.caseLoc">Lokativ</span></p><p><code>INS/SOC</code> <span data-i18n="grammar.caseIns">Instrumental / Soziativ</span></p><p><code>GEN</code> <span data-i18n="grammar.caseGen">Genitiv</span></p></div>
+          <div><h3 data-i18n="grammar.number">Numerus</h3><p><code>SG</code> <span data-i18n="grammar.singular">Singular</span></p><p><code>PL</code> <span data-i18n="grammar.plural">Plural</span></p></div>
+          <div><h3 data-i18n="grammar.genderClass">Genus / Substantivklasse</h3><p><code>M</code> <span data-i18n="grammar.masculine">Maskulin</span></p><p><code>F</code> <span data-i18n="grammar.feminine">Feminin</span></p><p><code>M/F</code></p></div>
         </div>
+        <a class="example-link standalone-link" href="dictionary.html?entry=g00003_b284cd5c&meaning=de&edition=compact&view=forms" data-i18n="grammar.openNoun">Beispieldeklination öffnen →</a>
       </section>
 
       <section class="cheat-section" id="verbs">
-        <div class="cheat-heading"><p class="cheat-number">02</p><div><p class="eyebrow">Verbs</p><h2>Person, time, and view select the form.</h2><p>Verb paradigms combine six grammatical persons with tense and aspect. The verb "to be" has its own recorded table.</p></div></div>
-        <div class="person-cheat" aria-label="Grammatical persons">
-          <div><small>1SG</small><strong>I</strong><span>first singular</span></div><div><small>2SG</small><strong>you</strong><span>second singular</span></div><div><small>3SG</small><strong>he / she / it</strong><span>third singular</span></div>
-          <div><small>1PL</small><strong>we</strong><span>first plural</span></div><div><small>2PL</small><strong>you</strong><span>second plural</span></div><div><small>3PL</small><strong>they</strong><span>third plural</span></div>
+        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.verbs">Verben</p><h2 data-i18n="grammar.verbHeading">Konjugation</h2><p data-i18n="grammar.verbDimensions">Person × Aspekt × Tempus.</p></div></div>
+        <div class="grammar-inventory">
+          <div><h3 data-i18n="grammar.person">Person</h3><p class="code-line"><code>1SG</code><code>2SG</code><code>3SG</code><code>1PL</code><code>2PL</code><code>3PL</code></p></div>
+          <div><h3 data-i18n="grammar.aspect">Aspekt</h3><p class="code-line"><code>NPFV</code><code>PFV</code></p></div>
+          <div><h3 data-i18n="grammar.tense">Tempus</h3><p class="code-line"><code>PRS</code><code>FUT</code><code>PST</code><code>IRR</code></p></div>
         </div>
-        <div class="concept-grid">
-          <article class="cheat-card"><p class="eyebrow">Tense</p><h3>When?</h3><ul><li><strong>Present</strong> - now, generally, or repeatedly</li><li><strong>Future</strong> - after now</li><li><strong>Past</strong> - before now</li><li><strong>Irrealis</strong> - imagined, conditional, or not presented as fact</li></ul></article>
-          <article class="cheat-card"><p class="eyebrow">Aspect</p><h3>How is the action viewed?</h3><ul><li><strong>Non-perfective</strong> - ongoing, repeated, or open-ended</li><li><strong>Perfective</strong> - viewed as a completed whole</li></ul><p class="caution">These are reading aids; the generated forms still require linguistic review.</p></article>
-          <article class="cheat-card example-card"><p class="eyebrow">Live example</p><h3>áčav</h3><p>Compare five aspect/tense groups across all six persons.</p><a class="example-link" href="dictionary.html?entry=g00005_236c444a&meaning=en&edition=compact&view=forms">Open the conjugation →</a></article>
-        </div>
+        <a class="example-link standalone-link" href="dictionary.html?entry=g00005_236c444a&meaning=de&edition=compact&view=forms" data-i18n="grammar.openVerb">Beispielkonjugation öffnen →</a>
       </section>
 
       <section class="cheat-section" id="adjectives">
-        <div class="cheat-heading"><p class="cheat-number">03</p><div><p class="eyebrow">Adjectives</p><h2>The adjective agrees with the noun.</h2><p>Attributive adjectives vary by gender, number, and basic versus oblique form. INT and DEU differ by stem; the agreement pattern is shared.</p></div></div>
-        <div class="agreement-grid" role="table" aria-label="Adjective agreement dimensions">
-          <div class="agreement-corner">Form</div><div>Singular masculine</div><div>Singular feminine</div><div>Plural masculine</div><div>Plural feminine</div>
-          <strong>Basic / nominative</strong><span>basic ending</span><span>basic ending</span><span>plural ending</span><span>plural ending</span>
-          <strong>Oblique</strong><span>oblique ending</span><span>oblique ending</span><span>oblique ending</span><span>oblique ending</span>
+        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.adjectives">Adjektive</p><h2 data-i18n="grammar.adjectiveHeading">Adjektivdeklination</h2><p data-i18n="grammar.adjectiveDimensions">Form × Numerus × Genus.</p></div></div>
+        <div class="grammar-inventory">
+          <div><h3 data-i18n="grammar.form">Form</h3><p><code>NOM</code> <span data-i18n="grammar.basic">Grundform / Nominativ</span></p><p><code>OBL</code> <span data-i18n="grammar.oblique">Oblique Form</span></p></div>
+          <div><h3 data-i18n="grammar.number">Numerus</h3><p class="code-line"><code>SG</code><code>PL</code></p></div>
+          <div><h3 data-i18n="grammar.genderClass">Genus</h3><p class="code-line"><code>M</code><code>F</code></p></div>
         </div>
-        <a class="example-link standalone-link" href="dictionary.html?entry=g00008_ffa2702b&meaning=en&edition=compact&view=forms">Open a full adjective agreement table →</a>
+        <a class="example-link standalone-link" href="dictionary.html?entry=g00008_ffa2702b&meaning=de&edition=compact&view=forms" data-i18n="grammar.openAdjective">Beispieldeklination öffnen →</a>
       </section>
 
       <section class="cheat-section" id="word-types">
-        <div class="cheat-heading"><p class="cheat-number">04</p><div><p class="eyebrow">Word types</p><h2>Translate the abbreviations.</h2><p>The interface uses plain labels. The source codes remain available in technical Details.</p></div></div>
-        <div class="word-type-cheat"><div><code>N</code><strong>Noun</strong></div><div><code>V</code><strong>Verb</strong></div><div><code>ADJ</code><strong>Adjective</strong></div><div><code>ADV</code><strong>Adverb</strong></div><div><code>NP</code><strong>Noun phrase</strong></div><div><code>PTCLV</code><strong>Particle verb</strong></div><div><code>VP</code><strong>Verb phrase</strong></div><div><code>PRON</code><strong>Pronoun</strong></div><div><code>PREP</code><strong>Preposition</strong></div><div><code>CONJ</code><strong>Conjunction</strong></div><div><code>NUM</code><strong>Numeral</strong></div><div><code>PTCL</code><strong>Particle</strong></div></div>
+        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.wordTypes">Wortarten</p><h2 data-i18n="grammar.wordTypesHeading">Wortartkürzel</h2></div></div>
+        <div class="word-type-cheat"><div><code>N</code><strong data-i18n="wordClass.N">Substantiv</strong></div><div><code>V</code><strong data-i18n="wordClass.V">Verb</strong></div><div><code>ADJ</code><strong data-i18n="wordClass.ADJ">Adjektiv</strong></div><div><code>ADV</code><strong data-i18n="wordClass.ADV">Adverb</strong></div><div><code>NP</code><strong data-i18n="wordClass.NP">Nominalphrase</strong></div><div><code>PTCLV</code><strong data-i18n="wordClass.PTCLV">Partikelverb</strong></div><div><code>VP</code><strong data-i18n="wordClass.VP">Verbalphrase</strong></div><div><code>PRON</code><strong data-i18n="wordClass.PRON">Pronomen</strong></div><div><code>PREP</code><strong data-i18n="wordClass.PREP">Präposition</strong></div><div><code>CONJ</code><strong data-i18n="wordClass.CONJ">Konjunktion</strong></div><div><code>NUM</code><strong data-i18n="wordClass.NUM">Numerale</strong></div><div><code>PTCL</code><strong data-i18n="wordClass.PTCL">Partikel</strong></div></div>
       </section>
 
       <section class="cheat-section notation-section" id="notation">
-        <div class="cheat-heading"><p class="cheat-number">05</p><div><p class="eyebrow">Dictionary notation</p><h2>Know what the interface is showing.</h2></div></div>
-        <div class="concept-grid"><article class="cheat-card"><h3>INT / DEU</h3><p>Two Roman spellings: international and German-oriented. Noun and verb paradigms have corresponding variants.</p></article><article class="cheat-card"><h3>Square brackets</h3><p>Supplementary information attached to a lemma, flexion field, or source. Parentheses belong to supplementary meaning information.</p></article><article class="cheat-card"><h3>Generated preview</h3><p>The source tables define the paradigm. Complete displayed forms are assembled for exploration but are not yet professor-reviewed.</p></article></div>
+        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.notation">Notation</p><h2 data-i18n="grammar.notationHeading">Notation im Eintrag</h2></div></div>
+        <div class="concept-grid"><article class="cheat-card"><h3 data-i18n="grammar.spellings">INT / DEU</h3><p data-i18n="grammar.spellingsText">Internationale und deutsch orientierte Roman-Schreibweise.</p></article><article class="cheat-card"><h3 data-i18n="grammar.brackets">Eckige Klammern</h3><p data-i18n="grammar.bracketsText">Zusatzinformationen bei Lemma, Flexion und Quelle. Bedeutungszusätze stehen in runden Klammern.</p></article><article class="cheat-card"><h3 data-i18n="grammar.generated">Generierte Formen</h3><p data-i18n="grammar.generatedText">Aus Lemma und Paradigmentabelle zusammengesetzt; noch nicht fachlich geprüft.</p></article></div>
       </section>
     </main>
+    <script src="site-i18n.js" type="module"></script>
   </body>
 </html>

@@ -1,5 +1,36 @@
 # Decision log
 
+## 2026-06-23 — German-first interface and separated language controls
+
+The website interface is now German-first with an English UI toggle. The UI
+language is independent from dictionary translation language and from Roman
+spelling. This creates three explicit axes:
+
+- UI language: `DE/EN` controls site chrome and explanatory labels (`ui`);
+- Roman spelling: `INT/DEU` controls the Roman headword spelling (`spelling`);
+- Translation language: `DE/EN` controls German or English equivalents
+  (`meaning`).
+
+The dictionary places spelling, translation, and layout controls next to search
+instead of as detached top-right switches. GitHub Pages deployment now includes
+the shared `site-i18n.js` module.
+
+## 2026-06-23 — Dictionary cleanup favors lookup over onboarding
+
+The dictionary entry no longer ends with a "Keep exploring" catalogue. The full
+word list owns corpus browsing, and the dictionary page owns lookup plus selected
+entry inspection.
+
+The Word list is now table-like: visible columns for Roman, word type, and
+meaning, with search/spelling/translation/type/letter controls fixed at the
+bottom. The old "complete index" and scroll-instruction copy was removed.
+
+The Grammar page and generated grammar snippets now avoid artificial beginner
+explanations. They expose source-derived dimensions, codes, generated forms, and
+review status. Case labels, person labels, tense/aspect labels, and word-type
+labels may be readable, but the UI should not invent lessons or semantics beyond
+the provided reference/paradigm data.
+
 ## 2026-06-22 — Exploration uses recorded base relationships
 
 The first corpus visualization is a dedicated `Explore` page built from the
@@ -109,7 +140,7 @@ validation reports.
 
 Current provisional defaults:
 
-- English interface labels;
+- German interface labels;
 - `INT` Roman spelling on first visit;
 - German meanings on first visit;
 - Browse layout on first visit;

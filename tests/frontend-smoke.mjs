@@ -28,6 +28,10 @@ class ElementStub {
   setAttribute(name, value) {
     this.attributes.set(name, value);
   }
+
+  getAttribute(name) {
+    return this.attributes.get(name) || "";
+  }
 }
 
 const elements = new Map([
@@ -42,13 +46,18 @@ const elements = new Map([
 ]);
 const spellingButtons = [new ElementStub({ spelling: "int" }), new ElementStub({ spelling: "deu" })];
 const languageButtons = [new ElementStub({ language: "de" }), new ElementStub({ language: "en" })];
+const uiLanguageButtons = [new ElementStub({ uiLanguage: "de" }), new ElementStub({ uiLanguage: "en" })];
 
 globalThis.document = {
+  documentElement: { lang: "" },
   body: { dataset: {} },
   querySelector: (selector) => elements.get(selector),
-  querySelectorAll: (selector) => (
-    selector === "[data-spelling]" ? spellingButtons : languageButtons
-  ),
+  querySelectorAll: (selector) => {
+    if (selector === "[data-spelling]") return spellingButtons;
+    if (selector === "[data-language]") return languageButtons;
+    if (selector === "[data-ui-language]") return uiLanguageButtons;
+    return [];
+  },
 };
 
 const startUrl = new URL(
@@ -84,7 +93,7 @@ const wordTypes = await import(`${pathToFileURL(resolve(root, "word-types.js")).
 const explore = await import(`${pathToFileURL(resolve(root, "explore.js")).href}?smoke=1`);
 
 const deadline = Date.now() + 10_000;
-while (!elements.get("#data-status").textContent.includes("entries indexed")) {
+while (!/entries indexed|Einträge indexiert/.test(elements.get("#data-status").textContent)) {
   if (Date.now() > deadline) throw new Error("Application data load timed out.");
   await new Promise((resolvePromise) => setTimeout(resolvePromise, 10));
 }
@@ -97,8 +106,8 @@ assert(requested.includes("data/processed/entries_manifest.json"));
 assert(requested.includes("data/processed/entries/entries-008.json"));
 assert(!requested.includes("data/processed/entries.json"));
 assert.match(elements.get("#entry-pane").innerHTML, /habrínav/);
-assert.match(elements.get("#entry-pane").innerHTML, /English meanings/);
-assert.match(elements.get("#entry-pane").innerHTML, /Word structure/);
+assert.match(elements.get("#entry-pane").innerHTML, /Englische Bedeutungen/);
+assert.match(elements.get("#entry-pane").innerHTML, /Wortstruktur/);
 assert.match(elements.get("#entry-pane").innerHTML, /https:\/\/de\.langenscheidt\.com/);
 assert.equal(elements.get("#search-input").value, "habrin");
 assert.match(window.location.href, /entry=g04363_b4e42bdd/);
@@ -113,7 +122,7 @@ assert.ok(essenResults.indexOf("g04511_54bad702") < essenResults.indexOf("g00701
 assert.ok(essenResults.indexOf("g04348_a1364d4b") < essenResults.indexOf("g00701_c18b7ebf"));
 assert.match(essenResults, /class="result-grid top-results">\s*<button[^>]*data-entry-id="g04511_54bad702"/);
 assert.doesNotMatch(essenResults, /Best matches/);
-assert.match(elements.get("#result-meta").textContent, /ordered by relevance/);
+assert.match(elements.get("#result-meta").textContent, /Relevanz/);
 
 elements.get("#entry-pane").listeners.get("click")({
   target: {
@@ -122,17 +131,17 @@ elements.get("#entry-pane").listeners.get("click")({
     },
   },
 });
-assert.match(elements.get("#entry-pane").innerHTML, /Generated preview/);
+assert.match(elements.get("#entry-pane").innerHTML, /Generierte Vorschau/);
 assert.match(window.location.href, /view=forms/);
 
 elements.get("#edition-select").listeners.get("change")({ target: { value: "learner" } });
 assert.equal(document.body.dataset.edition, "learner");
 assert.match(window.location.href, /edition=learner/);
-assert.match(elements.get("#entry-pane").innerHTML, /Grammar made practical/);
-assert.match(elements.get("#entry-pane").innerHTML, /Conjugation/);
+assert.match(elements.get("#entry-pane").innerHTML, /Generierte Formen/);
+assert.match(elements.get("#entry-pane").innerHTML, /Konjugation/);
 
 elements.get("#search-input").listeners.get("input")({ target: { value: "" } });
-assert.match(elements.get("#results").innerHTML, /Start anywhere/);
+assert.match(elements.get("#results").innerHTML, /Suche starten/);
 assert.doesNotMatch(elements.get("#result-meta").textContent, /first 80/i);
 
 elements.get("#word-class-filters").listeners.get("click")({
@@ -142,8 +151,8 @@ elements.get("#word-class-filters").listeners.get("click")({
     },
   },
 });
-assert.match(elements.get("#result-meta").textContent, /nouns/);
-assert.match(elements.get("#results").innerHTML, /Nouns/);
+assert.match(elements.get("#result-meta").textContent, /substantive/);
+assert.match(elements.get("#results").innerHTML, /Substantive/);
 assert.match(window.location.href, /type=nouns/);
 
 elements.get("#results").listeners.get("click")({
@@ -164,20 +173,14 @@ elements.get("#entry-pane").listeners.get("click")({
     },
   },
 });
-assert.match(elements.get("#entry-pane").innerHTML, /Singular masculine/);
-assert.match(elements.get("#entry-pane").innerHTML, /Singular feminine/);
-assert.match(elements.get("#entry-pane").innerHTML, /Plural feminine/);
+assert.match(elements.get("#entry-pane").innerHTML, /Singular maskulin/);
+assert.match(elements.get("#entry-pane").innerHTML, /Singular feminin/);
+assert.match(elements.get("#entry-pane").innerHTML, /Plural feminin/);
 elements.get("#edition-select").listeners.get("change")({ target: { value: "compact" } });
-const footerDeadline = Date.now() + 2_000;
-while (!elements.get("#entry-pane").innerHTML.includes("Explore the whole dictionary")) {
-  if (Date.now() > footerDeadline) throw new Error("Browse footer render timed out.");
-  await new Promise((resolvePromise) => setTimeout(resolvePromise, 10));
-}
-assert.match(elements.get("#entry-pane").innerHTML, /Explore the whole dictionary/);
-assert.match(elements.get("#entry-pane").innerHTML, /word-list\.html\?type=nouns/);
-assert.match(elements.get("#entry-pane").innerHTML, /href="grammar\.html"/);
-assert.match(elements.get("#entry-pane").innerHTML, /href="explore\.html\?spelling=(?:int|deu)&amp;meaning=en"/);
+assert.doesNotMatch(elements.get("#entry-pane").innerHTML, /Explore the whole dictionary/);
+assert.doesNotMatch(elements.get("#entry-pane").innerHTML, /Keep exploring/);
 assert.equal(wordTypes.wordClassLabel("PTCLV"), "Particle verb");
+assert.equal(wordTypes.wordClassLabel("PTCLV", "de"), "Partikelverb");
 assert.equal(wordTypes.wordTypeGroup("PTCLV").key, "verbs");
 
 const familyFixture = [
@@ -233,27 +236,35 @@ const wordListHtml = await readFile(resolve(root, "word-list.html"), "utf8");
 const grammarHtml = await readFile(resolve(root, "grammar.html"), "utf8");
 const exploreHtml = await readFile(resolve(root, "explore.html"), "utf8");
 const referenceCss = await readFile(resolve(root, "reference.css"), "utf8");
+const appJs = await readFile(resolve(root, "app.js"), "utf8");
 assert.match(homeHtml, /href="dictionary\.html"/);
 assert.match(homeHtml, /href="explore\.html"/);
 assert(!homeHtml.includes("app.js"));
 assert.match(dictionaryHtml, /src="app\.js"/);
 assert.match(dictionaryHtml, /id="edition-select"/);
-assert.match(dictionaryHtml, />Focus</);
-assert.match(dictionaryHtml, />Browse</);
+assert.match(dictionaryHtml, /data-i18n="dictionary.layoutFocus"/);
+assert.match(dictionaryHtml, /data-i18n="dictionary.layoutBrowse"/);
 assert.match(dictionaryHtml, /value="compact" selected/);
-assert.match(dictionaryHtml, />Split</);
+assert.match(dictionaryHtml, /data-i18n="dictionary.layoutSplit"/);
 assert.match(dictionaryHtml, /href="word-list\.html"/);
 assert.match(dictionaryHtml, /href="grammar\.html"/);
 assert.match(dictionaryHtml, /href="explore\.html"/);
 assert.doesNotMatch(dictionaryHtml, /Compare views/);
 assert.doesNotMatch(elements.get("#entry-pane").innerHTML, /New here/);
-assert.match(wordListHtml, /Every recorded word/);
+assert.match(wordListHtml, /data-i18n="wordList.heading"/);
 assert.match(wordListHtml, /src="word-list\.js"/);
-assert.match(grammarHtml, /Noun cases/);
-assert.match(grammarHtml, /Verb forms/);
-assert.match(grammarHtml, /Adjective agreement/);
+assert.match(wordListHtml, /index-toolbar/);
+assert.match(grammarHtml, /data-i18n="grammar.nounHeading"/);
+assert.match(grammarHtml, /data-i18n="grammar.verbHeading"/);
+assert.match(grammarHtml, /data-i18n="grammar.adjectiveHeading"/);
 assert.match(wordListHtml, /href="explore\.html"/);
 assert.match(grammarHtml, /href="explore\.html"/);
+assert.match(appJs, /from "\.\/site-i18n\.js"/);
+assert.match(homeHtml, /site-i18n\.js/);
+const siteI18n = await readFile(resolve(root, "site-i18n.js"), "utf8");
+const pagesWorkflow = await readFile(resolve(root, ".github/workflows/pages.yml"), "utf8");
+assert.match(siteI18n, /"grammar\.generatedText"/);
+assert.match(pagesWorkflow, /site-i18n\.js _site\//);
 assert.match(exploreHtml, /id="family-network"/);
 assert.match(exploreHtml, /id="family-atlas"/);
 assert.match(exploreHtml, /data-explore-view="atlas"/);
@@ -265,9 +276,9 @@ assert.match(exploreHtml, /data-explore-view="compare"/);
 assert.match(exploreHtml, /data-use-view="compare"/);
 assert.match(exploreHtml, /data-network-labels/);
 assert.match(exploreHtml, /src="explore\.js"/);
-assert.match(exploreHtml, /Recorded base/);
+assert.match(exploreHtml, /data-i18n="explore.recordedBases"/);
 assert.match(referenceCss, /Grammar is intentionally a plain working reference/);
 assert.match(referenceCss, /\.grammar-page \.cheat-card[^}]*box-shadow: none/);
 await assert.rejects(readFile(resolve(root, "dictionary-lab.html"), "utf8"));
 
-console.log("Frontend smoke test passed: dictionary layouts, Word list, Grammar guide, five-view Explore lab, deep links, and lazy loading are functional.");
+console.log("Frontend smoke test passed: localized dictionary layouts, Word list, Grammar reference, Explore lab, deep links, and lazy loading are functional.");
