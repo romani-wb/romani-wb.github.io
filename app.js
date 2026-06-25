@@ -359,6 +359,42 @@ function personGuide(code) {
   return PERSON_LABELS[uiLanguage()]?.[code] || PERSON_LABELS.en[code] || [code, code];
 }
 
+function firstEnglishVerbMeaning(entry) {
+  const raw = entry?.meanings?.en?.find((value) => value && value.trim()) || "";
+  const firstSense = raw
+    .replace(/\([^)]*\)/g, "")
+    .split(/[;,/]/)[0]
+    .trim()
+    .replace(/^to\s+/i, "")
+    .trim();
+  return firstSense || "eat";
+}
+
+function thirdPersonEnglishVerb(base) {
+  if (!base) return base;
+  const [verb, ...rest] = base.split(/\s+/);
+  const lower = verb.toLowerCase();
+  const irregular = { be: "is", have: "has", do: "does", go: "goes" };
+  const inflected = irregular[lower]
+    || (/[bcdfghjklmnpqrstvwxz]y$/i.test(verb)
+      ? `${verb.slice(0, -1)}ies`
+      : (/(s|x|z|ch|sh|o)$/i.test(verb) ? `${verb}es` : `${verb}s`));
+  return [inflected, ...rest].join(" ");
+}
+
+function personPlaceholderPhrase(code, verbBase) {
+  const base = verbBase || "eat";
+  const third = thirdPersonEnglishVerb(base);
+  return {
+    "1SG": `I ${base}`,
+    "2SG": `you ${base}`,
+    "3SG": `he/she/it ${third}`,
+    "1PL": `we ${base}`,
+    "2PL": `you ${base}`,
+    "3PL": `they ${base}`,
+  }[code] || "";
+}
+
 function caseGuide(code) {
   return [referenceLabel(code), grammarExplanation(code)];
 }
@@ -375,8 +411,9 @@ function formCell(row) {
   return row ? `<strong>${escapeHtml(row.form)}</strong>${row.gloss ? `<small>${escapeHtml(row.gloss)}</small>` : ""}` : `<span class="empty-form">—</span>`;
 }
 
-function renderVerbForms(generated) {
+function renderVerbForms(generated, entry) {
   const groups = new Map();
+  const verbBase = firstEnglishVerbMeaning(entry);
   for (const row of generated.rows) {
     const key = `${row.aspect || ""}|${row.tense || ""}|${row.polarity || ""}`;
     if (!groups.has(key)) groups.set(key, []);
@@ -397,7 +434,8 @@ function renderVerbForms(generated) {
         <div class="person-grid">
           ${rows.map((row) => {
             const [pronoun, description] = personGuide(row.person_number);
-            return `<div class="person-form"><span><strong>${escapeHtml(pronoun)}</strong><small>${escapeHtml(description)}</small></span>${formCell(row)}</div>`;
+            const placeholder = personPlaceholderPhrase(row.person_number, verbBase);
+            return `<div class="person-form"><span><strong>${escapeHtml(pronoun)}</strong><small>${escapeHtml(description)}</small>${placeholder ? `<small class="person-placeholder">${escapeHtml(placeholder)}</small>` : ""}</span>${formCell(row)}</div>`;
           }).join("")}
         </div>
       </section>
@@ -461,7 +499,7 @@ function renderForms(entry) {
     ? renderNounForms(generated)
     : generated.kind === "adjective_declension"
       ? renderAdjectiveForms(generated)
-      : renderVerbForms(generated);
+      : renderVerbForms(generated, entry);
 
   return `
     <section class="panel-card forms-panel learner-grammar">

@@ -31,6 +31,11 @@ review status. Case labels, person labels, tense/aspect labels, and word-type
 labels may be readable, but the UI should not invent lessons or semantics beyond
 the provided reference/paradigm data.
 
+Verb conjugation rows include provisional English person examples such as
+`I eat`, `you eat`, and `he/she/it eats`, derived from the first supplied English
+meaning when possible. These are only placeholders to make person slots readable
+until the professor confirms the correct labels/formulation.
+
 ## 2026-06-22 — Exploration uses recorded base relationships
 
 The first corpus visualization is a dedicated `Explore` page built from the

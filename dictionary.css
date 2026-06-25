@@ -902,6 +902,12 @@ a { color: inherit; }
 .person-form > span strong, .person-form > span small { display: block; }
 .person-form > span strong { font-size: 11px; }
 .person-form > span small { margin-top: 2px; color: var(--muted); font-size: 8px; }
+.person-form .person-placeholder {
+  margin-top: 6px;
+  color: var(--green);
+  font-size: 10px;
+  font-style: italic;
+}
 .person-form > strong { overflow-wrap: anywhere; font-family: Georgia, serif; font-size: 19px; font-weight: 650; }
 .person-form > small { display: block; color: var(--muted); }
 

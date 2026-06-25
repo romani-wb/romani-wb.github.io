@@ -132,6 +132,9 @@ elements.get("#entry-pane").listeners.get("click")({
   },
 });
 assert.match(elements.get("#entry-pane").innerHTML, /Generierte Vorschau/);
+assert.match(elements.get("#entry-pane").innerHTML, /I chatter/);
+assert.match(elements.get("#entry-pane").innerHTML, /you chatter/);
+assert.match(elements.get("#entry-pane").innerHTML, /he\/she\/it chatters/);
 assert.match(window.location.href, /view=forms/);
 
 elements.get("#edition-select").listeners.get("change")({ target: { value: "learner" } });
