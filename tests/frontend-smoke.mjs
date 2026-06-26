@@ -131,7 +131,7 @@ elements.get("#entry-pane").listeners.get("click")({
     },
   },
 });
-assert.match(elements.get("#entry-pane").innerHTML, /Generierte Vorschau/);
+assert.match(elements.get("#entry-pane").innerHTML, /Generierte Formen/);
 assert.match(elements.get("#entry-pane").innerHTML, /I chatter/);
 assert.match(elements.get("#entry-pane").innerHTML, /you chatter/);
 assert.match(elements.get("#entry-pane").innerHTML, /he\/she\/it chatters/);

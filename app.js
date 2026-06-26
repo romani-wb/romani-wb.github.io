@@ -508,7 +508,6 @@ function renderForms(entry) {
         <p>${formatNumber(generated.rows.length)} ${ui("Formen", "forms")} · ${state.spelling.toUpperCase()}</p>
       </div>
       ${table}
-      <div class="provisional-banner"><strong>${ui("Generierte Vorschau", "Generated preview")}</strong><span>${ui("Aus Paradigma", "Built from paradigm")} ${escapeHtml(generated.paradigm)}. ${ui("Die Struktur kommt aus der Quelltabelle; die zusammengesetzten Formen brauchen noch fachliche Prüfung.", "The structure comes from the source workbook; the assembled words still need linguistic review.")}</span></div>
       <details class="technical-details">
         <summary>${ui("Technische Herleitung und Rohparadigma", "Technical derivation and raw paradigm")}</summary>
         ${renderGenerationExplanation(entry, generated)}
@@ -1011,7 +1010,7 @@ function renderDetails(entry) {
 
 function availableEntryViews(entry) {
   const views = [{ id: "overview", label: ui("Eintrag", "Entry") }];
-  if (entry.morphology?.kind) views.push({ id: "forms", label: grammarViewLabel(entry), provisional: true });
+  if (entry.morphology?.kind) views.push({ id: "forms", label: grammarViewLabel(entry) });
   if (familyData(entry)) views.push({ id: "family", label: ui("Wortfamilie", "Word family") });
   views.push({ id: "details", label: ui("Details", "Details") });
   return views;
@@ -1058,7 +1057,7 @@ function renderEntry() {
       </header>
 
       <nav class="entry-tabs" aria-label="${ui("Eintragsansichten", "Entry views")}">
-        ${views.map((view) => `<button type="button" class="entry-tab${view.id === state.entryView ? " active" : ""}" data-entry-view="${view.id}" aria-pressed="${view.id === state.entryView}">${escapeHtml(view.label)}${view.provisional ? ` <span class="provisional-dot" aria-label="${ui("vorläufig", "provisional")}">●</span>` : ""}</button>`).join("")}
+        ${views.map((view) => `<button type="button" class="entry-tab${view.id === state.entryView ? " active" : ""}" data-entry-view="${view.id}" aria-pressed="${view.id === state.entryView}">${escapeHtml(view.label)}</button>`).join("")}
       </nav>
       <div class="entry-view">${renderEntryView(entry)}</div>
     </article>

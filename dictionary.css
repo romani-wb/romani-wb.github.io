@@ -571,7 +571,6 @@ a { color: inherit; }
 }
 
 .entry-tab.active { background: var(--green); color: #fff; }
-.entry-tab .provisional-dot { color: var(--gold); }
 
 .entry-view { margin-top: 24px; }
 
@@ -835,19 +834,6 @@ a { color: inherit; }
 }
 
 .family-overflow { margin-top: 18px; color: var(--muted); font-size: 11px; text-align: center; }
-
-.provisional-banner {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  margin-top: 18px;
-  padding: 12px 14px;
-  border-radius: 9px;
-  background: var(--gold-soft);
-  color: #6e4216;
-  font-size: 12px;
-  line-height: 1.45;
-}
 
 .learner-grammar .panel-heading h3 { font-size: clamp(28px, 4vw, 40px); }
 
