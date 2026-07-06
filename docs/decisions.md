@@ -31,16 +31,15 @@ This is a presentation decision only. It does not make the dictionary a final
 Romani Project publication, does not change source data, and remains open for
 later visual, attribution, accessibility, and publication review.
 
-## 2026-07-06 — Entrance page follows the same visual system
+## 2026-07-06 — Entrance page is compact and navigation-first
 
-The entrance/story page now uses the same provisional Romani Project visual
-system as the dictionary: local BDO Grotesk fonts, the Romani Project wordmark,
-white working surfaces, black rules, Romani blue actions, and the circular
-`DE/EN` UI-language control. The earlier dark/cream hero and hand-built `R`
-mark were removed so the first page no longer feels like a separate project.
+The entrance/story page now uses a minimal Romani Project-aligned layout:
+small header, compact introduction, one metadata line, and three clear link rows
+for Dictionary, Grammar, and Explore. The oversized hero/logo block, repeated
+dictionary portal, large fact strip, and extra decorative dividers were removed.
 
-The source-oriented introductory copy remains unchanged. This is only a
-reversible presentation update for prototype consistency.
+The purpose is efficient orientation, not a marketing page. The source-oriented
+introductory copy remains unchanged, and the presentation stays reversible.
 
 ## 2026-07-06 — Alphabetical browsing belongs inside the dictionary
 

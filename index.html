@@ -10,49 +10,46 @@
     <link rel="stylesheet" href="site-footer.css">
   </head>
   <body>
-    <a class="skip-link" href="#story" data-i18n="home.skip">Zur Geschichte springen</a>
+    <a class="skip-link" href="#main" data-i18n="home.skip">Zum Inhalt springen</a>
 
-    <header class="story-hero" id="introduction">
-      <nav class="story-nav" aria-label="Primary navigation">
-        <a class="story-brand" href="index.html" aria-label="Roman home">
-          <img src="assets/romani-project/RP_Logo.svg" alt="">
-          <span>Roman</span>
-        </a>
-        <div>
-          <a href="#story" data-i18n="home.context">Kontext</a>
-          <a href="grammar.html" data-i18n="nav.grammar">Grammatik</a>
-          <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
-          <a class="nav-dictionary" href="dictionary.html"><span data-i18n="nav.dictionary">Wörterbuch</span> <span aria-hidden="true">↗</span></a>
-          <span class="ui-language-switch" data-i18n-aria-label="site.language" aria-label="Sprache"><button type="button" class="active" data-ui-language="de" aria-pressed="true">DE</button><button type="button" data-ui-language="en" aria-pressed="false">EN</button></span>
-        </div>
+    <header class="site-top">
+      <a class="story-brand" href="index.html" aria-label="Roman home">
+        <img src="assets/romani-project/RP_Logo.svg" alt="">
+        <span>Roman</span>
+      </a>
+      <nav class="top-links" aria-label="Primary navigation">
+        <a class="primary-nav" href="dictionary.html" data-i18n="nav.dictionary">Wörterbuch</a>
+        <a href="grammar.html" data-i18n="nav.grammar">Grammatik</a>
+        <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
+        <a href="#story" data-i18n="home.context">Kontext</a>
       </nav>
-
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow" data-i18n="home.eyebrow">Die Sprache der Burgenland-Roma</p>
-          <h1 data-i18n="home.heading">Roman lebt in Wörtern, Erinnerung und Gebrauch.</h1>
-          <p class="hero-intro" data-i18n="home.intro">Eine über Generationen geprägte und dokumentierte Sprache – und ein Wörterbuch, das ihre Wörter wieder zugänglich macht.</p>
-          <a class="primary-link" href="dictionary.html"><span data-i18n="home.enter">Zum Wörterbuch</span> <span aria-hidden="true">→</span></a>
-        </div>
-        <div class="hero-mark" aria-hidden="true">
-          <img class="hero-logo" src="assets/romani-project/RP_Logo.svg" alt="">
-        </div>
-      </div>
-
-      <div class="hero-facts" aria-label="Dictionary facts">
-        <p><strong>12.525</strong><span data-i18n="home.entries">Einträge</span></p>
-        <p><strong>2</strong><span data-i18n="home.spellings">Roman-Schreibweisen</span></p>
-        <p><strong>DE · EN</strong><span data-i18n="home.meanings">Bedeutungen</span></p>
+      <div class="ui-language-switch" data-i18n-aria-label="site.language" aria-label="Sprache">
+        <button type="button" class="active" data-ui-language="de" aria-pressed="true">DE</button>
+        <button type="button" data-ui-language="en" aria-pressed="false">EN</button>
       </div>
     </header>
 
-    <main>
+    <main class="home-page" id="main">
+      <section class="home-intro" aria-labelledby="home-title">
+        <div class="home-copy">
+          <p class="eyebrow" data-i18n="home.eyebrow">Die Sprache der Burgenland-Roma</p>
+          <h1 id="home-title" data-i18n="home.heading">Roman lebt in Wörtern, Erinnerung und Gebrauch.</h1>
+          <p class="home-lede" data-i18n="home.intro">Eine über Generationen geprägte und dokumentierte Sprache – und ein Wörterbuch, das ihre Wörter wieder zugänglich macht.</p>
+          <p class="home-meta"><strong>12.525</strong> <span data-i18n="home.entries">Einträge</span><span> · </span><strong>2</strong> <span data-i18n="home.spellings">Roman-Schreibweisen</span><span> · </span><strong>DE / EN</strong> <span data-i18n="home.meanings">Bedeutungen</span></p>
+        </div>
+        <nav class="home-actions" aria-label="Schnelleinstieg" data-i18n-aria-label="home.quickNav">
+          <a class="home-action primary-action" href="dictionary.html"><span data-i18n="nav.dictionary">Wörterbuch</span><small data-i18n="home.dictionaryDescription">Suchen, alphabetisch lesen, Formen prüfen.</small></a>
+          <a class="home-action" href="grammar.html"><span data-i18n="nav.grammar">Grammatik</span><small data-i18n="home.grammarDescription">Eintragsstruktur, Kürzel und Formen.</small></a>
+          <a class="home-action" href="explore.html"><span data-i18n="nav.explore">Erkunden</span><small data-i18n="home.exploreDescription">Wortfamilien und dokumentierte Beziehungen.</small></a>
+        </nav>
+      </section>
+
       <section class="story-section" id="story" aria-labelledby="story-title">
         <div class="story-heading">
           <p class="eyebrow" data-i18n="home.shortContext">Kurzer Kontext</p>
           <h2 id="story-title" data-i18n="home.storyHeading">Eine dokumentierte Sprache mit lebendiger Geschichte</h2>
         </div>
-        <div class="story-grid">
+        <div class="story-list">
           <article>
             <span>01</span>
             <h3 data-i18n="home.place">Ort und Kontakt</h3>
@@ -70,13 +67,6 @@
           </article>
         </div>
         <p class="heritage-note" data-i18n="home.heritage">Roman steht seit 2011 im nationalen Verzeichnis des immateriellen Kulturerbes der Österreichischen UNESCO-Kommission.</p>
-      </section>
-
-      <section class="dictionary-portal" aria-labelledby="portal-title">
-        <p class="eyebrow" data-i18n="home.portalEyebrow">12.525 Einstiege</p>
-        <h2 id="portal-title" data-i18n="home.portalHeading">Ein Wort nachschlagen. Dann seinen Verbindungen folgen.</h2>
-        <p data-i18n="home.portalText">Das Wörterbuch bündelt Suche, alphabetischen Bestand, beide Roman-Schreibweisen, deutsche und englische Bedeutungen, Formen und Wortfamilien.</p>
-        <a href="dictionary.html"><span data-i18n="home.openDictionary">Roman Wörterbuch öffnen</span> <span aria-hidden="true">→</span></a>
       </section>
     </main>
 

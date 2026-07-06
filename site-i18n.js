@@ -187,12 +187,15 @@ const STRINGS = {
     "explore.labels": "Beschriftungen",
     "explore.status": "Die Verbindungen verwenden nur die im Quellenarbeitsblatt dokumentierten Basisfelder.",
     "home.title": "Roman — Sprache und Wörterbuch",
-    "home.skip": "Zur Geschichte springen",
+    "home.skip": "Zum Inhalt springen",
     "home.context": "Kontext",
+    "home.quickNav": "Schnelleinstieg",
+    "home.dictionaryDescription": "Suchen, alphabetisch lesen, Formen prüfen.",
+    "home.grammarDescription": "Eintragsstruktur, Kürzel und Formen.",
+    "home.exploreDescription": "Wortfamilien und dokumentierte Beziehungen.",
     "home.eyebrow": "Die Sprache der Burgenland-Roma",
     "home.heading": "Roman lebt in Wörtern, Erinnerung und Gebrauch.",
     "home.intro": "Eine über Generationen geprägte und dokumentierte Sprache – und ein Wörterbuch, das ihre Wörter wieder zugänglich macht.",
-    "home.enter": "Zum Wörterbuch",
     "home.entries": "Einträge",
     "home.spellings": "Roman-Schreibweisen",
     "home.meanings": "Bedeutungen",
@@ -204,11 +207,7 @@ const STRINGS = {
     "home.continuityText": "Verfolgung, Holocaust, anhaltende Diskriminierung und Sprachwechsel nach 1945 reduzierten den alltäglichen Gebrauch stark. Roman bleibt dennoch ein wichtiges Zeichen von Gemeinschaft und Identität.",
     "home.codification": "Kodifizierung und Zugang",
     "home.codificationText": "Die Selbstorganisation der Community führte zur Kodifizierungsarbeit mit Sprachwissenschaftlern der Universität Graz. Unterricht, Medien, Roma-Service und dieses Wörterbuch führen diese Arbeit fort.",
-    "home.heritage": "Roman steht seit 2011 im nationalen Verzeichnis des immateriellen Kulturerbes der Österreichischen UNESCO-Kommission.",
-    "home.portalEyebrow": "12.525 Einstiege",
-    "home.portalHeading": "Ein Wort nachschlagen. Dann seinen Verbindungen folgen.",
-    "home.portalText": "Das Wörterbuch bündelt Suche, alphabetischen Bestand, beide Roman-Schreibweisen, deutsche und englische Bedeutungen, Formen und Wortfamilien.",
-    "home.openDictionary": "Roman Wörterbuch öffnen"
+    "home.heritage": "Roman steht seit 2011 im nationalen Verzeichnis des immateriellen Kulturerbes der Österreichischen UNESCO-Kommission."
   },
   en: {
     "site.language": "Language",
@@ -398,12 +397,15 @@ const STRINGS = {
     "explore.labels": "Labels",
     "explore.status": "Connections use only the recorded base fields in the source workbook.",
     "home.title": "Roman — Language and Dictionary",
-    "home.skip": "Skip to the story",
+    "home.skip": "Skip to content",
     "home.context": "Context",
+    "home.quickNav": "Quick navigation",
+    "home.dictionaryDescription": "Search, browse alphabetically, inspect forms.",
+    "home.grammarDescription": "Entry structure, codes, and forms.",
+    "home.exploreDescription": "Word families and recorded relationships.",
     "home.eyebrow": "The language of the Burgenland Roma",
     "home.heading": "Roman lives in words, memory, and use.",
     "home.intro": "A documented language shaped across generations—and a dictionary built to make its words accessible again.",
-    "home.enter": "Enter the dictionary",
     "home.entries": "entries",
     "home.spellings": "Roman spellings",
     "home.meanings": "meanings",
@@ -415,11 +417,7 @@ const STRINGS = {
     "home.continuityText": "Persecution, the Holocaust, persistent discrimination, and post-war language shift sharply reduced everyday use. Roman nevertheless remains an important marker of community and identity.",
     "home.codification": "Codification and access",
     "home.codificationText": "Community self-organisation led to codification work with linguists from the University of Graz. Teaching, media, Roma-Service activities, and this dictionary continue that work.",
-    "home.heritage": "Roman has been listed in the Austrian UNESCO Commission’s national inventory of intangible cultural heritage since 2011.",
-    "home.portalEyebrow": "12,525 ways in",
-    "home.portalHeading": "Look up a word. Then follow where it leads.",
-    "home.portalText": "The dictionary brings lookup, the alphabetical inventory, both Roman spellings, German and English meanings, forms, and word families together.",
-    "home.openDictionary": "Open Roman Dictionary"
+    "home.heritage": "Roman has been listed in the Austrian UNESCO Commission’s national inventory of intangible cultural heritage since 2011."
   }
 };
 

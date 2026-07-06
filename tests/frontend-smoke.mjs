@@ -257,13 +257,14 @@ const pagesWorkflow = await readFile(resolve(root, ".github/workflows/pages.yml"
 assert.match(homeHtml, /href="dictionary\.html"/);
 assert.match(homeHtml, /href="explore\.html"/);
 assert.match(homeHtml, /class="story-brand"/);
-assert.match(homeHtml, /class="hero-logo"/);
+assert.match(homeHtml, /class="home-actions"/);
+assert.match(homeHtml, /data-i18n="home\.dictionaryDescription"/);
 assert.match(homeHtml, /assets\/romani-project\/RP_Logo\.svg/);
 assert(!homeHtml.includes("app.js"));
 assert.match(homeCss, /BDOGrotesk-Regular\.otf/);
 assert.match(homeCss, /--blue: #1b68d2/);
 assert.doesNotMatch(homeCss, /radial-gradient/);
-assert.doesNotMatch(homeHtml, /class="hero-r"|class="orbit/);
+assert.doesNotMatch(homeHtml, /class="hero-r"|class="orbit|class="hero-logo"|class="dictionary-portal/);
 for (const html of [homeHtml, dictionaryHtml, grammarHtml, exploreHtml, imprintHtml]) {
   assert.match(html, /site-footer\.css/);
   assert.match(html, /class="site-footer"/);

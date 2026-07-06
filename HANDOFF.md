@@ -38,7 +38,7 @@ accf6d0 Add verb person placeholders
 
 The current prototype is a static Roman dictionary with:
 
-- a sourced story/home page at `index.html`;
+- a compact, navigation-first sourced story/home page at `index.html`;
 - a separate bookmarkable dictionary at `dictionary.html`;
 - a provisional Romani Project visual system shared by the story/home page,
   dictionary shell, footer, and imprint: local BDO Grotesk fonts, the Romani
