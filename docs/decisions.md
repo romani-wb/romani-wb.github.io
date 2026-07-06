@@ -31,6 +31,17 @@ This is a presentation decision only. It does not make the dictionary a final
 Romani Project publication, does not change source data, and remains open for
 later visual, attribution, accessibility, and publication review.
 
+## 2026-07-06 — Entrance page follows the same visual system
+
+The entrance/story page now uses the same provisional Romani Project visual
+system as the dictionary: local BDO Grotesk fonts, the Romani Project wordmark,
+white working surfaces, black rules, Romani blue actions, and the circular
+`DE/EN` UI-language control. The earlier dark/cream hero and hand-built `R`
+mark were removed so the first page no longer feels like a separate project.
+
+The source-oriented introductory copy remains unchanged. This is only a
+reversible presentation update for prototype consistency.
+
 ## 2026-07-06 — Alphabetical browsing belongs inside the dictionary
 
 The separate Word list surface has been folded into the default Browse

@@ -40,6 +40,10 @@ The current prototype is a static Roman dictionary with:
 
 - a sourced story/home page at `index.html`;
 - a separate bookmarkable dictionary at `dictionary.html`;
+- a provisional Romani Project visual system shared by the story/home page,
+  dictionary shell, footer, and imprint: local BDO Grotesk fonts, the Romani
+  Project wordmark, black rules, white surfaces, Romani blue actions, and a
+  circular `DE/EN` interface-language control;
 - a German-first site interface with an English toggle preserved in URL/storage;
 - client-side search across Roman `INT`, Roman `DEU`, German, and English;
 - independent controls for interface language, Roman spelling, and translation
