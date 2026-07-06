@@ -4,10 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title data-i18n="grammar.title">Roman Grammatik</title>
-    <meta name="description" content="Practical Roman grammar cheat sheets for noun cases, verb conjugation, adjective agreement, and dictionary notation.">
+    <meta name="description" content="Source-aligned Roman entry structure and grammar reference for dictionary fields, inflection views, and notation.">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="dictionary.css">
     <link rel="stylesheet" href="reference.css">
+    <link rel="stylesheet" href="site-footer.css">
   </head>
   <body class="reference-body grammar-body">
     <header class="reference-header">
@@ -15,7 +16,6 @@
       <nav class="reference-nav" aria-label="Primary navigation">
         <a href="index.html" data-i18n="nav.story">Geschichte</a>
         <a href="dictionary.html" data-i18n="nav.dictionary">Wörterbuch</a>
-        <a href="word-list.html" data-i18n="nav.wordList">Wortliste</a>
         <a class="active" href="grammar.html" aria-current="page" data-i18n="nav.grammar">Grammatik</a>
         <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
       </nav>
@@ -28,54 +28,96 @@
 
     <main class="grammar-page">
       <header class="reference-hero grammar-hero">
-        <h1 data-i18n="grammar.heading">Grammatik</h1>
-        <p data-i18n="grammar.sourceNote">Strukturen aus den Paradigmentabellen des Wörterbuchs.</p>
+        <h1 data-i18n="grammar.heading">Eintrag und Grammatik</h1>
+        <p data-i18n="grammar.sourceNote">Kompakte Lesefassung der Strukturdefinition: sichtbarer Eintrag, Kürzel und die aus Paradigmentabellen erzeugten Formen.</p>
       </header>
 
       <nav class="grammar-jump" aria-label="Grammatikbereiche" data-i18n-aria-label="grammar.sections">
-        <a href="#nouns" data-i18n="grammar.nouns">Substantive</a><a href="#verbs" data-i18n="grammar.verbs">Verben</a><a href="#adjectives" data-i18n="grammar.adjectives">Adjektive</a><a href="#word-types" data-i18n="grammar.wordTypes">Wortarten</a><a href="#notation" data-i18n="grammar.notation">Notation</a>
+        <a href="#entry-model" data-i18n="grammar.structure">Eintragsstruktur</a><a href="#forms" data-i18n="grammar.forms">Formen</a><a href="#codes" data-i18n="grammar.codes">Kürzel</a><a href="#word-types" data-i18n="grammar.wordTypes">Wortarten</a><a href="#notation" data-i18n="grammar.notation">Notation</a>
       </nav>
 
-      <section class="cheat-section" id="nouns">
-        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.nouns">Substantive</p><h2 data-i18n="grammar.nounHeading">Deklination</h2><p data-i18n="grammar.nounDimensions">Kasus × Numerus; die Substantivklasse bestimmt die Endungstabelle.</p></div></div>
-        <div class="grammar-inventory grammar-inventory-nouns">
+      <section class="cheat-section" id="entry-model">
+        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.structure">Eintragsstruktur</p><h2 data-i18n="grammar.structureHeading">Die Reihenfolge im Wörterbuch</h2><p data-i18n="grammar.structureIntro">Die PDF definiert zuerst den sichtbaren Eintrag. Grammatik steht dort als knappe Zeile zwischen Lemma und Bedeutung; Flexion und Wortfamilie sind eigene Ansichten.</p></div></div>
+        <div class="entry-pattern">
+          <article>
+            <span data-i18n="grammar.entryLine">Eintragszeile</span>
+            <code>lemma [composition; variation; reconstruction] WORDCLASS 1. WORDCLASS 2. FLEX1 [flex2; flex3]</code>
+            <p data-i18n="grammar.entryLineText">Lemma plus optionale Zusammensetzung, Variante oder Rekonstruktion in eckigen Klammern; danach Wortart und Flexionsklasse.</p>
+          </article>
+          <article>
+            <span data-i18n="grammar.meaningLine">Bedeutungen</span>
+            <code>Entsprechung 01, ..., 10</code>
+            <p data-i18n="grammar.meaningLineText">Bis zu zehn deutsche und zehn englische Entsprechungen. Zusätze innerhalb einer Bedeutung bleiben rund geklammert.</p>
+          </article>
+          <article>
+            <span data-i18n="grammar.sourceLine">Quelle</span>
+            <code>[SOURCE1 source2]</code>
+            <p data-i18n="grammar.sourceLineText">Herkunft und Ableitungsbasis bleiben als Quellangabe in eckigen Klammern sichtbar, wenn die Quelle sie enthält.</p>
+          </article>
+          <article>
+            <span data-i18n="grammar.actionsLine">Eigene Ansichten</span>
+            <code>Flexionsparadigma / Wortfamilie</code>
+            <p data-i18n="grammar.actionsLineText">Flexionsparadigma und Wortfamilie stehen nicht in der Hauptzeile, sondern als separate Eintragsansichten.</p>
+          </article>
+        </div>
+        <div class="structure-notes">
+          <p data-i18n="grammar.coreNote">Die Struktur markiert Lemma, Wortart und Entsprechung als Kern; optionale Felder erscheinen nur, wenn sie im Workbook belegt sind.</p>
+          <p data-i18n="grammar.internalNote">Paradigm und Domain bleiben intern: sie steuern Ausgabe und Sortierung, aber sie sind keine primäre Erklärung für Leser.</p>
+        </div>
+      </section>
+
+      <section class="cheat-section" id="forms">
+        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.forms">Formen</p><h2 data-i18n="grammar.formsHeading">Was die Grammatik-Ansicht zeigt</h2><p data-i18n="grammar.formsIntro">Die Ansicht zeigt vollständige Formen aus Lemma, Flexionsfeldern und Paradigmentabelle. Sie ergänzt keine Regeln und korrigiert keine Quelle.</p></div></div>
+        <div class="form-model-table-wrap">
+          <table class="form-model-table">
+            <thead><tr><th data-i18n="grammar.formWordType">Wortart</th><th data-i18n="grammar.formSourceFields">Steuerfelder</th><th data-i18n="grammar.formDisplay">Anzeige</th><th data-i18n="grammar.example">Beispiel</th></tr></thead>
+            <tbody>
+              <tr><th><code>N</code> <span data-i18n="grammar.nouns">Substantive</span></th><td data-i18n="grammar.nounSourceFields">Word class 1 = N; Flexion 1 wählt M-DECL, F-DECL oder MF-DECL; Paradigm wählt die Zeile der Endungen.</td><td data-i18n="grammar.nounDisplay">Kasus in Zeilen, Singular und Plural in Spalten.</td><td><a class="example-link" href="dictionary.html?entry=g00003_b284cd5c&meaning=de&edition=compact&view=forms" data-i18n="grammar.openNoun">Beispieldeklination öffnen →</a></td></tr>
+              <tr><th><code>V</code> <span data-i18n="grammar.verbs">Verben</span></th><td data-i18n="grammar.verbSourceFields">Word class 1 = V; Flexion 2/3 enthalten NPFV-Marker; Paradigm wählt V-CONJG oder V-EXIST.</td><td data-i18n="grammar.verbDisplay">Gruppen nach Aspekt und Tempus; darin die sechs Personen.</td><td><a class="example-link" href="dictionary.html?entry=g00005_236c444a&meaning=de&edition=compact&view=forms" data-i18n="grammar.openVerb">Beispielkonjugation öffnen →</a></td></tr>
+              <tr><th><code>ADJ</code> <span data-i18n="grammar.adjectives">Adjektive</span></th><td data-i18n="grammar.adjectiveSourceFields">Word class 1 = ADJ; ADJ-DECL; Flexion 2 hält Plural- und Obliquusvokale fest.</td><td data-i18n="grammar.adjectiveDisplay">Grundform und oblique Form nach Numerus und Genus.</td><td><a class="example-link" href="dictionary.html?entry=g00008_ffa2702b&meaning=de&edition=compact&view=forms" data-i18n="grammar.openAdjective">Beispieldeklination öffnen →</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="source-caution" data-i18n="grammar.generatedCaution">Die erzeugten Formen bleiben fachlich zu prüfen; die technische Herleitung steht im Eintrag unter Rohparadigma.</p>
+      </section>
+
+      <section class="cheat-section" id="codes">
+        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.codes">Kürzel</p><h2 data-i18n="grammar.codesHeading">Die Kürzel im Formenraster</h2><p data-i18n="grammar.codesIntro">Diese Kürzel benennen Tabellenachsen. Rohwerte bleiben für Kontrolle und Rückverfolgung in den Details erhalten.</p></div></div>
+        <div class="grammar-inventory grammar-code-reference">
           <div><h3 data-i18n="grammar.case">Kasus</h3><p><code>NOM</code> <span data-i18n="grammar.caseNom">Nominativ</span></p><p><code>ACC</code> <span data-i18n="grammar.caseAcc">Akkusativ</span></p><p><code>DAT</code> <span data-i18n="grammar.caseDat">Dativ</span></p><p><code>ABL</code> <span data-i18n="grammar.caseAbl">Ablativ</span></p><p><code>LOC</code> <span data-i18n="grammar.caseLoc">Lokativ</span></p><p><code>INS/SOC</code> <span data-i18n="grammar.caseIns">Instrumental / Soziativ</span></p><p><code>GEN</code> <span data-i18n="grammar.caseGen">Genitiv</span></p></div>
           <div><h3 data-i18n="grammar.number">Numerus</h3><p><code>SG</code> <span data-i18n="grammar.singular">Singular</span></p><p><code>PL</code> <span data-i18n="grammar.plural">Plural</span></p></div>
-          <div><h3 data-i18n="grammar.genderClass">Genus / Substantivklasse</h3><p><code>M</code> <span data-i18n="grammar.masculine">Maskulin</span></p><p><code>F</code> <span data-i18n="grammar.feminine">Feminin</span></p><p><code>M/F</code></p></div>
+          <div><h3 data-i18n="grammar.person">Person</h3><p><code>1SG</code> <span data-i18n="grammar.person1Sg">ich</span></p><p><code>2SG</code> <span data-i18n="grammar.person2Sg">du</span></p><p><code>3SG</code> <span data-i18n="grammar.person3Sg">er / sie / es</span></p><p><code>1PL</code> <span data-i18n="grammar.person1Pl">wir</span></p><p><code>2PL</code> <span data-i18n="grammar.person2Pl">ihr</span></p><p><code>3PL</code> <span data-i18n="grammar.person3Pl">sie</span></p></div>
+          <div><h3 data-i18n="grammar.aspect">Aspekt</h3><p><code>NPFV</code> <span data-i18n="grammar.aspectNpfv">nonperfektiv</span></p><p><code>PFV</code> <span data-i18n="grammar.aspectPfv">perfektiv</span></p></div>
+          <div><h3 data-i18n="grammar.tense">Tempus</h3><p><code>PRS</code> <span data-i18n="grammar.tensePrs">Präsens</span></p><p><code>FUT</code> <span data-i18n="grammar.tenseFut">Futur</span></p><p><code>PST/PRT</code> <span data-i18n="grammar.tensePst">Vergangenheit</span></p><p><code>IRR</code> <span data-i18n="grammar.tenseIrr">Irrealis</span></p></div>
+          <div><h3 data-i18n="grammar.genderClass">Genus / Klasse</h3><p><code>M</code> <span data-i18n="grammar.masculine">Maskulin</span></p><p><code>F</code> <span data-i18n="grammar.feminine">Feminin</span></p><p><code>M/F</code> <span data-i18n="grammar.masculineFeminine">maskulin/feminin</span></p><p><code>OBL</code> <span data-i18n="grammar.oblique">Oblique Form</span></p></div>
         </div>
-        <a class="example-link standalone-link" href="dictionary.html?entry=g00003_b284cd5c&meaning=de&edition=compact&view=forms" data-i18n="grammar.openNoun">Beispieldeklination öffnen →</a>
-      </section>
-
-      <section class="cheat-section" id="verbs">
-        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.verbs">Verben</p><h2 data-i18n="grammar.verbHeading">Konjugation</h2><p data-i18n="grammar.verbDimensions">Person × Aspekt × Tempus.</p></div></div>
-        <div class="grammar-inventory">
-          <div><h3 data-i18n="grammar.person">Person</h3><p class="code-line"><code>1SG</code><code>2SG</code><code>3SG</code><code>1PL</code><code>2PL</code><code>3PL</code></p></div>
-          <div><h3 data-i18n="grammar.aspect">Aspekt</h3><p class="code-line"><code>NPFV</code><code>PFV</code></p></div>
-          <div><h3 data-i18n="grammar.tense">Tempus</h3><p class="code-line"><code>PRS</code><code>FUT</code><code>PST</code><code>IRR</code></p></div>
-        </div>
-        <a class="example-link standalone-link" href="dictionary.html?entry=g00005_236c444a&meaning=de&edition=compact&view=forms" data-i18n="grammar.openVerb">Beispielkonjugation öffnen →</a>
-      </section>
-
-      <section class="cheat-section" id="adjectives">
-        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.adjectives">Adjektive</p><h2 data-i18n="grammar.adjectiveHeading">Adjektivdeklination</h2><p data-i18n="grammar.adjectiveDimensions">Form × Numerus × Genus.</p></div></div>
-        <div class="grammar-inventory">
-          <div><h3 data-i18n="grammar.form">Form</h3><p><code>NOM</code> <span data-i18n="grammar.basic">Grundform / Nominativ</span></p><p><code>OBL</code> <span data-i18n="grammar.oblique">Oblique Form</span></p></div>
-          <div><h3 data-i18n="grammar.number">Numerus</h3><p class="code-line"><code>SG</code><code>PL</code></p></div>
-          <div><h3 data-i18n="grammar.genderClass">Genus</h3><p class="code-line"><code>M</code><code>F</code></p></div>
-        </div>
-        <a class="example-link standalone-link" href="dictionary.html?entry=g00008_ffa2702b&meaning=de&edition=compact&view=forms" data-i18n="grammar.openAdjective">Beispieldeklination öffnen →</a>
       </section>
 
       <section class="cheat-section" id="word-types">
-        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.wordTypes">Wortarten</p><h2 data-i18n="grammar.wordTypesHeading">Wortartkürzel</h2></div></div>
+        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.wordTypes">Wortarten</p><h2 data-i18n="grammar.wordTypesHeading">Wortartkürzel in der Eintragszeile</h2><p data-i18n="grammar.wordTypesIntro">Im Eintrag werden diese Kürzel als lesbare Wortarten angezeigt; der Originalcode bleibt nachvollziehbar.</p></div></div>
         <div class="word-type-cheat"><div><code>N</code><strong data-i18n="wordClass.N">Substantiv</strong></div><div><code>V</code><strong data-i18n="wordClass.V">Verb</strong></div><div><code>ADJ</code><strong data-i18n="wordClass.ADJ">Adjektiv</strong></div><div><code>ADV</code><strong data-i18n="wordClass.ADV">Adverb</strong></div><div><code>NP</code><strong data-i18n="wordClass.NP">Nominalphrase</strong></div><div><code>PTCLV</code><strong data-i18n="wordClass.PTCLV">Partikelverb</strong></div><div><code>VP</code><strong data-i18n="wordClass.VP">Verbalphrase</strong></div><div><code>PRON</code><strong data-i18n="wordClass.PRON">Pronomen</strong></div><div><code>PREP</code><strong data-i18n="wordClass.PREP">Präposition</strong></div><div><code>CONJ</code><strong data-i18n="wordClass.CONJ">Konjunktion</strong></div><div><code>NUM</code><strong data-i18n="wordClass.NUM">Numerale</strong></div><div><code>PTCL</code><strong data-i18n="wordClass.PTCL">Partikel</strong></div></div>
       </section>
 
       <section class="cheat-section notation-section" id="notation">
-        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.notation">Notation</p><h2 data-i18n="grammar.notationHeading">Notation im Eintrag</h2></div></div>
-        <div class="concept-grid"><article class="cheat-card"><h3 data-i18n="grammar.spellings">INT / DEU</h3><p data-i18n="grammar.spellingsText">Internationale und deutsch orientierte Roman-Schreibweise.</p></article><article class="cheat-card"><h3 data-i18n="grammar.brackets">Eckige Klammern</h3><p data-i18n="grammar.bracketsText">Zusatzinformationen bei Lemma, Flexion und Quelle. Bedeutungszusätze stehen in runden Klammern.</p></article><article class="cheat-card"><h3 data-i18n="grammar.generated">Generierte Formen</h3><p data-i18n="grammar.generatedText">Aus Lemma und Paradigmentabelle zusammengesetzt; noch nicht fachlich geprüft.</p></article></div>
+        <div class="cheat-heading"><div><p class="eyebrow" data-i18n="grammar.notation">Notation</p><h2 data-i18n="grammar.notationHeading">Schreibweise und Klammern</h2></div></div>
+        <div class="concept-grid"><article class="cheat-card"><h3 data-i18n="grammar.spellings">INT / DEU</h3><p data-i18n="grammar.spellingsText">INT ist die internationale Roman-Schreibung; DEU ist die deutsch orientierte Roman-Schreibung. Bedeutungen sind davon getrennt.</p></article><article class="cheat-card"><h3 data-i18n="grammar.brackets">Klammern</h3><p data-i18n="grammar.bracketsText">Eckige Klammern stehen bei Lemma, Flexion und Quelle. Bedeutungszusätze bleiben in runden Klammern.</p></article><article class="cheat-card"><h3 data-i18n="grammar.hyphen">Trennstrich im Lemma</h3><p data-i18n="grammar.hyphenText">Der Trennstrich wird nicht angezeigt; er markiert intern, wo Endungen an den Stamm treten.</p></article><article class="cheat-card"><h3 data-i18n="grammar.generated">Generierte Formen</h3><p data-i18n="grammar.generatedText">Aus Lemma und Paradigmentabelle zusammengesetzt; noch nicht fachlich geprüft.</p></article></div>
       </section>
     </main>
+    <footer class="site-footer">
+      <div class="site-footer-inner">
+        <a class="site-footer-logo" href="index.html" aria-label="Roman home">
+          <img src="assets/romani-project/RP_Logo.svg" alt="">
+        </a>
+        <nav class="site-footer-links" aria-label="Footer">
+          <a href="https://www.bundeskanzleramt.gv.at/themen/volksgruppen.html" target="_blank" rel="noreferrer" data-i18n="footer.minorityPromotion">Volksgruppenförderung</a>
+          <a class="site-footer-bka" href="https://www.bundeskanzleramt.gv.at/themen/volksgruppen.html" target="_blank" rel="noreferrer" aria-label="Bundeskanzleramt">
+            <img class="footer-logo-de" src="assets/romani-project/BKA_Logo_deu.svg" alt="">
+            <img class="footer-logo-en" src="assets/romani-project/BKA_Logo_eng.svg" alt="">
+          </a>
+          <a href="imprint.html" data-i18n="footer.imprint">Impressum</a>
+        </nav>
+      </div>
+    </footer>
     <script src="site-i18n.js" type="module"></script>
   </body>
 </html>

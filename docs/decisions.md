@@ -1,5 +1,60 @@
 # Decision log
 
+## 2026-07-06 -- Data-driven logo concept remains provisional
+
+The first `Roman-VP` identity experiment is a generated SVG heatmap wordmark.
+Each visible letter samples entries whose `INT` Roman headword begins with that
+letter; tile color encodes broad source word-class groups, the hyphen encodes
+the 42 logical workbook columns, and captions expose entry, generated-form,
+chunk, and validation counts. This is a visual concept only. It does not replace
+the site wordmark, add linguistic interpretation, or claim editorial approval.
+
+## 2026-07-06 — Footer and imprint mirror Romani Project attribution
+
+The static site now carries the Romani Project-style footer: Volksgruppenförderung
+/ Minority Promotion, the Bundeskanzleramt logo, and an imprint link. The imprint
+page follows the reference project attribution for `[romani] project / Dieter W.
+Halwachs`, Akademie Graz, Roma Service, and Romano Centro. The project-specific
+credit is `Design und Technik: Valentin Edelsbrunner`; no external designer
+credit is added for this dictionary prototype.
+
+## 2026-07-06 — Dictionary adopts a provisional Romani Project visual system
+
+The dictionary now uses the existing Romani Project assets and visual language as
+its provisional design baseline: BDO Grotesk fonts, the Romani Project wordmark,
+black dividing lines, white working surfaces, Romani blue for active states, and
+a circular `DE/EN` UI-language control. The implementation keeps these choices in
+CSS custom properties and local assets so the look can be changed without
+rewriting dictionary behavior or data rendering.
+
+This is a presentation decision only. It does not make the dictionary a final
+Romani Project publication, does not change source data, and remains open for
+later visual, attribution, accessibility, and publication review.
+
+## 2026-07-06 — Alphabetical browsing belongs inside the dictionary
+
+The separate Word list surface has been folded into the default Browse
+dictionary flow. `dictionary.html` now owns lookup, selected-entry reading, and
+the progressive alphabetical inventory over the same search index, spelling,
+translation, type, and URL state. `word-list.html` remains only as a redirect to
+`dictionary.html#dictionary-index` so old bookmarks keep working during the
+prototype.
+
+This reduces two overlapping entry points to one dictionary surface without
+changing source data or ranking rules. The split Focus/Browse/Split layout model
+remains: Browse is the integrated lookup-plus-inventory flow, Focus stays
+search-first, and Split stays a dense repeated-lookup view.
+
+## 2026-07-06 — Grammar reference follows the entry structure first
+
+The Grammar page now starts from the 17 June structure definition before listing
+paradigm dimensions. It shows the visible entry order, separates internal
+`Paradigm` and `Domain` from reader-facing grammar, and condenses noun, verb,
+and adjective forms into one source-field-to-display table. Entry form views now
+include a short source summary before generated tables. This remains a
+presentation layer over the workbook and paradigm model; no source values,
+endings, or linguistic approvals are added.
+
 ## 2026-06-23 — German-first interface and separated language controls
 
 The website interface is now German-first with an English UI toggle. The UI
@@ -17,19 +72,21 @@ the shared `site-i18n.js` module.
 
 ## 2026-06-23 — Dictionary cleanup favors lookup over onboarding
 
-The dictionary entry no longer ends with a "Keep exploring" catalogue. The full
-word list owns corpus browsing, and the dictionary page owns lookup plus selected
-entry inspection.
+The dictionary entry no longer ends with a "Keep exploring" catalogue. At this
+point the full Word list owned corpus browsing, while the dictionary page owned
+lookup plus selected entry inspection. This separation was later reversed on
+2026-07-06 when alphabetical browsing moved into `dictionary.html`.
 
-The Word list is now table-like: visible columns for Roman, word type, and
-meaning, with search/spelling/translation/type/letter controls fixed at the
-bottom. The old "complete index" and scroll-instruction copy was removed.
+The then-separate Word list became table-like: visible columns for Roman, word
+type, and meaning, with search/spelling/translation/type/letter controls fixed
+at the bottom. The old "complete index" and scroll-instruction copy was removed.
 
 The Grammar page and generated grammar snippets now avoid artificial beginner
 explanations. They expose source-derived dimensions, codes, generated forms, and
-review status. Case labels, person labels, tense/aspect labels, and word-type
-labels may be readable, but the UI should not invent lessons or semantics beyond
-the provided reference/paradigm data.
+the unreviewed status in documentation/notation instead of repeated placeholder
+badges. Case labels, person labels, tense/aspect labels, and word-type labels may
+be readable, but the UI should not invent lessons or semantics beyond the
+provided reference/paradigm data.
 
 Verb conjugation rows include provisional English person examples such as
 `I eat`, `you eat`, and `he/she/it eats`, derived from the first supplied English
@@ -53,12 +110,13 @@ common broad word type, and selecting a bubble opens the source-aligned SVG
 family web. The atlas is an overview sample; corpus totals remain visible and the
 search reaches every entry.
 
-Three additional views remain deliberately labelled as exploration choices, not
+Four additional views remain deliberately labelled as exploration choices, not
 final publication decisions. Type ribbons show the explicit base → broad word
 type → entry flow; Family rings encode the same selected-family composition as
 middle and outer arcs; Size landscape plots all 2,664 multi-word families in
-dominant-type lanes against family size. The node-link Family web now adds curved
-paths, type halos, selected-path emphasis, and optional labels. All five views
+dominant-type lanes against family size; Family comparison contrasts two selected
+bases by size and word-type composition. The node-link Family web now adds curved
+paths, type halos, selected-path emphasis, and optional labels. All six views
 reuse one state/data layer and make no etymological or semantic-similarity claim.
 
 ## 2026-06-22 — Exact meanings outrank substrings
@@ -72,9 +130,9 @@ verb whose supplied German meaning is exactly `essen`.
 ## 2026-06-22 — Browse becomes the default reading flow
 
 Browse now keeps search and Surprise me at the top, presents the selected entry
-next, and places the word-type catalogue at the bottom. The catalogue links to a
-new progressive alphabetical Word list instead of expanding a second result area
-inside the entry page. This keeps lookup and corpus browsing distinct.
+next, and places the word-type catalogue at the bottom. It initially linked to a
+new progressive alphabetical Word list; that browsing surface was later folded
+back into the dictionary page on 2026-07-06.
 
 A separate Grammar guide provides source-aligned cheat sheets for noun cases,
 verb person/tense/aspect, adjective agreement, word types, and dictionary notation.
@@ -94,13 +152,13 @@ the interface should demonstrate its structure rather than explain how to read i
 
 ## 2026-06-22 — One dictionary, three reading modes
 
-The standalone dictionary now supports `Learner`, `Compact`, and `Explorer`
-editions over the same data, component code, and deep-link state. Learner is the
-provisional default; Compact is a quieter reference view; Explorer preserves
-the structure and relationship visualisations. Separate prototype codebases were
-rejected because they would drift while testing presentation rather than data
-behavior. The dedicated comparison surface was removed later the same day; the
-single in-dictionary selector remains.
+The standalone dictionary now supports `Focus`, `Browse`, and `Split`
+presentation modes over the same data, component code, and deep-link state.
+Browse is the provisional default; Focus is search-first, and Split preserves a
+persistent result sidebar. Separate prototype codebases were rejected because
+they would drift while testing presentation rather than data behavior. The
+dedicated comparison surface was removed later the same day; the single
+in-dictionary selector remains.
 
 ## 2026-06-22 — Paradigms become practical grammar, not bare endings
 
@@ -108,8 +166,9 @@ Generated verb forms are grouped by aspect/tense and person, noun forms by case
 and number, and adjective forms by agreement dimensions. The overview exposes a
 small set of useful complete forms. Plain-language labels and cheat sheets are a
 presentation layer over `paradigm_model.json`; they do not add linguistic rules.
-Every form set is still identified as generated and awaiting linguistic review,
-with raw codes and derivation collapsed underneath.
+Generated forms remain unreviewed; the visible tables avoid repeated provisional
+badges, while documentation, notation, raw codes, and derivation keep that status
+traceable.
 
 ## 2026-06-22 — Story and dictionary are separate surfaces
 
@@ -150,8 +209,8 @@ Current provisional defaults:
 - German meanings on first visit;
 - Browse layout on first visit;
 - URL parameters override remembered browser preferences;
-- generated morphology is presented as a labelled preview; raw codes and
-  derivation are collapsed;
+- generated morphology is presented as practical grammar, with its generated and
+  unreviewed status documented; raw codes and derivation are collapsed;
 - the static-site architecture remains in place;
 - current row-derived entry IDs may be shared during development but are not a
   permanent identity contract.

@@ -7,6 +7,7 @@
     <meta name="description" content="Discover Roman, the language of the Burgenland Roma, and enter its German-English online dictionary.">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="site-footer.css">
   </head>
   <body>
     <a class="skip-link" href="#story" data-i18n="home.skip">Zur Geschichte springen</a>
@@ -16,7 +17,6 @@
         <a class="wordmark" href="index.html" aria-label="Roman home">Roman</a>
         <div>
           <a href="#story" data-i18n="home.context">Kontext</a>
-          <a href="word-list.html" data-i18n="nav.wordList">Wortliste</a>
           <a href="grammar.html" data-i18n="nav.grammar">Grammatik</a>
           <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
           <a class="nav-dictionary" href="dictionary.html"><span data-i18n="nav.dictionary">Wörterbuch</span> <span aria-hidden="true">↗</span></a>
@@ -75,17 +75,25 @@
       <section class="dictionary-portal" aria-labelledby="portal-title">
         <p class="eyebrow" data-i18n="home.portalEyebrow">12.525 Einstiege</p>
         <h2 id="portal-title" data-i18n="home.portalHeading">Ein Wort nachschlagen. Dann seinen Verbindungen folgen.</h2>
-        <p data-i18n="home.portalText">Das Wörterbuch ist ein eigenständiges Werkzeug. Beide Roman-Schreibweisen, deutsche und englische Bedeutungen, Formen und Wortfamilien sind direkt zugänglich.</p>
+        <p data-i18n="home.portalText">Das Wörterbuch bündelt Suche, alphabetischen Bestand, beide Roman-Schreibweisen, deutsche und englische Bedeutungen, Formen und Wortfamilien.</p>
         <a href="dictionary.html"><span data-i18n="home.openDictionary">Roman Wörterbuch öffnen</span> <span aria-hidden="true">→</span></a>
       </section>
     </main>
 
     <footer class="site-footer">
-      <a class="wordmark" href="index.html">Roman</a>
-      <a href="dictionary.html" data-i18n="nav.dictionary">Wörterbuch</a>
-      <a href="word-list.html" data-i18n="nav.wordList">Wortliste</a>
-      <a href="grammar.html" data-i18n="nav.grammar">Grammatik</a>
-      <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
+      <div class="site-footer-inner">
+        <a class="site-footer-logo" href="index.html" aria-label="Roman home">
+          <img src="assets/romani-project/RP_Logo.svg" alt="">
+        </a>
+        <nav class="site-footer-links" aria-label="Footer">
+          <a href="https://www.bundeskanzleramt.gv.at/themen/volksgruppen.html" target="_blank" rel="noreferrer" data-i18n="footer.minorityPromotion">Volksgruppenförderung</a>
+          <a class="site-footer-bka" href="https://www.bundeskanzleramt.gv.at/themen/volksgruppen.html" target="_blank" rel="noreferrer" aria-label="Bundeskanzleramt">
+            <img class="footer-logo-de" src="assets/romani-project/BKA_Logo_deu.svg" alt="">
+            <img class="footer-logo-en" src="assets/romani-project/BKA_Logo_eng.svg" alt="">
+          </a>
+          <a href="imprint.html" data-i18n="footer.imprint">Impressum</a>
+        </nav>
+      </div>
     </footer>
     <script src="site-i18n.js" type="module"></script>
   </body>

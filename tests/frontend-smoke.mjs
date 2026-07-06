@@ -43,6 +43,12 @@ const elements = new Map([
   ["#random-entry", new ElementStub()],
   ["#edition-select", new ElementStub()],
   ["#word-class-filters", new ElementStub()],
+  ["#index-type-filters", new ElementStub()],
+  ["#alphabet-filter", new ElementStub()],
+  ["#index-status", new ElementStub()],
+  ["#dictionary-index-list", new ElementStub()],
+  ["#load-more-index", new ElementStub()],
+  ["#dictionary-index-sentinel", new ElementStub()],
 ]);
 const spellingButtons = [new ElementStub({ spelling: "int" }), new ElementStub({ spelling: "deu" })];
 const languageButtons = [new ElementStub({ language: "de" }), new ElementStub({ language: "en" })];
@@ -109,6 +115,8 @@ assert.match(elements.get("#entry-pane").innerHTML, /habrínav/);
 assert.match(elements.get("#entry-pane").innerHTML, /Englische Bedeutungen/);
 assert.match(elements.get("#entry-pane").innerHTML, /Wortstruktur/);
 assert.match(elements.get("#entry-pane").innerHTML, /https:\/\/de\.langenscheidt\.com/);
+assert.match(elements.get("#dictionary-index-list").innerHTML, /dictionary-index-row/);
+assert.match(elements.get("#index-status").textContent, /Eintr/);
 assert.equal(elements.get("#search-input").value, "habrin");
 assert.match(window.location.href, /entry=g04363_b4e42bdd/);
 assert.equal(document.body.dataset.edition, "explorer");
@@ -238,36 +246,68 @@ const dictionaryHtml = await readFile(resolve(root, "dictionary.html"), "utf8");
 const wordListHtml = await readFile(resolve(root, "word-list.html"), "utf8");
 const grammarHtml = await readFile(resolve(root, "grammar.html"), "utf8");
 const exploreHtml = await readFile(resolve(root, "explore.html"), "utf8");
+const imprintHtml = await readFile(resolve(root, "imprint.html"), "utf8");
+const dictionaryCss = await readFile(resolve(root, "dictionary.css"), "utf8");
+const siteFooterCss = await readFile(resolve(root, "site-footer.css"), "utf8");
 const referenceCss = await readFile(resolve(root, "reference.css"), "utf8");
 const appJs = await readFile(resolve(root, "app.js"), "utf8");
+const siteI18n = await readFile(resolve(root, "site-i18n.js"), "utf8");
+const pagesWorkflow = await readFile(resolve(root, ".github/workflows/pages.yml"), "utf8");
 assert.match(homeHtml, /href="dictionary\.html"/);
 assert.match(homeHtml, /href="explore\.html"/);
 assert(!homeHtml.includes("app.js"));
+for (const html of [homeHtml, dictionaryHtml, grammarHtml, exploreHtml, imprintHtml]) {
+  assert.match(html, /site-footer\.css/);
+  assert.match(html, /class="site-footer"/);
+  assert.match(html, /data-i18n="footer\.minorityPromotion"/);
+  assert.match(html, /BKA_Logo_deu\.svg/);
+  assert.match(html, /href="imprint\.html"/);
+}
 assert.match(dictionaryHtml, /src="app\.js"/);
 assert.match(dictionaryHtml, /id="edition-select"/);
 assert.match(dictionaryHtml, /data-i18n="dictionary.layoutFocus"/);
 assert.match(dictionaryHtml, /data-i18n="dictionary.layoutBrowse"/);
 assert.match(dictionaryHtml, /value="compact" selected/);
 assert.match(dictionaryHtml, /data-i18n="dictionary.layoutSplit"/);
-assert.match(dictionaryHtml, /href="word-list\.html"/);
+assert.match(dictionaryHtml, /id="dictionary-index"/);
+assert.match(dictionaryHtml, /data-i18n="dictionary.indexHeading"/);
+assert.match(dictionaryHtml, /assets\/romani-project\/RP_Logo\.svg/);
+assert.doesNotMatch(dictionaryHtml, /href="word-list\.html"/);
 assert.match(dictionaryHtml, /href="grammar\.html"/);
 assert.match(dictionaryHtml, /href="explore\.html"/);
 assert.doesNotMatch(dictionaryHtml, /Compare views/);
+assert.match(dictionaryCss, /BDOGrotesk-Regular\.otf/);
+assert.match(dictionaryCss, /--blue: #1b68d2/);
+assert.match(siteFooterCss, /site-footer-bka/);
+assert.match(siteFooterCss, /html\[lang="en"\] \.site-footer-bka \.footer-logo-en/);
 assert.doesNotMatch(elements.get("#entry-pane").innerHTML, /New here/);
-assert.match(wordListHtml, /data-i18n="wordList.heading"/);
-assert.match(wordListHtml, /src="word-list\.js"/);
-assert.match(wordListHtml, /index-toolbar/);
-assert.match(grammarHtml, /data-i18n="grammar.nounHeading"/);
-assert.match(grammarHtml, /data-i18n="grammar.verbHeading"/);
-assert.match(grammarHtml, /data-i18n="grammar.adjectiveHeading"/);
-assert.match(wordListHtml, /href="explore\.html"/);
+assert.match(wordListHtml, /dictionary\.html#dictionary-index/);
+assert.match(wordListHtml, /window\.location\.replace/);
+assert.doesNotMatch(wordListHtml, /word-list\.js/);
+assert.match(imprintHtml, /data-i18n="imprint\.heading"/);
+assert.match(imprintHtml, /Akademie Graz/);
+assert.match(imprintHtml, /Roma Service/);
+assert.match(imprintHtml, /Romano Centro/);
+assert.match(imprintHtml, /Valentin Edelsbrunner/);
+assert.doesNotMatch(imprintHtml, /Design:\s*[^<]+/);
+assert.match(grammarHtml, /data-i18n="grammar.structureHeading"/);
+assert.match(grammarHtml, /data-i18n="grammar.formsHeading"/);
+assert.match(grammarHtml, /data-i18n="grammar.codesHeading"/);
 assert.match(grammarHtml, /href="explore\.html"/);
 assert.match(appJs, /from "\.\/site-i18n\.js"/);
 assert.match(homeHtml, /site-i18n\.js/);
-const siteI18n = await readFile(resolve(root, "site-i18n.js"), "utf8");
-const pagesWorkflow = await readFile(resolve(root, ".github/workflows/pages.yml"), "utf8");
 assert.match(siteI18n, /"grammar\.generatedText"/);
+const declaredI18nKeys = new Set([...siteI18n.matchAll(/"([^"]+)":/g)].map((match) => match[1]));
+const usedI18nKeys = [...new Set([homeHtml, dictionaryHtml, wordListHtml, grammarHtml, exploreHtml, imprintHtml].flatMap((html) => (
+  [...html.matchAll(/data-i18n(?:-[a-z-]+)?="([^"]+)"/g)].map((match) => match[1])
+)))].sort();
+assert.deepEqual(usedI18nKeys.filter((key) => !declaredI18nKeys.has(key)), []);
 assert.match(pagesWorkflow, /site-i18n\.js _site\//);
+assert.doesNotMatch(pagesWorkflow, /word-list\.js/);
+assert.match(pagesWorkflow, /assets\/romani-project/);
+assert.match(pagesWorkflow, /imprint\.html/);
+assert.match(pagesWorkflow, /site-footer\.css/);
+assert.match(pagesWorkflow, /BKA_Logo_deu\.svg/);
 assert.match(exploreHtml, /id="family-network"/);
 assert.match(exploreHtml, /id="family-atlas"/);
 assert.match(exploreHtml, /data-explore-view="atlas"/);
@@ -284,4 +324,4 @@ assert.match(referenceCss, /Grammar is intentionally a plain working reference/)
 assert.match(referenceCss, /\.grammar-page \.cheat-card[^}]*box-shadow: none/);
 await assert.rejects(readFile(resolve(root, "dictionary-lab.html"), "utf8"));
 
-console.log("Frontend smoke test passed: localized dictionary layouts, Word list, Grammar reference, Explore lab, deep links, and lazy loading are functional.");
+console.log("Frontend smoke test passed: localized dictionary layouts, unified alphabetical index, Grammar reference, Explore lab, deep links, and lazy loading are functional.");

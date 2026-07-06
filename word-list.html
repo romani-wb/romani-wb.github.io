@@ -3,69 +3,81 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title data-i18n="wordList.title">Roman Wortliste</title>
-    <meta name="description" content="Browse all 12,525 Roman dictionary entries alphabetically or by word type.">
+    <title>Roman Wörterbuch</title>
+    <meta name="description" content="The alphabetical Roman inventory is now part of the main dictionary.">
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="dictionary.css">
-    <link rel="stylesheet" href="reference.css">
+    <meta http-equiv="refresh" content="0; url=dictionary.html#dictionary-index">
+    <style>
+      @font-face {
+        font-family: "BDO Grotesk";
+        src: url("assets/romani-project/fonts/BDOGrotesk-Regular.otf") format("opentype");
+        font-display: swap;
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "BDO Grotesk";
+        src: url("assets/romani-project/fonts/BDOGrotesk-DemiBold.otf") format("opentype");
+        font-display: swap;
+        font-weight: 600;
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+        background: #ffffff;
+        color: #000000;
+        font-family: "BDO Grotesk", Arial, sans-serif;
+      }
+
+      main {
+        width: min(640px, calc(100% - 40px));
+        margin: 18vh auto 0;
+        padding-top: 24px;
+        border-top: 1px solid #000000;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 56px;
+        font-weight: 400;
+        line-height: 1;
+      }
+
+      p {
+        margin: 16px 0 0;
+        color: #5f5f5f;
+        font-size: 18px;
+        line-height: 1.45;
+      }
+
+      a {
+        display: inline-block;
+        margin-top: 24px;
+        color: #1b68d2;
+        font-weight: 600;
+        text-underline-offset: 4px;
+      }
+
+      @media (max-width: 620px) {
+        h1 { font-size: 38px; }
+        p { font-size: 16px; }
+      }
+    </style>
+    <script>
+      const target = new URL("dictionary.html", window.location.href);
+      const params = new URLSearchParams(window.location.search);
+      for (const [key, value] of params) target.searchParams.set(key, value);
+      target.searchParams.set("edition", "compact");
+      target.hash = "dictionary-index";
+      window.location.replace(`${target.pathname.split("/").pop()}${target.search}${target.hash}`);
+    </script>
   </head>
-  <body class="reference-body">
-    <header class="reference-header">
-      <a class="dictionary-brand" href="index.html" aria-label="Roman"><span>Roman</span><small data-i18n="wordList.brand">Wortliste</small></a>
-      <nav class="reference-nav" aria-label="Primary navigation">
-        <a href="index.html" data-i18n="nav.story">Geschichte</a>
-        <a href="dictionary.html" data-i18n="nav.dictionary">Wörterbuch</a>
-        <a class="active" href="word-list.html" aria-current="page" data-i18n="nav.wordList">Wortliste</a>
-        <a href="grammar.html" data-i18n="nav.grammar">Grammatik</a>
-        <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
-      </nav>
-      <div class="ui-language-switch" data-i18n-aria-label="site.language" aria-label="Sprache">
-        <span data-i18n="site.language">Sprache</span>
-        <button type="button" class="active" data-ui-language="de" aria-pressed="true">DE</button>
-        <button type="button" data-ui-language="en" aria-pressed="false">EN</button>
-      </div>
-    </header>
-
-    <main class="word-list-page">
-      <header class="reference-hero word-list-hero">
-        <h1 data-i18n="wordList.heading">Wortliste</h1>
-      </header>
-
-      <section class="index-toolbar" aria-label="Wortliste filtern" data-i18n-aria-label="wordList.controls">
-        <div class="index-toolbar-main">
-          <label class="index-search" for="word-list-search"><span aria-hidden="true">⌕</span><input id="word-list-search" type="search" autocomplete="off" spellcheck="false" placeholder="Wortliste filtern" data-i18n-placeholder="wordList.searchPlaceholder"></label>
-          <div class="index-display-controls">
-            <fieldset class="index-choice">
-              <legend data-i18n="dictionary.romanSpelling">Roman-Schreibweise</legend>
-              <button type="button" class="active" data-index-spelling="int" aria-pressed="true">INT</button>
-              <button type="button" data-index-spelling="deu" aria-pressed="false">DEU</button>
-            </fieldset>
-            <fieldset class="index-choice">
-              <legend data-i18n="dictionary.translation">Übersetzung</legend>
-              <button type="button" class="active" data-index-language="de" aria-pressed="true">DE</button>
-              <button type="button" data-index-language="en" aria-pressed="false">EN</button>
-            </fieldset>
-          </div>
-        </div>
-        <nav class="index-type-filters" id="index-type-filters" aria-label="Wortart" data-i18n-aria-label="wordList.typeFilter"></nav>
-        <nav class="alphabet-filter" id="alphabet-filter" aria-label="Anfangsbuchstabe" data-i18n-aria-label="wordList.letterFilter"></nav>
-        <p class="index-status" id="index-status" role="status" aria-live="polite">Loading the word list…</p>
-      </section>
-
-      <div class="word-list-table">
-        <div class="word-list-table-head" aria-hidden="true">
-          <span data-i18n="wordList.columnWord">Roman</span>
-          <span data-i18n="wordList.columnType">Wortart</span>
-          <span data-i18n="wordList.columnMeaning">Bedeutung</span>
-          <span></span>
-        </div>
-        <div class="word-list" id="word-list"></div>
-      </div>
-      <div class="word-list-more" id="word-list-sentinel">
-        <button id="load-more" type="button">Load more words</button>
-      </div>
+  <body>
+    <main>
+      <h1>Roman Wörterbuch</h1>
+      <p>Der alphabetische Bestand ist jetzt Teil des Wörterbuchs.</p>
+      <a href="dictionary.html#dictionary-index">Wörterbuch öffnen</a>
     </main>
-
-    <script src="word-list.js" type="module"></script>
   </body>
 </html>

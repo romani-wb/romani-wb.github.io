@@ -47,7 +47,7 @@ presentation modes, not forks:
 - **Focus** keeps search, Surprise me, and word-type filters above
   a full-width entry. No entries appear until the user searches or chooses a type.
 - **Browse** is the default. Search stays at the top, the entry occupies the main
-  reading flow, and the word-type catalogue sits below it as a continuation.
+  reading flow, and the progressive alphabetical inventory follows below it.
 - **Split** retains a persistent result sidebar for dense repeated lookup.
 
 The comparison page was removed; the layout selector is sufficient. The legacy
@@ -57,9 +57,11 @@ Search matches are grouped by broad word type. Individual badges use readable
 labels (`Particle verb`, `Noun phrase`) while source codes remain available in
 Details. The broad grouping is a navigation aid, not a change to the workbook.
 
-`word-list.html` is the deliberately plain second browsing surface: all 12,525
-entries sorted alphabetically, progressively rendered in batches, and filterable
-by spelling, meaning language, word type, first letter, or text.
+Alphabetical browsing is part of `dictionary.html`. The inventory covers all
+12,525 entries, renders progressively in batches, and follows the same spelling,
+meaning language, search text, word type, first-letter, and URL state as the
+rest of the dictionary. `word-list.html` is retained only as a compatibility
+redirect.
 
 `grammar.html` turns the professor's paradigm dimensions into compact reference
 sheets for noun cases, verb person/tense/aspect, adjective agreement, word-class
@@ -77,7 +79,8 @@ rather than duplicating or extending the source rules.
   nominative singular/plural for nouns, and basic agreement forms for adjectives.
 - Actual forms come only from the generated paradigm model. The interface adds
   labels and grouping but no new endings, stems, relationships, or corrections.
-- Every generated set is marked as awaiting linguistic review. Raw grammar
+- Generated sets remain unreviewed and are described that way in documentation
+  and notation. The entry tables avoid repeated placeholder badges; raw grammar
   codes and the derivation explanation remain available under a technical
   disclosure.
 

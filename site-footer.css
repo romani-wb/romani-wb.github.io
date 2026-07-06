@@ -1,0 +1,196 @@
+@font-face {
+  font-family: "BDO Grotesk";
+  src: url("assets/romani-project/fonts/BDOGrotesk-Regular.otf") format("opentype");
+  font-display: swap;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "BDO Grotesk";
+  src: url("assets/romani-project/fonts/BDOGrotesk-DemiBold.otf") format("opentype");
+  font-display: swap;
+  font-weight: 600;
+}
+
+:root {
+  --footer-ink: #000000;
+  --footer-muted: #5f5f5f;
+  --footer-line: #000000;
+  --footer-blue: #1b68d2;
+  --footer-page: #ffffff;
+}
+
+.site-footer {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--footer-line);
+  background: var(--footer-page);
+  color: var(--footer-ink);
+  font-family: "BDO Grotesk", Arial, sans-serif;
+}
+
+.site-footer-inner {
+  width: min(100%, 1160px);
+  min-height: 120px;
+  display: grid;
+  grid-template-columns: minmax(160px, 240px) minmax(0, 1fr);
+  align-items: center;
+  gap: 28px;
+  margin: 0 auto;
+  padding: 24px clamp(16px, 3vw, 40px);
+}
+
+.site-footer-logo {
+  display: inline-flex;
+  width: 150px;
+  max-width: 54vw;
+  text-decoration: none;
+}
+
+.site-footer-logo img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.site-footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(18px, 4vw, 54px);
+  flex-wrap: wrap;
+}
+
+.site-footer a {
+  color: var(--footer-ink);
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: var(--footer-blue);
+}
+
+.site-footer-bka {
+  display: inline-flex;
+  align-items: center;
+  min-width: 170px;
+  max-width: 230px;
+}
+
+.site-footer-bka img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.site-footer-bka .footer-logo-en {
+  display: none;
+}
+
+html[lang="en"] .site-footer-bka .footer-logo-de {
+  display: none;
+}
+
+html[lang="en"] .site-footer-bka .footer-logo-en {
+  display: block;
+}
+
+.imprint-page {
+  width: min(960px, calc(100% - 40px));
+  min-height: 68vh;
+  margin: 0 auto;
+  padding: clamp(64px, 10vw, 120px) 0;
+  color: var(--footer-ink);
+  font-family: "BDO Grotesk", Arial, sans-serif;
+}
+
+.imprint-logo {
+  width: 150px;
+  max-width: 54vw;
+  height: auto;
+  display: block;
+  margin-bottom: 34px;
+}
+
+.imprint-page h1 {
+  margin: 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--footer-line);
+  font-size: 58px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.imprint-copy {
+  display: grid;
+  gap: 18px;
+  max-width: 760px;
+  margin-top: 32px;
+  color: var(--footer-muted);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.imprint-copy a {
+  color: var(--footer-blue);
+  text-underline-offset: 4px;
+}
+
+.imprint-credit {
+  display: grid;
+  gap: 10px;
+  margin: 34px 0 0;
+  padding: 0;
+}
+
+.imprint-credit div {
+  display: grid;
+  grid-template-columns: minmax(160px, 240px) minmax(0, 1fr);
+  gap: 20px;
+  padding: 14px 0;
+  border-top: 1px solid var(--footer-line);
+}
+
+.imprint-credit dt {
+  color: var(--footer-muted);
+  font-size: 14px;
+}
+
+.imprint-credit dd {
+  margin: 0;
+  color: var(--footer-ink);
+  font-size: 18px;
+}
+
+@media (max-width: 720px) {
+  .site-footer-inner {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .site-footer-links {
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .site-footer-bka {
+    max-width: 210px;
+  }
+
+  .imprint-page h1 {
+    font-size: 42px;
+  }
+
+  .imprint-copy {
+    font-size: 16px;
+  }
+
+  .imprint-credit div {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}

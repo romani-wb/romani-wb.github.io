@@ -7,19 +7,20 @@
     <meta name="description" content="Search 12,525 Roman dictionary entries in two Roman spellings with German and English meanings.">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="dictionary.css">
+    <link rel="stylesheet" href="site-footer.css">
   </head>
   <body>
     <a class="skip-link" href="#search-input" data-i18n="dictionary.skip">Zur Wörterbuchsuche springen</a>
 
     <header class="dictionary-header">
       <a class="dictionary-brand" href="index.html" aria-label="Roman story home">
+        <img src="assets/romani-project/RP_Logo.svg" alt="" aria-hidden="true">
         <span>Roman</span>
         <small data-i18n="dictionary.brand">Wörterbuch</small>
       </a>
       <nav class="dictionary-nav" aria-label="Primary navigation">
         <a href="index.html" data-i18n="nav.story">Geschichte</a>
         <a class="active" href="dictionary.html" aria-current="page" data-i18n="nav.dictionary">Wörterbuch</a>
-        <a href="word-list.html" data-i18n="nav.wordList">Wortliste</a>
         <a href="grammar.html" data-i18n="nav.grammar">Grammatik</a>
         <a href="explore.html" data-i18n="nav.explore">Erkunden</a>
       </nav>
@@ -79,6 +80,53 @@
         </div>
       </section>
     </main>
+
+    <section class="dictionary-index" id="dictionary-index" aria-labelledby="dictionary-index-title">
+      <div class="dictionary-index-inner">
+        <header class="dictionary-index-heading">
+          <div>
+            <p class="section-label" data-i18n="dictionary.indexLabel">Bestand</p>
+            <h2 id="dictionary-index-title" data-i18n="dictionary.indexHeading">Ein Wörterbuch, alle Einstiege.</h2>
+          </div>
+          <p data-i18n="dictionary.indexIntro">12.525 Einträge aus der aktuellen Juni-Quelle.</p>
+        </header>
+
+        <section class="dictionary-index-toolbar" aria-label="Wörterbuchbestand filtern" data-i18n-aria-label="dictionary.indexControls">
+          <nav class="dictionary-index-types" id="index-type-filters" aria-label="Wortart" data-i18n-aria-label="dictionary.indexTypeFilter"></nav>
+          <nav class="dictionary-index-alphabet" id="alphabet-filter" aria-label="Anfangsbuchstabe" data-i18n-aria-label="dictionary.indexLetterFilter"></nav>
+          <p class="dictionary-index-status" id="index-status" role="status" aria-live="polite">Wörterbuchbestand wird geladen …</p>
+        </section>
+
+        <div class="dictionary-index-table">
+          <div class="dictionary-index-table-head" aria-hidden="true">
+            <span data-i18n="dictionary.indexColumnWord">Roman</span>
+            <span data-i18n="dictionary.indexColumnType">Wortart</span>
+            <span data-i18n="dictionary.indexColumnMeaning">Bedeutung</span>
+            <span></span>
+          </div>
+          <div class="dictionary-index-list" id="dictionary-index-list"></div>
+        </div>
+        <div class="dictionary-index-more" id="dictionary-index-sentinel">
+          <button id="load-more-index" type="button">Weitere Wörter laden</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="site-footer-inner">
+        <a class="site-footer-logo" href="index.html" aria-label="Roman home">
+          <img src="assets/romani-project/RP_Logo.svg" alt="">
+        </a>
+        <nav class="site-footer-links" aria-label="Footer">
+          <a href="https://www.bundeskanzleramt.gv.at/themen/volksgruppen.html" target="_blank" rel="noreferrer" data-i18n="footer.minorityPromotion">Volksgruppenförderung</a>
+          <a class="site-footer-bka" href="https://www.bundeskanzleramt.gv.at/themen/volksgruppen.html" target="_blank" rel="noreferrer" aria-label="Bundeskanzleramt">
+            <img class="footer-logo-de" src="assets/romani-project/BKA_Logo_deu.svg" alt="">
+            <img class="footer-logo-en" src="assets/romani-project/BKA_Logo_eng.svg" alt="">
+          </a>
+          <a href="imprint.html" data-i18n="footer.imprint">Impressum</a>
+        </nav>
+      </div>
+    </footer>
 
     <script src="app.js" type="module"></script>
   </body>

@@ -5,7 +5,7 @@
 Status: completed in commit `a96379b`.
 
 - tag the existing prototype;
-- work on a dedicated `rebuild` branch;
+- preserve a reversible baseline before moving active prototype work to `main`;
 - archive the previous `data/` tree by date;
 - register and checksum the professor's source package;
 - ingest the 17 June workbook without modifying it;
@@ -22,7 +22,8 @@ stable public identity and linguistic review remain open.
 - send only linguistic ambiguities to Dieter when he is available;
 - define stable entry identity independent of workbook row order;
 - confirm search fields, sorting/collation, spelling defaults, and empty states;
-- decide whether provisional morphology is hidden, labelled, or omitted.
+- keep provisional morphology visible as generated practical grammar, with its
+  unreviewed status documented and representative review still required.
 
 Gate 1 approval: entry model, audience priority, review corpus, and morphology
 policy.
@@ -37,6 +38,8 @@ keyboard, accessibility, and performance QA remains open.
   loading strategy;
 - split the search index from entry payloads so the full dataset is not required
   before first interaction.
+- add the integrated alphabetical dictionary inventory, Grammar reference, and
+  Explore lab over the same processed data.
 
 Gate 2 approval: search behavior and entry information architecture.
 
@@ -55,7 +58,9 @@ Gate 3 approval: story copy, attribution, and visual direction.
 
 ## Phase 4 — Production hardening and publication
 
-Status: next phase. Nothing has been published from the `rebuild` branch.
+Status: prototype deployment from `main` is available through the explicit Pages
+workflow. Production hardening, final editorial approval, and publication
+readiness remain open.
 
 - automate build/test checks;
 - test performance, accessibility, browsers, and static-host routing;

@@ -30,6 +30,9 @@ const state = {
   matchTypeCounts: new Map(),
   matchGroupOrder: [],
   totalMatches: 0,
+  indexLetter: "all",
+  indexFilteredEntries: [],
+  indexRendered: 0,
 };
 
 const els = {
@@ -41,11 +44,20 @@ const els = {
   randomEntry: document.querySelector("#random-entry"),
   editionSelect: document.querySelector("#edition-select"),
   wordClassFilters: document.querySelector("#word-class-filters"),
+  indexTypeFilters: document.querySelector("#index-type-filters"),
+  alphabetFilter: document.querySelector("#alphabet-filter"),
+  indexStatus: document.querySelector("#index-status"),
+  indexList: document.querySelector("#dictionary-index-list"),
+  indexMore: document.querySelector("#load-more-index"),
+  indexSentinel: document.querySelector("#dictionary-index-sentinel"),
   spellingButtons: document.querySelectorAll("[data-spelling]"),
   languageButtons: document.querySelectorAll("[data-language]"),
 };
 
 const MAX_RESULTS = 60;
+const INDEX_PAGE_SIZE = 240;
+const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const indexCollator = new Intl.Collator("de", { sensitivity: "base" });
 const ui = (german, english) => uiLanguage() === "de" ? german : english;
 
 const PERSON_LABELS = {
@@ -479,6 +491,40 @@ function renderAdjectiveForms(generated) {
   `;
 }
 
+function formsDisplayPattern(generated) {
+  if (generated.kind === "noun_declension") return ui("Kasus × Singular/Plural", "Case x singular/plural");
+  if (generated.kind === "adjective_declension") return ui("Form × Numerus × Genus", "Form x number x gender");
+  return ui("Aspekt/Tempus × Person", "Aspect/tense x person");
+}
+
+function formsSourceFields(entry, generated) {
+  const grammar = entry.grammar || {};
+  const fields = [];
+  if (grammar.word_class_1) fields.push(`Word class 1 = ${grammar.word_class_1}`);
+  if (grammar.flexion_1) fields.push(`Flexion 1 = ${grammar.flexion_1}`);
+  if (grammar.flexion_2_int || grammar.flexion_2_deu) fields.push("Flexion 2");
+  if (grammar.flexion_3_int || grammar.flexion_3_deu) fields.push("Flexion 3");
+  fields.push(`Paradigm = ${entry.morphology?.source_paradigm || generated.paradigm}`);
+  return fields.join(" · ");
+}
+
+function renderFormSourceSummary(entry, generated) {
+  const lemma = entry.lemma || {};
+  const raw = lemma[state.spelling] || lemma.int || lemma.deu || "";
+  const stem = stemFromLemma(raw);
+  const stemText = raw.includes("-")
+    ? `${raw} → ${stem}`
+    : (raw || stem || ui("unbekannt", "unknown"));
+  return `
+    <div class="grammar-primer form-source-summary">
+      <div><strong>${ui("Quelle", "Source")}</strong><span>${escapeHtml(formsSourceFields(entry, generated))}</span></div>
+      <div><strong>${ui("Lemma und Stamm", "Lemma and stem")}</strong><span>${escapeHtml(stemText)}</span></div>
+      <div><strong>${ui("Raster", "Grid")}</strong><span>${escapeHtml(formsDisplayPattern(generated))}</span></div>
+    </div>
+    <p class="form-caution">${ui("Der Trennstrich wird im Lemma nicht angezeigt; er markiert intern die Stelle, an der Tabellenendungen ansetzen. Diese Formen sind aus dem Modell erzeugt und noch fachlich zu prüfen.", "The lemma hyphen is not displayed; internally it marks where table endings attach. These forms are generated from the model and still need linguistic review.")}</p>
+  `;
+}
+
 function renderForms(entry) {
   const generated = generateForms(entry);
   const morphology = entry.morphology || {};
@@ -507,6 +553,7 @@ function renderForms(entry) {
         <div><p class="eyebrow">${ui("Generierte Formen", "Generated forms")}</p><h3>${escapeHtml(title)}</h3></div>
         <p>${formatNumber(generated.rows.length)} ${ui("Formen", "forms")} · ${state.spelling.toUpperCase()}</p>
       </div>
+      ${renderFormSourceSummary(entry, generated)}
       ${table}
       <details class="technical-details">
         <summary>${ui("Technische Herleitung und Rohparadigma", "Technical derivation and raw paradigm")}</summary>
@@ -528,18 +575,18 @@ function renderGenerationExplanation(entry, generated) {
   const hasHyphen = raw.includes("-");
   const sourceParadigm = entry.morphology?.source_paradigm;
   const aliasNote = sourceParadigm
-    ? `<li>The workbook uses paradigm <strong>${escapeHtml(sourceParadigm)}</strong>; the pipeline resolves it to <strong>${escapeHtml(generated.paradigm)}</strong> so it can match the paradigm table.</li>`
+    ? `<li>${ui("Das Workbook verwendet Paradigma", "The workbook uses paradigm")} <strong>${escapeHtml(sourceParadigm)}</strong>; ${ui("die Pipeline löst es zu", "the pipeline resolves it to")} <strong>${escapeHtml(generated.paradigm)}</strong> ${ui("auf, damit es zur Paradigmentabelle passt.", "so it can match the paradigm table.")}</li>`
     : "";
   const irregularNote = generated.paradigm.includes("IRR")
-    ? "<li>This is marked as an irregular paradigm. The table supplies forms directly; the viewer does not treat those cells as ordinary endings.</li>"
+    ? `<li>${ui("Dieses Paradigma ist als irregulär markiert. Die Tabelle liefert Formen direkt; die Ansicht behandelt diese Zellen nicht als gewöhnliche Endungen.", "This is marked as an irregular paradigm. The table supplies forms directly; the viewer does not treat those cells as ordinary endings.")}</li>`
     : "";
 
   return `
       <ul>
-        <li>The source lemma is <strong>${escapeHtml(raw || "unknown")}</strong>.</li>
-        ${hasHyphen ? `<li>The internal hyphen marks the stem boundary. The displayed stem is <strong>${escapeHtml(stem)}</strong>.</li>` : `<li>No internal hyphen is present, so the displayed lemma is used as the stem.</li>`}
-        <li>The paradigm table supplies the forms or endings for <strong>${escapeHtml(generated.paradigm)}</strong>.</li>
-        <li>The generated form column combines the stem with the table value when the table value is an ending.</li>
+        <li>${ui("Das Quelllemma ist", "The source lemma is")} <strong>${escapeHtml(raw || ui("unbekannt", "unknown"))}</strong>.</li>
+        ${hasHyphen ? `<li>${ui("Der interne Trennstrich markiert die Stammgrenze. Der angezeigte Stamm ist", "The internal hyphen marks the stem boundary. The displayed stem is")} <strong>${escapeHtml(stem)}</strong>.</li>` : `<li>${ui("Kein interner Trennstrich vorhanden; das angezeigte Lemma wird als Stamm verwendet.", "No internal hyphen is present, so the displayed lemma is used as the stem.")}</li>`}
+        <li>${ui("Die Paradigmentabelle liefert Formen oder Endungen für", "The paradigm table supplies the forms or endings for")} <strong>${escapeHtml(generated.paradigm)}</strong>.</li>
+        <li>${ui("Die erzeugte Form verbindet den Stamm mit dem Tabellenwert, wenn der Tabellenwert eine Endung ist.", "The generated form column combines the stem with the table value when the table value is an ending.")}</li>
         ${aliasNote}
         ${irregularNote}
       </ul>
@@ -706,6 +753,114 @@ function renderWordClassFilters() {
     const active = item.key === state.wordClassFilter;
     return `<button type="button" class="word-type-filter${active ? " active" : ""}" data-word-class="${escapeHtml(item.key)}" aria-pressed="${active}"><span>${escapeHtml(item.label)}</span><small>${formatNumber(item.count)}</small></button>`;
   }).join("");
+}
+
+function indexLetterKey(entry) {
+  const first = normalizeSearch(displayLemma(entry)).charAt(0).toUpperCase();
+  return /[A-Z]/.test(first) ? first : "#";
+}
+
+function dictionaryIndexHref(entry) {
+  const params = new URLSearchParams();
+  if (state.query) params.set("q", state.query);
+  if (state.wordClassFilter !== "all") params.set("type", state.wordClassFilter);
+  if (state.indexLetter !== "all") params.set("letter", state.indexLetter);
+  params.set("entry", entry.id);
+  params.set("spelling", state.spelling);
+  params.set("meaning", state.language);
+  params.set("edition", "compact");
+  params.set("ui", uiLanguage());
+  return `dictionary.html?${params.toString()}#entry-pane`;
+}
+
+function renderDictionaryIndexControls() {
+  if (!els.indexTypeFilters || !els.alphabetFilter) return;
+  const visibleGroups = WORD_TYPE_GROUPS.filter((group) => (state.wordTypeCounts.get(group.key) || 0) > 0);
+  const types = [
+    { key: "all", label: ui("Alle Wortarten", "All types"), count: state.searchEntries.length },
+    ...visibleGroups.map((group) => ({
+      ...group,
+      label: wordTypeLabel(group, uiLanguage()),
+      count: state.wordTypeCounts.get(group.key) || 0,
+    })),
+  ];
+  els.indexTypeFilters.innerHTML = types.map((item) => {
+    const active = item.key === state.wordClassFilter;
+    return `<button type="button" class="dictionary-index-filter${active ? " active" : ""}" data-index-type="${escapeHtml(item.key)}" aria-pressed="${active}"><span>${escapeHtml(item.label)}</span><small>${formatNumber(item.count)}</small></button>`;
+  }).join("");
+  els.alphabetFilter.innerHTML = ["all", ...ALPHABET].map((letter) => {
+    const active = letter === state.indexLetter;
+    const label = letter === "all" ? ui("Alle Buchstaben", "All letters") : letter;
+    return `<button type="button" class="dictionary-letter-filter${active ? " active" : ""}" data-index-letter="${escapeHtml(letter)}" aria-pressed="${active}">${escapeHtml(label)}</button>`;
+  }).join("");
+}
+
+function updateDictionaryIndexEntries() {
+  const query = normalizeSearch(state.query);
+  state.indexFilteredEntries = state.searchEntries
+    .filter((entry) => state.wordClassFilter === "all" || wordTypeGroup(entry).key === state.wordClassFilter)
+    .filter((entry) => state.indexLetter === "all" || indexLetterKey(entry) === state.indexLetter)
+    .filter((entry) => !query || entry._search.includes(query))
+    .sort((a, b) => indexCollator.compare(displayLemma(a), displayLemma(b)));
+}
+
+function dictionaryIndexRow(entry) {
+  const alternate = alternateSearchLemma(entry);
+  return `
+    <a class="dictionary-index-row" href="${escapeHtml(dictionaryIndexHref(entry))}" data-entry-id="${escapeHtml(entry.id)}">
+      <span class="dictionary-index-lemma">
+        <strong>${escapeHtml(displayLemma(entry))}</strong>
+        ${alternate ? `<small>${state.spelling === "int" ? "DEU" : "INT"} · ${escapeHtml(alternate)}</small>` : ""}
+      </span>
+      <span class="dictionary-index-type">${escapeHtml(wordClassLabel(entry, uiLanguage()))}</span>
+      <span class="dictionary-index-meaning">${escapeHtml(displayMeaning(entry))}</span>
+      <span class="dictionary-index-arrow" aria-hidden="true">→</span>
+    </a>
+  `;
+}
+
+function dictionaryIndexMarkup(entries) {
+  let currentLetter = "";
+  let markup = "";
+  for (const entry of entries) {
+    const letter = indexLetterKey(entry);
+    if (letter !== currentLetter) {
+      if (currentLetter) markup += "</div></section>";
+      currentLetter = letter;
+      markup += `<section class="dictionary-index-group" data-letter="${escapeHtml(letter)}"><h3>${escapeHtml(letter)}</h3><div>`;
+    }
+    markup += dictionaryIndexRow(entry);
+  }
+  return currentLetter ? `${markup}</div></section>` : "";
+}
+
+function renderDictionaryIndex(reset = true) {
+  if (!els.indexList || !els.indexStatus) return;
+  updateDictionaryIndexEntries();
+  renderDictionaryIndexControls();
+
+  if (reset) {
+    state.indexRendered = Math.min(INDEX_PAGE_SIZE, state.indexFilteredEntries.length);
+  } else {
+    state.indexRendered = Math.min(state.indexRendered + INDEX_PAGE_SIZE, state.indexFilteredEntries.length);
+  }
+
+  const visible = state.indexFilteredEntries.slice(0, state.indexRendered);
+  const remaining = state.indexFilteredEntries.length - state.indexRendered;
+  els.indexList.innerHTML = visible.length
+    ? dictionaryIndexMarkup(visible)
+    : `<div class="dictionary-index-empty"><strong>${ui("Keine passenden Wörter.", "No matching words.")}</strong><span>${ui("Andere Schreibweise, Bedeutung, Wortart oder Buchstaben wählen.", "Choose another spelling, meaning, word type, or letter.")}</span></div>`;
+  els.indexStatus.textContent = state.indexFilteredEntries.length
+    ? ui(`${formatNumber(state.indexRendered)} von ${formatNumber(state.indexFilteredEntries.length)} Einträgen`, `${formatNumber(state.indexRendered)} of ${formatNumber(state.indexFilteredEntries.length)} entries`)
+    : ui("Keine passenden Einträge", "No matching entries");
+
+  if (els.indexMore) {
+    els.indexMore.hidden = remaining <= 0;
+    els.indexMore.textContent = remaining > 0
+      ? ui(`${formatNumber(Math.min(INDEX_PAGE_SIZE, remaining))} weitere laden`, `Load ${formatNumber(Math.min(INDEX_PAGE_SIZE, remaining))} more`)
+      : ui("Alle passenden Wörter geladen", "All matching words loaded");
+  }
+  if (els.indexSentinel) els.indexSentinel.hidden = remaining <= 0;
 }
 
 function renderResultButton(entry) {
@@ -1093,6 +1248,8 @@ function applyUrlState() {
   state.wordClassFilter = ["all", ...WORD_TYPE_GROUPS.map((group) => group.key)].includes(wordClassFilter)
     ? wordClassFilter
     : "all";
+  const indexLetter = params.get("letter") || "all";
+  state.indexLetter = ALPHABET.includes(indexLetter) ? indexLetter : "all";
   state.entryView = ["overview", "family", "forms", "details"].includes(params.get("view"))
     ? params.get("view")
     : "overview";
@@ -1109,6 +1266,7 @@ function syncUrl() {
   const params = url.searchParams;
   state.query ? params.set("q", state.query) : params.delete("q");
   state.wordClassFilter === "all" ? params.delete("type") : params.set("type", state.wordClassFilter);
+  state.indexLetter === "all" ? params.delete("letter") : params.set("letter", state.indexLetter);
   state.selectedId ? params.set("entry", state.selectedId) : params.delete("entry");
   params.set("spelling", state.spelling);
   params.set("meaning", state.language);
@@ -1189,9 +1347,10 @@ async function renderSelectedEntry() {
   }
 }
 
-function render({ updateUrl = true } = {}) {
+function render({ updateUrl = true, resetIndex = true } = {}) {
   updateFilteredEntries();
   renderResults();
+  renderDictionaryIndex(resetIndex);
   void renderSelectedEntry();
   if (updateUrl) syncUrl();
 }
@@ -1199,7 +1358,7 @@ function render({ updateUrl = true } = {}) {
 function selectEntry(id, entryView = "overview") {
   state.selectedId = id;
   state.entryView = entryView;
-  render();
+  render({ resetIndex: false });
 }
 
 async function loadData() {
@@ -1251,6 +1410,28 @@ els.wordClassFilters.addEventListener("click", (event) => {
   render();
 });
 
+els.indexTypeFilters?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-index-type]");
+  if (!button) return;
+  state.wordClassFilter = button.dataset.indexType;
+  render();
+});
+
+els.alphabetFilter?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-index-letter]");
+  if (!button) return;
+  state.indexLetter = button.dataset.indexLetter;
+  render();
+});
+
+els.indexList?.addEventListener("click", (event) => {
+  const link = event.target.closest("[data-entry-id]");
+  if (!link) return;
+  event.preventDefault?.();
+  selectEntry(link.dataset.entryId, "overview");
+  els.entryPane.scrollIntoView?.({ block: "start", behavior: "smooth" });
+});
+
 els.entryPane.addEventListener("click", (event) => {
   const viewButton = event.target.closest("[data-entry-view]");
   if (viewButton) {
@@ -1262,6 +1443,8 @@ els.entryPane.addEventListener("click", (event) => {
   const button = event.target.closest("[data-entry-id]");
   if (button) selectEntry(button.dataset.entryId, state.entryView === "family" ? "family" : "overview");
 });
+
+els.indexMore?.addEventListener("click", () => renderDictionaryIndex(false));
 
 els.randomEntry.addEventListener("click", () => {
   const randomIndex = Math.floor(Math.random() * state.searchEntries.length);
@@ -1303,6 +1486,15 @@ window.addEventListener("popstate", () => {
   applyUrlState();
   render({ updateUrl: false });
 });
+
+if (els.indexSentinel && "IntersectionObserver" in window) {
+  const observer = new IntersectionObserver((entries) => {
+    if (entries.some((entry) => entry.isIntersecting) && state.indexRendered < state.indexFilteredEntries.length) {
+      renderDictionaryIndex(false);
+    }
+  }, { rootMargin: "500px" });
+  observer.observe(els.indexSentinel);
+}
 
 initI18n({ onChange: () => render() });
 

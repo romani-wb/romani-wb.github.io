@@ -51,13 +51,13 @@ The current prototype is a static Roman dictionary with:
 - visual word-structure and interactive Base-to-derived family diagrams;
 - dedicated Entry, Word family, Inflection, and Details views;
 - three navigation layouts over one data/state layer: Focus, Browse, Split;
-- Browse as the default layout: search first, entry second, corpus exploration
-  at the bottom;
+- Browse as the default layout: search first, entry second, and an alphabetical
+  corpus inventory below the entry;
 - search results grouped into readable word types instead of an arbitrary first
   page of 80 alphabetical entries;
 - globally ranked leading results where exact meanings outrank whole-word, prefix,
   and loose substring matches, without a visually privileged result section;
-- word-type filters and a Browse catalogue with real entry counts;
+- word-type filters and an integrated Browse inventory with real entry counts;
 - source codes such as `PTCLV` translated into readable result labels such as
   `Particle verb`; raw codes remain in Details;
 - grammar/details, source hyperlinks, and generated complete-word morphology;
@@ -71,13 +71,14 @@ The current prototype is a static Roman dictionary with:
   as "I eat / you eat / he/she/it eats", derived from the first English meaning
   where possible, to make person slots readable until Dieter confirms better
   labels;
-- a progressively rendered table-like alphabetical index at `word-list.html`,
-  with filters fixed to the bottom instead of a top sticky panel;
+- a progressively rendered table-like alphabetical index integrated into
+  `dictionary.html` Browse mode; `word-list.html` is only a compatibility
+  redirect to `dictionary.html#dictionary-index`;
 - a minimal source-aligned grammar reference at `grammar.html`;
-- a five-view visualization lab at `explore.html`, built only from recorded base
+- a six-view visualization lab at `explore.html`, built only from recorded base
   fields and word classes: Family atlas, refined Family web, Type ribbons,
-  Family rings, and Size landscape; all share search, filters, URL state, entry
-  inspection, and direct links to full entries;
+  Family rings, Size landscape, and Family comparison; all share search,
+  filters, URL state, entry inspection, and direct links to full entries;
 - mobile layout, skip link, status announcements, and reduced-motion handling.
 
 Valentin manually opened the current interface and responded positively. This was
@@ -157,11 +158,11 @@ This intentionally remains a dependency-light static site:
 - `styles.css` — story/home visual system
 - `dictionary.html` — standalone dictionary shell and controls
 - `dictionary.css` — dictionary-specific responsive information design
-- `word-list.html` / `word-list.js` — complete progressive alphabetical index
+- `word-list.html` — compatibility redirect into the dictionary inventory
 - `grammar.html` — static practical grammar cheat sheets linked to live entries
-- `explore.html` / `explore.js` / `explore.css` — five coordinated canvas/SVG
+- `explore.html` / `explore.js` / `explore.css` — six coordinated canvas/SVG
   visualization experiments over the existing compact search index
-- `reference.css` — shared Word list and Grammar layout
+- `reference.css` — shared Grammar and Explore reference layout
 - `word-types.js` — shared readable word-class labels and broad type groups
 - `app.js` — search, URL state, lazy entry loading, rendering, word families,
   provisional morphology, and source links
@@ -192,6 +193,8 @@ URL parameters are:
   Browse, `explorer` = Split
 - `type` — word-type filter (`nouns`, `verbs`, `adjectives`, `adverbs`,
   `phrases`, or `grammar`)
+- `letter` — optional first-letter filter for the integrated alphabetical
+  dictionary inventory
 
 Provisional defaults are German interface labels, `INT` spelling, and German
 meanings. Browse is the default layout. They are documented in
@@ -236,28 +239,30 @@ Useful manual check:
 8. Toggle `INT/DEU`, `DE/EN`, layout, and type, then reload the explicit URL.
 9. Open Details and check a Source-2 link; check the site at mobile width.
 10. Click `Surprise me`; the entry and URL should change without losing settings.
-11. Open `word-list.html`; confirm 240 of 12,525 rows render initially, filters
-    are fixed to the bottom, then test search, word type, letter, spelling,
-    meaning language, and progressive loading.
+11. In Browse mode, scroll to the integrated alphabetical inventory; confirm 240
+    of 12,525 rows render initially, then test search, word type, letter,
+    spelling, meaning language, and progressive loading. Open `word-list.html`
+    only to confirm it redirects to `dictionary.html#dictionary-index`.
 12. Open `grammar.html`; confirm it is a compact source-derived inventory
     (noun case codes, verb person/aspect/tense codes, adjective form dimensions,
     word-type codes, and notation), not a beginner grammar lesson.
 13. Open `explore.html`; switch through Family atlas, Family web, Type ribbons,
-    Family rings, and Size landscape. Hover and select marks, filter each view,
-    toggle Family-web labels, search `kerav`, change spelling/meaning, zoom the
-    SVG views, and follow a selected word into its full dictionary entry.
+    Family rings, Size landscape, and Family comparison. Hover and select marks,
+    filter each view, toggle Family-web labels, search `kerav`, change
+    spelling/meaning, zoom the SVG views, and follow a selected word into its
+    full dictionary entry.
 
-Focus should place navigation above the entry; Browse should place the word-type
-catalogue below the entry; Split should preserve the persistent sidebar. Word
-family remains an interactive Base hierarchy. Grammar grids
+Focus should place navigation above the entry; Browse should place the
+alphabetical inventory below the entry; Split should preserve the persistent
+sidebar. Word family remains an interactive Base hierarchy. Grammar grids
 must never create page-level horizontal overflow on mobile; wide matrices scroll
 inside their panel.
 
 On 23 June, in-app browser QA covered the German-first dictionary, language
-toggle to English, bottom-fixed Word list filters, minimal Grammar reference,
-Explore page, representative noun forms, URL state, and console errors on the
-local static preview. It found no browser console errors. This is not a
-screen-reader, full keyboard, or linguistic correctness audit.
+toggle to English, the then-separate Word list filters, minimal Grammar
+reference, Explore page, representative noun forms, URL state, and console
+errors on the local static preview. It found no browser console errors. This is
+not a screen-reader, full keyboard, or linguistic correctness audit.
 
 ## Decisions already made
 
@@ -269,9 +274,8 @@ screen-reader, full keyboard, or linguistic correctness audit.
 - Visual diagrams use only explicit workbook relationships.
 - Corpus exploration uses recorded base fields; it does not claim inferred
   semantic, etymological, or morphological relationships.
-- Generated morphology is visible as practical grammar but remains marked as a
-  generated, unreviewed feature in documentation; raw codes and derivation remain
-  collapsed in the UI.
+- Generated morphology is visible as practical grammar but remains documented as
+  generated and unreviewed; raw codes and derivation remain collapsed in the UI.
 - Dictionary layouts are presentation modes, not separate codebases.
 - Story claims are limited to the supplied manuscripts and remain provisional.
 - Review gates are fast-tracked until Valentin performs a major review.
@@ -312,6 +316,7 @@ expansion before real-browser QA establishes that the current shell is sound.
 - `docs/data-workflow.md` — source-to-runtime transformation
 - `docs/stakeholder-structure.md` — distilled linguistic/display rules
 - `docs/source-register.md` — provenance and checksums
+- `docs/dictionary-interface.md` — entry/interface rationale and navigation rules
 - `tests/fixtures/review-corpus.json` — eight representative review entries
 
 If context conflicts, use this priority: raw June sources and professor email
