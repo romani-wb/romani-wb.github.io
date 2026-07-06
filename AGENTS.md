@@ -60,8 +60,24 @@ As of 22 June 2026, Valentin has authorized fast-tracking these gates until a
 later major review. Continue autonomously with reversible, conservative defaults;
 record assumptions and deferred questions rather than pausing. He explicitly
 authorized direct commits and pushes to `main` without a PR while the site is not
-in production. This does not authorize silent source corrections, deployment or
-publication, or claims that provisional morphology has been linguistically approved.
+in production. GitHub Pages deployment from `main` has also been explicitly
+requested and is in scope for this prototype. This does not authorize silent
+source corrections or claims that provisional morphology has been linguistically
+approved.
+
+## Concurrent agent safety
+
+Valentin may ask multiple agents to make minor changes simultaneously. Assume
+`main` can move while you work.
+
+- Start with `git status --short` and `git log --oneline -5`.
+- If the tree is dirty, identify whether the files overlap your task. Preserve
+  unfamiliar changes; they likely belong to Valentin or another agent.
+- Before committing, re-check `git status --short` and review your diff.
+- Before pushing, pull/rebase if the remote moved. Resolve conflicts
+  deliberately; never use `git reset --hard`, `git checkout --`, or equivalent
+  destructive cleanup unless Valentin explicitly asks for it.
+- Keep commits small and specific so parallel work can be merged or reverted.
 
 ## Engineering constraints
 

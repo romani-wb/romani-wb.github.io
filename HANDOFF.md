@@ -1,6 +1,6 @@
 # Roman Dictionary — Agent Handoff
 
-Last updated: 23 June 2026
+Last updated: 6 July 2026
 
 This is the primary restart document. Read `AGENTS.md` next, then follow links
 from this file only as needed.
@@ -17,13 +17,21 @@ from this file only as needed.
   inside this repository. Do not repeatedly ask for approval for those actions.
 - Intermediate review gates are temporarily fast-tracked. Make conservative,
   reversible choices and document uncertainty for a later major review.
+- Valentin may now ask multiple agents to make minor changes simultaneously.
+  Before editing, always run `git status --short` and inspect recent commits.
+  Treat any unfamiliar local modifications as another agent's/user's work:
+  do not overwrite them, do not use destructive checkout/reset, and pull/rebase
+  before pushing if `main` moved.
 
 Recent checkpoints:
 
 ```text
+fa6bf92 Remove leftover placeholder UI text
+accf6d0 Add verb person placeholders
+2548582 Localize interface and simplify references
+44ccb1f Exclude private sources from Pages
+0b7aadf Add practical exploration and Pages deployment
 95a9f50 Refocus dictionary navigation
-38d6b31 Make dictionary grammar practical
-00c73b3 Separate and redesign the Roman dictionary
 ```
 
 ## Product state
@@ -56,8 +64,13 @@ The current prototype is a static Roman dictionary with:
 - learner-facing verb conjugation, noun case, and adjective agreement grids;
 - source-aligned generated grammar forms and useful-form previews without
   onboarding or artificial grammar lessons;
-- technical morphology derivation collapsed and all generated forms clearly
-  identified as awaiting linguistic review;
+- technical morphology derivation collapsed under Details; visible "preview" /
+  "provisional" UI labels were removed as unnecessary placeholder copy, but the
+  underlying morphology remains unreviewed and must not be described as approved;
+- verb conjugation person rows include provisional English helper phrases such
+  as "I eat / you eat / he/she/it eats", derived from the first English meaning
+  where possible, to make person slots readable until Dieter confirms better
+  labels;
 - a progressively rendered table-like alphabetical index at `word-list.html`,
   with filters fixed to the bottom instead of a top sticky panel;
 - a minimal source-aligned grammar reference at `grammar.html`;
@@ -257,7 +270,8 @@ screen-reader, full keyboard, or linguistic correctness audit.
 - Corpus exploration uses recorded base fields; it does not claim inferred
   semantic, etymological, or morphological relationships.
 - Generated morphology is visible as practical grammar but remains marked as a
-  generated preview; raw codes and derivation remain collapsed.
+  generated, unreviewed feature in documentation; raw codes and derivation remain
+  collapsed in the UI.
 - Dictionary layouts are presentation modes, not separate codebases.
 - Story claims are limited to the supplied manuscripts and remain provisional.
 - Review gates are fast-tracked until Valentin performs a major review.
@@ -276,9 +290,10 @@ The full rationale is in `docs/decisions.md`.
    to a worker if profiling justifies it.
 5. Add a compact About/Method surface explaining sources, spellings, limitations,
    and the provisional status of generated forms.
-6. Ask Dieter to review a deliberately small morphology corpus before changing
-   the generated-preview status: at minimum one regular/irregular verb, each noun
-   gender/class pattern, and adjective agreement.
+6. Ask Dieter to review a deliberately small morphology corpus before treating
+   generated forms as linguistically accepted: at minimum one regular/irregular
+   verb, each noun gender/class pattern, adjective agreement, and the temporary
+   English person helper phrases in verb tables.
 7. During the later major review, revisit audience priority, interface language,
    spelling default, story tone/rights/attribution, community voice or imagery,
    duplicate behavior, and morphology accuracy.
